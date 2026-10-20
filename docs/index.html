@@ -20,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Default: Dark Studio Theme (Warm Obsidian & Ivory) */
+      /* Dark Studio Theme (Default) */
       --bg: #0e0e11;
       --bg-elevated: #141419;
       --surface: #17171d;
@@ -35,7 +35,7 @@
       --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07);
       --shadow-studio: 0 34px 90px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.1);
 
-      /* Semantic Tactile Hardware Accents */
+      /* Semantic Tactile Accents */
       --vermilion: #ff5722;
       --vermilion-soft: rgba(255, 87, 34, 0.14);
       --amber: #f59e0b;
@@ -57,15 +57,8 @@
       /* Physics Curves */
       --spring-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
       --spring-snappy: cubic-bezier(0.22, 1, 0.36, 1);
-
-      /* Live Calibration Dials */
-      --gf-press-scale: 0.94;
-      --gf-overshoot-scale: 1.05;
-      --gf-hitstop-ms: 65;
-      --gf-coyote-ms: 160;
     }
 
-    /* Warm Alabaster Paper Theme (Taste Skill / Genjutsu Light Contrast) */
     html[data-theme="light"] {
       --bg: #f6f4ef;
       --bg-elevated: #edeae2;
@@ -109,7 +102,6 @@
         radial-gradient(circle at 86% 12%, rgba(99, 102, 241, 0.08), transparent 38rem);
     }
 
-    /* Subtle tactile film grain */
     body::before {
       content: "";
       position: fixed;
@@ -126,7 +118,7 @@
       padding: 0 24px;
     }
 
-    /* Floating Studio Topbar */
+    /* Floating Header */
     .topbar-wrap {
       position: sticky;
       top: 14px;
@@ -181,7 +173,7 @@
     .topbar-nav {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 22px;
       font-size: 13.5px;
       font-weight: 500;
     }
@@ -197,9 +189,7 @@
     }
 
     @media (max-width: 780px) {
-      .topbar-nav {
-        display: none;
-      }
+      .topbar-nav { display: none; }
     }
 
     .topbar-controls {
@@ -265,20 +255,20 @@
     }
 
     /* =====================================================================
-       SECTION 1: HERO SPLIT + 120MS OSCILLOSCOPE INSTRUMENT
+       SECTION 1: HERO SPLIT + SLOW-MOTION COMPARISON STAGE
        ===================================================================== */
     .hero {
-      padding: 64px 0 56px;
+      padding: 60px 0 56px;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 44px;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 40px;
       align-items: center;
     }
 
-    @media (max-width: 940px) {
+    @media (max-width: 960px) {
       .hero-grid {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -298,7 +288,7 @@
       font-weight: 500;
       color: var(--text-secondary);
       letter-spacing: 0.04em;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       box-shadow: var(--shadow-card);
     }
 
@@ -311,12 +301,12 @@
 
     h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.55rem, 4.8vw, 4.15rem);
+      font-size: clamp(2.5rem, 4.7vw, 4.1rem);
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.04;
       color: var(--text);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     h1 em {
@@ -329,14 +319,13 @@
     }
 
     .hero-lead {
-      font-size: 16.5px;
+      font-size: 16px;
       line-height: 1.65;
       color: var(--text-secondary);
-      max-width: 560px;
-      margin-bottom: 28px;
+      max-width: 550px;
+      margin-bottom: 26px;
     }
 
-    /* Terminal Command Box */
     .terminal-card {
       background: #0d0d10;
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -346,11 +335,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      max-width: 500px;
+      max-width: 490px;
       cursor: pointer;
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
       transition: transform 140ms var(--spring-snappy), border-color 140ms ease;
-      margin-bottom: 16px;
+      margin-bottom: 22px;
     }
 
     .terminal-card:hover {
@@ -384,68 +373,13 @@
       font-size: 11px;
       padding: 5px 10px;
       border-radius: 6px;
-      transition: all 140ms ease;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 26px;
-    }
-
-    .btn-primary {
-      height: 42px;
-      padding: 0 20px;
-      border-radius: 99px;
-      background: var(--vermilion);
-      color: #fff;
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 24px rgba(255, 87, 34, 0.32);
-      transition: transform 160ms var(--spring-overshoot), box-shadow 160ms ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(255, 87, 34, 0.44);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.96);
-    }
-
-    .btn-secondary {
-      height: 42px;
-      padding: 0 18px;
-      border-radius: 99px;
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      color: var(--text);
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 150ms var(--spring-snappy), border-color 150ms ease;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--text);
     }
 
     .agent-strip {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-muted);
@@ -459,26 +393,24 @@
       color: var(--text-secondary);
     }
 
-    /* Right Hero Column: Interactive 120ms Physics Oscilloscope */
-    .osc-instrument {
-      background: #111116;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 18px;
+    /* RIGHT HERO COLUMN: SLOW-MOTION COMPARISON STAGE */
+    .slowmo-card {
+      background: #121217;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
       overflow: hidden;
       box-shadow: var(--shadow-studio);
       color: #f4f2ed;
     }
 
-    .osc-header {
+    .slowmo-header {
       background: #181820;
-      padding: 11px 16px;
+      padding: 12px 18px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #8e8b84;
+      gap: 10px;
     }
 
     .window-dots {
@@ -492,66 +424,183 @@
       border-radius: 50%;
     }
 
-    .osc-screen {
-      position: relative;
-      height: 220px;
-      background-color: #0b0b0e;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 22px 22px;
+    .speed-pills {
+      display: inline-flex;
+      background: #0b0b0e;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      padding: 2px;
     }
 
-    #oscCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .osc-phases {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: #131319;
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-    }
-
-    .osc-phase {
-      padding: 8px 10px;
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .osc-phase:last-child {
-      border-right: none;
-    }
-
-    .osc-phase strong {
-      display: block;
-      font-size: 10px;
-      margin-bottom: 2px;
-    }
-
-    .osc-phase span {
+    .speed-btn {
+      border: none;
+      background: transparent;
       color: #8e8b84;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 120ms ease;
     }
 
-    .osc-controls {
-      padding: 14px 16px;
+    .speed-btn.active {
+      background: var(--vermilion);
+      color: #fff;
+    }
+
+    .slowmo-tracks {
+      padding: 18px;
+      background-color: #0b0b0f;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .comp-lane {
+      background: #15151c;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      background: #15151c;
+      gap: 16px;
     }
 
-    .osc-trigger-btn {
+    .comp-lane.juice-lane {
+      background: #17151c;
+      border-color: rgba(255, 87, 34, 0.45);
+      box-shadow: 0 10px 30px rgba(255, 87, 34, 0.08);
+    }
+
+    .lane-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .lane-badge {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #8e8b84;
+      text-transform: uppercase;
+    }
+
+    .juice-lane .lane-badge {
+      color: var(--vermilion);
+    }
+
+    .lane-sub {
+      font-size: 12.5px;
+      color: #a6a29b;
+    }
+
+    /* Large Hero Toggle Switches */
+    .hero-switch {
+      width: 156px;
+      height: 52px;
+      border-radius: 99px;
+      background: #23232d;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: background-color 250ms ease, border-color 250ms ease;
+    }
+
+    .hero-switch.on-flat {
+      background: #3d3d4d;
+    }
+
+    .hero-switch.on-juice {
+      background: var(--vermilion);
+      border-color: #ff8a65;
+    }
+
+    .hero-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #9e9b94;
+      transform-origin: center;
+      will-change: transform;
+    }
+
+    #heroJuiceSwitch .hero-thumb {
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 4 Phase Pills inside Slow-Mo Stage */
+    .phase-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .phase-pill {
+      background: #15151c;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 7px 6px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #6e6b65;
+      transition: all 140ms ease;
+    }
+
+    .phase-pill.lit-1 {
+      border-color: var(--amber);
+      background: var(--amber-soft);
+      color: var(--amber);
+      font-weight: 600;
+    }
+    .phase-pill.lit-2 {
+      border-color: var(--indigo);
+      background: var(--indigo-soft);
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+    .phase-pill.lit-3 {
+      border-color: var(--vermilion);
+      background: var(--vermilion-soft);
+      color: #ff8a65;
+      font-weight: 600;
+    }
+    .phase-pill.lit-4 {
+      border-color: var(--emerald);
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      font-weight: 600;
+    }
+
+    .slowmo-footer {
+      background: #16161e;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .run-demo-btn {
       height: 40px;
       padding: 0 18px;
       border-radius: 10px;
       background: var(--vermilion);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       color: #fff;
       font-family: var(--font-display);
       font-size: 13.5px;
@@ -560,23 +609,37 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 8px 20px rgba(255, 87, 34, 0.35);
-      transition: transform 160ms var(--spring-overshoot), background-color 140ms ease;
-      user-select: none;
+      box-shadow: 0 8px 22px rgba(255, 87, 34, 0.35);
+      transition: transform 150ms var(--spring-overshoot);
     }
 
-    .osc-readout {
+    .run-demo-btn:active {
+      transform: scale(0.95);
+    }
+
+    .more-demos-link {
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: #a6a29b;
-      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      font-weight: 500;
+      color: #d5d2cd;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 140ms ease;
+    }
+
+    .more-demos-link:hover {
+      border-color: var(--vermilion);
+      color: #fff;
     }
 
     /* =====================================================================
-       SECTION 2: THE THESIS ("ESCAPE GENERIC AI SLOP / DEAD DOM")
+       SECTION 2: INTERACTIVE SANDBOX (12 A/B COMPARISONS)
        ===================================================================== */
-    .thesis-section {
-      padding: 56px 0;
+    .lab-section {
+      padding: 44px 0 56px;
     }
 
     .section-kicker {
@@ -597,7 +660,7 @@
       letter-spacing: -0.035em;
       line-height: 1.12;
       color: var(--text);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .section-heading em {
@@ -610,458 +673,8 @@
     .section-desc {
       font-size: 15.5px;
       color: var(--text-secondary);
-      max-width: 640px;
-      margin-bottom: 28px;
-    }
-
-    .thesis-compare {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 820px) {
-      .thesis-compare {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .thesis-card {
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: var(--shadow-card);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .thesis-card.ours {
-      border-color: rgba(255, 87, 34, 0.4);
-      position: relative;
-    }
-
-    .thesis-badge {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .thesis-card.ours .thesis-badge {
-      color: var(--vermilion);
-    }
-
-    .timeline-diagram {
-      background: #0d0d11;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 16px;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: #d5d2cd;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .tl-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tl-seg {
-      height: 26px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10.5px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    /* =====================================================================
-       SECTION 3: STUDIO APPLICATION SANDBOX (DARK INSTRUMENT WINDOW)
-       ===================================================================== */
-    .sandbox-section {
-      padding: 36px 0 56px;
-    }
-
-    .header-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .preset-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .preset-pill {
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 140ms ease;
-    }
-
-    .preset-pill:hover,
-    .preset-pill.active {
-      background: var(--vermilion);
-      color: #fff;
-      border-color: var(--vermilion);
-    }
-
-    /* Always Dark Studio Frame so interactive controls pop in both themes */
-    .studio-window {
-      background: #121217;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow-studio);
-      color: #f4f2ed;
-    }
-
-    .studio-toolbar {
-      background: #181820;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 12px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .mode-segmented {
-      display: inline-flex;
-      background: #0b0b0e;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 9px;
-      padding: 3px;
-    }
-
-    .mode-btn {
-      border: none;
-      background: transparent;
-      color: #8e8b84;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 5px 13px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 140ms ease;
-    }
-
-    .mode-btn.active {
-      background: var(--vermilion);
-      color: #fff;
-    }
-
-    .studio-dials {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .mini-dial {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: #a6a29b;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .mini-dial input[type="range"] {
-      width: 72px;
-      accent-color: var(--vermilion);
-      height: 4px;
-      cursor: pointer;
-    }
-
-    .studio-body {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      min-height: 400px;
-    }
-
-    @media (max-width: 880px) {
-      .studio-body {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .studio-stage {
-      padding: 24px;
-      background-color: #0c0c10;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-      background-size: 18px 18px;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .mock-app {
-      background: #16161d;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 14px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    .mock-app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 12px;
-    }
-
-    .mock-app-title {
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 700;
-      color: #f4f2ed;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .status-pill {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background: var(--emerald-soft);
-      color: var(--emerald);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .progress-track {
-      height: 7px;
-      background: #252530;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 33%;
-      background: linear-gradient(90deg, var(--vermilion), var(--amber));
-      border-radius: 99px;
-      transition: width 280ms var(--spring-overshoot), background 200ms ease;
-    }
-
-    .mock-tasks {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    @media (max-width: 560px) {
-      .mock-tasks {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .mock-task {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 11px;
-      border-radius: 8px;
-      background: #1e1e27;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 12.5px;
-      color: #a6a29b;
-      cursor: pointer;
-      user-select: none;
-      transition: transform 180ms var(--spring-overshoot), border-color 140ms ease, background-color 140ms ease;
-    }
-
-    .mock-task:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .mock-task.done {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.08);
-      color: #f4f2ed;
-    }
-
-    .mock-task-box {
-      width: 16px;
-      height: 16px;
-      border-radius: 5px;
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: transparent;
-      transition: all 160ms var(--spring-overshoot);
-      flex-shrink: 0;
-    }
-
-    .mock-task.done .mock-task-box {
-      background: var(--emerald);
-      border-color: var(--emerald);
-      color: #0b0b0e;
-      font-weight: 700;
-    }
-
-    .mock-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .mock-input {
-      flex: 1;
-      height: 36px;
-      padding: 0 12px;
-      border-radius: 8px;
-      background: #0b0b0e;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #f4f2ed;
-      font-family: var(--font-mono);
-      font-size: 12px;
-    }
-
-    .mock-btn-sec {
-      height: 36px;
-      padding: 0 13px;
-      border-radius: 8px;
-      background: #252530;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #f4f2ed;
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: transform 150ms var(--spring-overshoot), border-color 140ms ease;
-    }
-
-    .mock-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      flex-wrap: wrap;
-    }
-
-    /* Right Studio Pane: X-Ray Inspector */
-    .studio-inspector {
-      background: #101015;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 14px;
-      font-family: var(--font-mono);
-    }
-
-    .inspector-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 10px;
-    }
-
-    .inspector-title {
-      font-size: 11px;
-      color: #8e8b84;
-      letter-spacing: 0.05em;
-    }
-
-    .inspector-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 6px;
-      background: var(--vermilion-soft);
-      border: 1px solid rgba(255, 87, 34, 0.4);
-      color: var(--vermilion);
-    }
-
-    .inspector-event-box {
-      background: #17171f;
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 10px;
-      padding: 13px;
-    }
-
-    .inspector-event-name {
-      font-size: 13px;
-      color: #f4f2ed;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .inspector-event-metrics {
-      font-size: 11.5px;
-      color: #a6a29b;
-      line-height: 1.5;
-    }
-
-    .inspector-code {
-      background: #08080b;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 11.5px;
-      line-height: 1.58;
-      color: #d5d2cd;
-      overflow-x: auto;
-      white-space: pre;
-      flex: 1;
-    }
-
-    .inspector-tokens {
-      font-size: 11px;
-      color: #8e8b84;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 10px;
-    }
-
-    .inspector-tokens strong {
-      color: var(--amber);
-    }
-
-    /* =====================================================================
-       SECTION 4: 12-MECHANIC BENTO LAB (COLOR-CODED BY PHYSICS FAMILY)
-       ===================================================================== */
-    .lab-section {
-      padding: 48px 0;
+      max-width: 650px;
+      margin-bottom: 24px;
     }
 
     .filter-tabs {
@@ -1115,7 +728,6 @@
       display: flex;
       flex-direction: column;
       box-shadow: var(--shadow-card);
-      transition: border-color 180ms ease;
     }
 
     .specimen[data-hidden="true"] {
@@ -1181,14 +793,13 @@
       border-color: var(--vermilion);
     }
 
-    /* Dark Interactive Stage inside each Bento Card */
     .stage-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
       background-color: #0d0d11;
       background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
       background-size: 15px 15px;
-      min-height: 146px;
+      min-height: 156px;
       color: #f4f2ed;
     }
 
@@ -1200,6 +811,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      gap: 8px;
     }
 
     .stage-cell:first-child {
@@ -1270,7 +882,7 @@
       display: block;
     }
 
-    /* Interactive Demo Controls */
+    /* Demo UI Controls */
     .ui-btn-flat {
       height: 36px;
       padding: 0 14px;
@@ -1334,55 +946,25 @@
 
     @keyframes damped-shake {
       0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-6px); }
-      40% { transform: translateX(5px); }
-      60% { transform: translateX(-3px); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
       80% { transform: translateX(2px); }
     }
 
     .shake-active {
-      animation: damped-shake 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+      animation: damped-shake 340ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
       border-color: var(--danger) !important;
-    }
-
-    .popover-wrap {
-      position: relative;
-      display: inline-block;
-    }
-
-    .popover-card {
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%) translateY(4px) scale(0.96);
-      background: #22222c;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 7px;
-      padding: 6px 11px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #f4f2ed;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 120ms ease, transform 160ms var(--spring-snappy);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
-      z-index: 20;
-    }
-
-    .popover-card.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
-      pointer-events: auto;
+      background: rgba(239, 68, 68, 0.2) !important;
     }
 
     .switch-track {
-      width: 46px;
-      height: 25px;
+      width: 52px;
+      height: 28px;
       border-radius: 99px;
       background: #252530;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 2px;
+      padding: 3px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1394,8 +976,8 @@
     }
 
     .switch-thumb {
-      width: 19px;
-      height: 19px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: #fff;
       transition: transform 220ms var(--spring-overshoot);
@@ -1403,7 +985,7 @@
     }
 
     .switch-track.on .switch-thumb {
-      transform: translateX(21px);
+      transform: translateX(24px);
     }
 
     .switch-track.flat-switch .switch-thumb {
@@ -1441,6 +1023,157 @@
       transition: transform 180ms var(--spring-overshoot);
     }
 
+    /* UPGRADED DEMO 07: Detent Slider with Floating Bubble & Notch Dots */
+    .detent-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 136px;
+    }
+
+    .detent-bubble {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #23232d;
+      color: #a6a29b;
+      transition: transform 160ms var(--spring-overshoot), background-color 140ms ease, color 140ms ease;
+    }
+
+    .detent-bubble.juice-bubble {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .detent-notches {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 6px;
+    }
+
+    .detent-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #343442;
+      transition: transform 150ms var(--spring-overshoot), background-color 150ms ease;
+    }
+
+    .detent-dot.lit {
+      background: var(--emerald);
+      transform: scale(1.45);
+    }
+
+    /* UPGRADED DEMO 10: Coyote Time Menu with Air Gap & Grace Progress Bar */
+    .coyote-zone {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .coyote-popup {
+      position: absolute;
+      bottom: calc(100% + 10px); /* 10px intentional air gap that kills non-Coyote menus! */
+      left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.95);
+      background: #1e1e28;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 9px;
+      padding: 7px 10px;
+      width: 148px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease, transform 160ms var(--spring-snappy);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .coyote-popup.open {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .coyote-action-btn {
+      width: 100%;
+      height: 26px;
+      border-radius: 5px;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .coyote-action-btn:hover {
+      background: var(--amber);
+      color: #0b0b0e;
+    }
+
+    .coyote-bar-track {
+      height: 3px;
+      width: 100%;
+      background: #2d2d3a;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .coyote-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--amber);
+      transition: width 450ms linear;
+    }
+
+    /* UPGRADED DEMO 12: AI Stream Terminal Screen */
+    .stream-box {
+      width: 148px;
+      height: 44px;
+      background: #08080b;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 1.35;
+      color: #d5d2cd;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .token-word {
+      display: inline-block;
+      animation: tokenPop 180ms var(--spring-overshoot) forwards;
+    }
+
+    @keyframes tokenPop {
+      0% { opacity: 0; transform: translateY(4px) scale(0.92); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .stream-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 11px;
+      border-radius: 3px;
+      background: var(--emerald);
+      vertical-align: middle;
+    }
+
     .tilt-card {
       width: 132px;
       height: 70px;
@@ -1471,10 +1204,87 @@
     }
 
     /* =====================================================================
-       SECTION 5: GENJUTSU-STYLE "THREE WORKFLOWS" TABLE
+       SECTION 3: THE 120MS THESIS
+       ===================================================================== */
+    .thesis-section {
+      padding: 36px 0 48px;
+    }
+
+    .thesis-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 820px) {
+      .thesis-compare {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .thesis-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .thesis-card.ours {
+      border-color: rgba(255, 87, 34, 0.4);
+    }
+
+    .thesis-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .thesis-card.ours .thesis-badge {
+      color: var(--vermilion);
+    }
+
+    .timeline-diagram {
+      background: #0d0d11;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #d5d2cd;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tl-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tl-seg {
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* =====================================================================
+       SECTION 4: THREE WORKFLOWS TABLE
        ===================================================================== */
     .workflows-section {
-      padding: 48px 0 72px;
+      padding: 36px 0 72px;
     }
 
     .workflows-table-wrap {
@@ -1578,7 +1388,7 @@
 </head>
 <body>
 
-  <!-- Floating Glass Header -->
+  <!-- Floating Studio Header -->
   <div class="topbar-wrap">
     <header class="topbar">
       <a href="#" class="brand">
@@ -1586,9 +1396,8 @@
         <span>game-feel-ui</span>
       </a>
       <nav class="topbar-nav">
+        <a href="#sandbox" data-i18n="navLab">Interactive Sandbox (12)</a>
         <a href="#thesis" data-i18n="navThesis">The 120ms Thesis</a>
-        <a href="#app-sandbox" data-i18n="navSandbox">Studio Sandbox</a>
-        <a href="#mechanics-lab" data-i18n="navLab">Mechanics Lab (12)</a>
         <a href="#workflows" data-i18n="navWorkflows">Agent Workflows</a>
       </nav>
       <div class="topbar-controls">
@@ -1597,8 +1406,8 @@
           <span id="soundLabel">Audio: ON</span>
         </button>
         <button id="themeToggle" class="pill-btn" type="button" title="Switch Dark Studio / Warm Paper theme">
-          <span id="themeIcon">◐</span>
-          <span id="themeLabel">Theme</span>
+          <span>◐</span>
+          <span id="themeLabel">Paper</span>
         </button>
         <div class="lang-switch" role="group" aria-label="Language selector">
           <button type="button" class="lang-btn active" data-lang="en">EN</button>
@@ -1613,7 +1422,7 @@
 
   <main>
     <!-- =====================================================================
-         SECTION 1: HERO SPLIT + 60FPS OSCILLOSCOPE INSTRUMENT
+         SECTION 1: HERO SPLIT + SLOW-MOTION COMPARISON STAGE
          ===================================================================== -->
     <section class="hero container">
       <div class="hero-grid">
@@ -1625,7 +1434,7 @@
           </div>
           <h1 data-i18n="heroTitle">Make interfaces feel <em>physical</em> in the first 120ms.</h1>
           <p class="hero-lead" data-i18n="heroLead">
-            Game studios spend months tuning <strong>Anticipation</strong>, <strong>Hitstop freeze-frames</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.
+            Game studios spend months tuning <strong>Anticipation</strong>, <strong>Squash &amp; Stretch</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.
           </p>
 
           <div id="installBtn" class="terminal-card" role="button" tabindex="0" aria-label="Copy npx install command">
@@ -1634,11 +1443,6 @@
               <span>npx skills add EduuF/game-feel-ui</span>
             </div>
             <span id="copyBadge" class="terminal-copy" data-i18n="copyBtn">Copy</span>
-          </div>
-
-          <div class="hero-actions">
-            <a href="#app-sandbox" class="btn-primary" data-i18n="ctaSandbox">Launch Studio Sandbox ↓</a>
-            <a href="#mechanics-lab" class="btn-secondary" data-i18n="ctaLab">Explore 12 Mechanics</a>
           </div>
 
           <div class="agent-strip">
@@ -1651,53 +1455,499 @@
           </div>
         </div>
 
-        <!-- Right Column: 120ms Physics Oscilloscope -->
-        <div class="osc-instrument">
-          <div class="osc-header">
-            <div class="window-dots">
-              <span style="background:#ff5f57"></span>
-              <span style="background:#ffbd2e"></span>
-              <span style="background:#28c840"></span>
+        <!-- Right Column: Slow-Motion Stacked Comparison Microscope -->
+        <div class="slowmo-card">
+          <div class="slowmo-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="window-dots">
+                <span style="background:#ff5f57"></span>
+                <span style="background:#ffbd2e"></span>
+                <span style="background:#28c840"></span>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;color:#a6a29b;" data-i18n="heroStageTitle">SQUASH &amp; STRETCH COMPARISON</span>
             </div>
-            <span>120ms KINEMATIC OSCILLOSCOPE · LIVE 60FPS</span>
-          </div>
 
-          <div class="osc-screen">
-            <canvas id="oscCanvas" width="520" height="220"></canvas>
-          </div>
-
-          <div class="osc-phases">
-            <div class="osc-phase">
-              <strong style="color:var(--amber)">01 · SQUASH</strong>
-              <span>0.93x preload</span>
-            </div>
-            <div class="osc-phase">
-              <strong style="color:var(--vermilion)">02 · HITSTOP</strong>
-              <span>75ms freeze</span>
-            </div>
-            <div class="osc-phase">
-              <strong style="color:var(--indigo)">03 · SPRING</strong>
-              <span>1.06x rebound</span>
-            </div>
-            <div class="osc-phase">
-              <strong style="color:var(--emerald)">04 · SYNTH</strong>
-              <span>523→784Hz</span>
+            <div class="speed-pills">
+              <button type="button" id="speedSlowBtn" class="speed-btn active" data-speed="slow">0.25x Slow-Mo</button>
+              <button type="button" id="speedRealBtn" class="speed-btn" data-speed="real">1x Real-Time</button>
             </div>
           </div>
 
-          <div class="osc-controls">
-            <button type="button" id="oscTriggerBtn" class="osc-trigger-btn">
-              <span>⚡</span>
-              <span id="oscBtnText" data-i18n="oscBtn">Trigger Impact Pulse</span>
+          <div class="slowmo-tracks">
+            <!-- Top Lane: Without Skill -->
+            <div class="comp-lane">
+              <div class="lane-info">
+                <span class="lane-badge" data-i18n="laneFlatTitle">Without Skill · Standard CSS</span>
+                <span class="lane-sub" data-i18n="laneFlatSub">Rigid linear slide (Zero deformation)</span>
+              </div>
+              <div id="heroFlatSwitch" class="hero-switch" role="switch" aria-checked="false" aria-label="Standard CSS Toggle">
+                <div id="heroFlatThumb" class="hero-thumb"></div>
+              </div>
+            </div>
+
+            <!-- Bottom Lane: With game-feel-ui -->
+            <div class="comp-lane juice-lane">
+              <div class="lane-info">
+                <span class="lane-badge" data-i18n="laneJuiceTitle">With game-feel-ui · Spring &amp; Morph</span>
+                <span class="lane-sub" data-i18n="laneJuiceSub">Preload squash → Mid-air stretch (1.42x) → Overshoot</span>
+              </div>
+              <div id="heroJuiceSwitch" class="hero-switch" role="switch" aria-checked="false" aria-label="Game Feel Toggle">
+                <div id="heroJuiceThumb" class="hero-thumb"></div>
+              </div>
+            </div>
+
+            <!-- 4 Phase Callouts that light up during animation -->
+            <div class="phase-strip">
+              <div id="hp1" class="phase-pill" data-i18n="hp1">1. Preload 0.85x</div>
+              <div id="hp2" class="phase-pill" data-i18n="hp2">2. Stretch 1.42x</div>
+              <div id="hp3" class="phase-pill" data-i18n="hp3">3. Overshoot +10px</div>
+              <div id="hp4" class="phase-pill" data-i18n="hp4">4. Spring Settle ✓</div>
+            </div>
+          </div>
+
+          <div class="slowmo-footer">
+            <button type="button" id="heroRunDemoBtn" class="run-demo-btn">
+              <span>▶</span>
+              <span data-i18n="runDemoBtn">Run Comparison Demo</span>
             </button>
-            <span id="oscReadout" class="osc-readout">scale: 1.000 · state: ready</span>
+            <a href="#sandbox" class="more-demos-link" data-i18n="seeMoreDemos">See 12 more demos ↓</a>
           </div>
         </div>
       </div>
     </section>
 
     <!-- =====================================================================
-         SECTION 2: THE 120MS THESIS (ESCAPE GENERIC AI SLOP)
+         SECTION 2: INTERACTIVE SANDBOX (12 A/B COMPARISONS)
+         ===================================================================== -->
+    <section id="sandbox" class="lab-section container">
+      <span class="section-kicker" data-i18n="labKicker">INTERACTIVE SANDBOX</span>
+      <h2 class="section-heading" data-i18n="labTitle">Test 12 Game-Feel Mechanics <em>Live</em></h2>
+      <p class="section-desc" data-i18n="labSub">
+        Interact with both sides of each card below to feel the difference between standard linear UI (left) and calibrated Game Feel (right).
+      </p>
+
+      <div class="filter-tabs" role="tablist">
+        <button type="button" class="filter-tab active" data-filter="all" data-i18n="tabAll">All (12)</button>
+        <button type="button" class="filter-tab" data-filter="impact" data-i18n="tabImpact">Impact &amp; Hitstop</button>
+        <button type="button" class="filter-tab" data-filter="spring" data-i18n="tabSpring">Spring &amp; Morph</button>
+        <button type="button" class="filter-tab" data-filter="coyote" data-i18n="tabCoyote">Coyote Forgiveness</button>
+        <button type="button" class="filter-tab" data-filter="audio" data-i18n="tabAudio">Audio &amp; Cadence</button>
+        <button type="button" class="filter-tab" data-filter="spatial" data-i18n="tabSpatial">Spatial &amp; 3D</button>
+      </div>
+
+      <div class="specimens-grid">
+        <!-- 01: Hitstop & Spring -->
+        <article class="specimen" data-cat="impact">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-impact">01 · M01 + M04 · IMPACT &amp; HITSTOP</span>
+              <h3 class="specimen-title" data-i18n="s1Title">Primary Action Compression &amp; Freeze</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code1" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s1Desc">Compresses to <code>0.92</code> on pointerdown, holds a 75ms freeze-frame on release, then rebounds with spring overshoot.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Standard UI</span>
+              <button id="s1Flat" type="button" class="ui-btn-flat">Deploy</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button id="s1Juice" type="button" class="ui-btn-juice">
+                <span id="s1Icon">↑</span>
+                <span id="s1Text">Deploy</span>
+              </button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log1" class="specimen-foot-output">Click both buttons to compare response</span>
+          </div>
+          <pre id="code1" class="specimen-code">onPointerDown: () => el.style.transform = 'scale(0.92)',
+onPointerUp: async () => {
+  await sleep(75); // Hitstop freeze-frame
+  el.style.transform = 'scale(1.08)';
+  playHarmonicTriad();
+}</pre>
+        </article>
+
+        <!-- 02: Hold to Commit -->
+        <article class="specimen" data-cat="impact coyote">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-coyote">02 · M21 · TENSION &amp; FORGIVENESS</span>
+              <h3 class="specimen-title" data-i18n="s2Title">Hold-to-Commit Destructive Action</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code2" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s2Desc">Replaces confirmation modals with a physical hold gauge, rising pitch tension, and reversible decay on early release.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Standard UI</span>
+              <button id="s2Flat" type="button" class="ui-btn-flat">Delete Key</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button id="s2Juice" type="button" class="ui-btn-hold">
+                <div id="s2Fill" class="hold-fill"></div>
+                <span id="s2Text" class="hold-text">Hold to Delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log2" class="specimen-foot-output">Press and hold the right button for 900ms</span>
+          </div>
+          <pre id="code2" class="specimen-code">progress = Math.min(100, progress + dt * 0.11);
+oscillator.frequency.value = 220 + progress * 3.5;
+button.style.transform = `translate(${jitter}px, 0) scale(0.97)`;</pre>
+        </article>
+
+        <!-- 03: Combo Checklist Pitch Escalation (With Visual Combo Badge) -->
+        <article class="specimen" data-cat="audio">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-audio">03 · M20 · AUDIO &amp; CADENCE</span>
+              <h3 class="specimen-title" data-i18n="s3Title">Combo Checklist Pitch Escalation</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code3" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s3Desc">Each consecutive click ascends +2 semitones (<code>440 * 2^(n/12)</code>) and escalates the visual combo multiplier.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Standard UI</span>
+              <div style="display:flex;gap:6px;">
+                <button type="button" class="ui-btn-flat flat-step">1</button>
+                <button type="button" class="ui-btn-flat flat-step">2</button>
+                <button type="button" class="ui-btn-flat flat-step">3</button>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:10px;color:#585651;">No streak feedback</span>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <div style="display:flex;gap:6px;">
+                <button type="button" class="ui-btn-juice juice-step" data-step="0">1</button>
+                <button type="button" class="ui-btn-juice juice-step" data-step="1">2</button>
+                <button type="button" class="ui-btn-juice juice-step" data-step="2">3</button>
+              </div>
+              <span id="s3ComboBadge" style="font-family:var(--font-mono);font-size:10.5px;padding:2px 8px;border-radius:5px;background:#1e1e28;color:#a6a29b;transition:transform 160ms var(--spring-overshoot);">Streak: 0x</span>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log3" class="specimen-foot-output">Click 1 → 2 → 3 on the right in sequence</span>
+          </div>
+          <pre id="code3" class="specimen-code">const freq = 440 * Math.pow(2, (streakIndex * 2) / 12);
+playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
+        </article>
+
+        <!-- 04: Physical Validation Resistance -->
+        <article class="specimen" data-cat="impact">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-impact">04 · M11 · IMPACT &amp; RECOIL</span>
+              <h3 class="specimen-title" data-i18n="s4Title">Physical Validation Resistance</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code4" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s4Desc">Invalid input triggers a horizontal damped harmonic shake (<code>±7px → 0px</code>) paired with a 140Hz sub-bass thud.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Standard UI</span>
+              <button type="button" id="s4FlatBtn" class="ui-btn-flat">Submit Invalid</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button type="button" id="s4JuiceBtn" class="ui-btn-juice">Submit Invalid</button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log4" class="specimen-foot-output">Click Submit Invalid to feel recoil</span>
+          </div>
+          <pre id="code4" class="specimen-code">@keyframes damped-shake {
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+}</pre>
+        </article>
+
+        <!-- 05: Squash & Stretch Toggle Switch -->
+        <article class="specimen" data-cat="spring">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-spring">05 · M09 · SPRING &amp; MORPH</span>
+              <h3 class="specimen-title" data-i18n="s7Title">Squash &amp; Stretch Toggle Switch</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code7" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s7Desc">The thumb elongates horizontally (<code>scaleX(1.32)</code>) mid-flight and settles with spring overshoot.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Linear Toggle</span>
+              <div id="s7Flat" class="switch-track flat-switch"><div class="switch-thumb"></div></div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Spring + Squash</span>
+              <div id="s7Juice" class="switch-track"><div id="s7Thumb" class="switch-thumb"></div></div>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log7" class="specimen-foot-output">Toggle both switches to feel thumb deformation</span>
+          </div>
+          <pre id="code7" class="specimen-code">thumb.style.transform = isOn
+  ? 'translateX(24px) scaleX(1.32) scaleY(0.82)'
+  : 'translateX(0px) scaleX(1.32) scaleY(0.82)';</pre>
+        </article>
+
+        <!-- 06: Kinetic Odometer Number Roll -->
+        <article class="specimen" data-cat="spring audio">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-spring">06 · M23 · SPRING &amp; CADENCE</span>
+              <h3 class="specimen-title" data-i18n="s8Title">Kinetic Odometer Number Roll</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code8" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s8Desc">Numbers roll vertically with directional momentum and pitch-matched ticks instead of swapping abruptly.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Instant Swap</span>
+              <div class="counter-pill">
+                <button type="button" class="counter-btn" id="s8FlatDec">−</button>
+                <span id="s8FlatVal">12</span>
+                <button type="button" class="counter-btn" id="s8FlatInc">+</button>
+              </div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Kinetic Odometer</span>
+              <div class="counter-pill">
+                <button type="button" class="counter-btn" id="s8JuiceDec">−</button>
+                <span id="s8JuiceVal" class="odo-val">12</span>
+                <button type="button" class="counter-btn" id="s8JuiceInc">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log8" class="specimen-foot-output">Click + and − to compare vertical momentum</span>
+          </div>
+          <pre id="code8" class="specimen-code">valEl.style.transform = `translateY(${dir * -10}px) scale(1.18)`;
+requestAnimationFrame(() => valEl.style.transform = 'translateY(0) scale(1)');</pre>
+        </article>
+
+        <!-- 07: Stepped Detent Slider (UPGRADED WITH FLOATING POP BUBBLE & NOTCH DOTS) -->
+        <article class="specimen" data-cat="audio spatial">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-audio">07 · M25 · AUDIO &amp; DETENTS</span>
+              <h3 class="specimen-title" data-i18n="s9Title">Stepped Detent Slider with Pitch Ticks</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code9" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s9Desc">Each step pops the floating value badge with spring physics, lights physical notch detents, and plays a frequency-scaled rotary tick.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Plain Slider</span>
+              <div class="detent-wrap">
+                <span id="s9FlatBubble" class="detent-bubble">Level 3</span>
+                <input type="range" min="1" max="5" step="1" value="3" style="width:128px;" id="s9Flat" />
+              </div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Tactile Detent Snap</span>
+              <div id="s9JuiceWrap" class="detent-wrap">
+                <span id="s9JuiceBubble" class="detent-bubble juice-bubble">Level 3 · 640Hz</span>
+                <input type="range" min="1" max="5" step="1" value="3" style="width:128px;accent-color:var(--emerald);" id="s9Juice" />
+                <div class="detent-notches" id="s9Notches">
+                  <span class="detent-dot lit"></span>
+                  <span class="detent-dot lit"></span>
+                  <span class="detent-dot lit"></span>
+                  <span class="detent-dot"></span>
+                  <span class="detent-dot"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log9" class="specimen-foot-output">Drag both sliders across steps 1–5</span>
+          </div>
+          <pre id="code9" class="specimen-code">slider.addEventListener('input', e => {
+  badge.style.transform = 'translateY(-4px) scale(1.25)';
+  playRotaryTick(400 + Number(e.target.value) * 80, { durationMs: 12 });
+});</pre>
+        </article>
+
+        <!-- 08: Optimistic Archive + 4s Undo Grace (UPGRADED WITH BLOCKING MODAL VS LIVE COUNTDOWN) -->
+        <article class="specimen" data-cat="coyote">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-coyote">08 · M19 · COYOTE FORGIVENESS</span>
+              <h3 class="specimen-title" data-i18n="s10Title">Optimistic Archive + 4s Undo Grace</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code10" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s10Desc">Standard UI interrupts you with a confirmation dialog; Game Feel archives in 0ms with a reversible 4s countdown pill.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Blocking Dialog</span>
+              <button type="button" id="s10Flat" class="ui-btn-flat">Archive Row</button>
+              <div id="s10Modal" style="display:none;background:#1e1e28;border:1px solid #ef4444;border-radius:7px;padding:6px 10px;font-size:11px;text-align:center;">
+                <div style="margin-bottom:4px;color:#fca5a5;">Are you sure?</div>
+                <button type="button" id="s10ModalCancel" class="ui-btn-flat" style="height:22px;padding:0 8px;font-size:10px;">Cancel</button>
+              </div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Optimistic + Undo</span>
+              <button type="button" id="s10Juice" class="ui-btn-juice">Archive Row</button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log10" class="specimen-foot-output">Click Archive Row on both sides</span>
+          </div>
+          <pre id="code10" class="specimen-code">hideRowOptimistically(id);
+const commitTimer = setTimeout(() => api.delete(id), 4000);
+onUndoClick(() => { clearTimeout(commitTimer); restoreRow(id); });</pre>
+        </article>
+
+        <!-- 09: Magnetic Cursor Gravity -->
+        <article class="specimen" data-cat="spatial">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-spatial">09 · M26 · SPATIAL &amp; PROXIMITY</span>
+              <h3 class="specimen-title" data-i18n="s5Title">Magnetic Cursor Gravity</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code5" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s5Desc">Pulls the button up to <code>6px</code> toward the pointer vector on hover and snaps back elastically on leave.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Static Target</span>
+              <button type="button" class="ui-btn-flat">Hover Target</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Magnetic Pull</span>
+              <button type="button" id="s5JuiceBtn" class="ui-btn-juice">Hover Target</button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log5" class="specimen-foot-output">Move cursor across the right button</span>
+          </div>
+          <pre id="code5" class="specimen-code">const dx = (e.clientX - centerX) * 0.32;
+const dy = (e.clientY - centerY) * 0.32;
+btn.style.transform = `translate(${dx}px, ${dy}px)`;</pre>
+        </article>
+
+        <!-- 10: Coyote Time Hover Grace (UPGRADED WITH CLICKABLE SUBMENU ACROSS AIR GAP) -->
+        <article class="specimen" data-cat="coyote">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-coyote">10 · M15 · COYOTE FORGIVENESS</span>
+              <h3 class="specimen-title" data-i18n="s6Title">Coyote Grace Window on Hover Menus</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code6" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s6Desc">Try hovering each trigger and moving your mouse up across the gap to click <strong>⚡ Copy Key</strong> inside the popup.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">0ms Grace (Fails in gap)</span>
+              <div class="coyote-zone" id="s6FlatZone">
+                <div id="s6FlatPopup" class="coyote-popup">
+                  <button type="button" class="coyote-action-btn">⚡ Copy Key</button>
+                </div>
+                <button type="button" id="s6FlatTrigger" class="ui-btn-flat">Hover Menu ▴</button>
+              </div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">450ms Coyote Buffer</span>
+              <div class="coyote-zone" id="s6JuiceZone">
+                <div id="s6JuicePopup" class="coyote-popup">
+                  <button type="button" id="s6JuiceAction" class="coyote-action-btn">⚡ Copy Key</button>
+                  <div class="coyote-bar-track"><div id="s6JuiceBar" class="coyote-bar-fill"></div></div>
+                </div>
+                <button type="button" id="s6JuiceTrigger" class="ui-btn-juice">Hover Menu ▴</button>
+              </div>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log6" class="specimen-foot-output">Hover trigger, then move mouse up to click Copy Key!</span>
+          </div>
+          <pre id="code6" class="specimen-code">// 0ms menu snaps shut in the 10px gap; Coyote buffer keeps it open
+onMouseLeave: () => closeTimer = setTimeout(close, 450),
+onMouseEnter: () => clearTimeout(closeTimer)</pre>
+        </article>
+
+        <!-- 11: 3D Perspective Tilt -->
+        <article class="specimen" data-cat="spatial">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-spatial">11 · M24 · SPATIAL &amp; 3D</span>
+              <h3 class="specimen-title" data-i18n="s11Title">3D Perspective Tilt &amp; Specular Glare</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code11" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s11Desc">Rotates card subtly in 3D space (<code>rotateX/rotateY ±10deg</code>) with a specular light highlight tracking the pointer.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Flat Card</span>
+              <div class="tilt-card"><span>PRO TIER</span></div>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">3D Tilt + Glare</span>
+              <div id="s11Card" class="tilt-card">
+                <div id="s11Glare" class="tilt-glare"></div>
+                <span>PRO TIER</span>
+              </div>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log11" class="specimen-foot-output">Move pointer over the right card</span>
+          </div>
+          <pre id="code11" class="specimen-code">card.style.transform = `perspective(420px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;</pre>
+        </article>
+
+        <!-- 12: AI Stream Cadence & Completion Chord (UPGRADED WITH LIVE STREAM TERMINAL) -->
+        <article class="specimen" data-cat="audio spring">
+          <div class="specimen-head">
+            <div>
+              <span class="fam-pill fam-audio">12 · M31 · AUDIO &amp; AI STREAMING</span>
+              <h3 class="specimen-title" data-i18n="s12Title">AI Stream Cadence &amp; Completion Chord</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code12" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s12Desc">Compares jerky chunk dumping against smooth token pop-in, glowing cursor morph, throttled ticks, and completion spring.</p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag">Jerky Chunk Dump</span>
+              <div id="s12FlatBox" class="stream-box"><span style="color:#585651;">Click Run below...</span></div>
+              <button type="button" id="s12Flat" class="ui-btn-flat" style="height:28px;font-size:11.5px;">Run Stream</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Kinetic Token Stream</span>
+              <div id="s12JuiceBox" class="stream-box"><span style="color:#78756f;">Click Run below...</span></div>
+              <button type="button" id="s12Juice" class="ui-btn-juice" style="height:28px;font-size:11.5px;">Run Stream</button>
+            </div>
+          </div>
+          <div class="specimen-foot">
+            <span>telemetry</span>
+            <span id="log12" class="specimen-foot-output">Click Run Stream on both sides to see token cadence</span>
+          </div>
+          <pre id="code12" class="specimen-code">// Smooth token pop-in + throttled 65ms synth tick + completion triad
+tokenSpan.className = 'token-word';
+if (now - lastTick > 65) playSoftTick(660 + (idx % 3) * 35);</pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 3: THE 120MS THESIS
          ===================================================================== -->
     <section id="thesis" class="thesis-section container">
       <span class="section-kicker" data-i18n="thesisKicker">THE INTERACTION THESIS</span>
@@ -1737,551 +1987,7 @@
     </section>
 
     <!-- =====================================================================
-         SECTION 3: LIVE STUDIO APPLICATION SANDBOX + X-RAY INSPECTOR
-         ===================================================================== -->
-    <section id="app-sandbox" class="sandbox-section container">
-      <div class="header-row">
-        <div>
-          <span class="section-kicker" data-i18n="sbKicker">FULL CONTEXT WORKBENCH</span>
-          <h2 class="section-heading" style="margin-bottom:4px;" data-i18n="sandboxTitle">Live Studio Sandbox</h2>
-          <p class="section-desc" style="margin-bottom:0;" data-i18n="sandboxSub">
-            Toggle the physics engine ON/OFF, switch vertical profiles, and interact with the workspace below to inspect real-time telemetry.
-          </p>
-        </div>
-        <div class="preset-pills">
-          <button type="button" class="preset-pill active" data-preset="5,8,4">B2B SaaS (5/8/4)</button>
-          <button type="button" class="preset-pill" data-preset="3,9,2">Fintech (3/9/2)</button>
-          <button type="button" class="preset-pill" data-preset="9,8,8">Gamified (9/8/8)</button>
-        </div>
-      </div>
-
-      <div class="studio-window">
-        <div class="studio-toolbar">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="window-dots">
-              <span style="background:#ff5f57"></span>
-              <span style="background:#ffbd2e"></span>
-              <span style="background:#28c840"></span>
-            </div>
-            <div class="mode-segmented">
-              <button type="button" id="modeOffBtn" class="mode-btn" data-i18n="modeOff">Standard UI (OFF)</button>
-              <button type="button" id="modeOnBtn" class="mode-btn active" data-i18n="modeOn">Game Feel (ON)</button>
-            </div>
-          </div>
-
-          <div class="studio-dials">
-            <div class="mini-dial">
-              <span>--juice</span>
-              <input id="dialJuice" type="range" min="1" max="10" value="5" />
-              <strong id="dialJuiceVal" style="color:var(--vermilion)">5</strong>
-            </div>
-            <div class="mini-dial">
-              <span>--forgiveness</span>
-              <input id="dialForgive" type="range" min="1" max="10" value="8" />
-              <strong id="dialForgiveVal" style="color:var(--amber)">8</strong>
-            </div>
-            <div class="mini-dial">
-              <span>--audio</span>
-              <input id="dialAudio" type="range" min="0" max="10" value="4" />
-              <strong id="dialAudioVal" style="color:var(--emerald)">4</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="studio-body">
-          <!-- Left: Simulated Production Release App -->
-          <div class="studio-stage">
-            <div class="mock-app">
-              <div class="mock-app-header">
-                <div class="mock-app-title">
-                  <span>Release Pipeline v2.4</span>
-                  <span id="sbProgressBadge" class="status-pill">1 / 3 checks</span>
-                </div>
-
-                <div class="popover-wrap" id="sbMenuWrap">
-                  <div id="sbMenuCard" class="popover-card">Cluster: us-east-1 · Protected (160ms Coyote)</div>
-                  <button type="button" class="mock-btn-sec" style="height:28px;font-size:11.5px;" data-i18n="sbEnvBtn">Environment ▴</button>
-                </div>
-              </div>
-
-              <div class="progress-track">
-                <div id="sbProgressFill" class="progress-fill"></div>
-              </div>
-
-              <div class="mock-tasks">
-                <div class="mock-task done" data-task="1">
-                  <span class="mock-task-box">✓</span>
-                  <span data-i18n="sbTask1">DB Migrations</span>
-                </div>
-                <div class="mock-task" data-task="2">
-                  <span class="mock-task-box">✓</span>
-                  <span data-i18n="sbTask2">Edge Workers</span>
-                </div>
-                <div class="mock-task" data-task="3">
-                  <span class="mock-task-box">✓</span>
-                  <span data-i18n="sbTask3">SSL Certificates</span>
-                </div>
-              </div>
-
-              <div class="mock-row" id="sbWebhookWrap">
-                <input id="sbWebhookInput" type="text" class="mock-input" value="whsec_invalid_signature" aria-label="Webhook secret" />
-                <button type="button" id="sbWebhookBtn" class="mock-btn-sec" data-i18n="sbVerifyBtn">Verify Secret</button>
-              </div>
-
-              <div class="mock-footer">
-                <button type="button" id="sbRevokeBtn" class="ui-btn-hold">
-                  <div id="sbRevokeFill" class="hold-fill"></div>
-                  <span id="sbRevokeText" class="hold-text" data-i18n="sbHoldBtn">Hold to Revoke Key</span>
-                </button>
-
-                <button type="button" id="sbDeployBtn" class="ui-btn-juice">
-                  <span id="sbDeployIcon">↑</span>
-                  <span id="sbDeployText" data-i18n="sbDeployBtn">Publish Release</span>
-                </button>
-              </div>
-            </div>
-
-            <div style="font-family:var(--font-mono);font-size:11.5px;color:#8e8b84;" data-i18n="sbHint">
-              ↑ Interact above: check tasks in sequence, hover Environment, verify the invalid secret, or hold Revoke Key.
-            </div>
-          </div>
-
-          <!-- Right: Live X-Ray Inspector -->
-          <div class="studio-inspector">
-            <div>
-              <div class="inspector-head">
-                <span class="inspector-title" data-i18n="xrayTitle">LIVE X-RAY INSPECTOR</span>
-                <span id="xrayBadge" class="inspector-badge">M20 · PITCH ESCALATION</span>
-              </div>
-
-              <div class="inspector-event-box" style="margin-top:12px;">
-                <div id="xrayEventName" class="inspector-event-name" data-i18n="xrayDefaultName">Interact with the workspace on the left</div>
-                <div id="xrayEventMetrics" class="inspector-event-metrics" data-i18n="xrayDefaultMetrics">Every click, hover, or hold streams its real-time physics parameters and generated code here.</div>
-              </div>
-            </div>
-
-            <pre id="xrayCode" class="inspector-code">/* Calibrated tokens generated by --blueprint */
-:root {
-  --gf-press-scale: 0.960;
-  --gf-overshoot-scale: 1.035;
-  --gf-hitstop-ms: 45ms;
-  --gf-coyote-grace-ms: 156ms;
-}</pre>
-
-            <div class="inspector-tokens">
-              <span>press: <strong id="tokPress">0.960</strong></span>
-              <span>hitstop: <strong id="tokHitstop">45ms</strong></span>
-              <span>coyote: <strong id="tokCoyote">156ms</strong></span>
-              <span>gain: <strong id="tokGain">0.048</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 4: 12-MECHANIC BENTO LAB (COLOR-CODED BY PHYSICS FAMILY)
-         ===================================================================== -->
-    <section id="mechanics-lab" class="lab-section container">
-      <span class="section-kicker" data-i18n="labKicker">ISOLATED A/B COMPARISONS</span>
-      <h2 class="section-heading" style="margin-bottom:6px;" data-i18n="labTitle">The Mechanics Lab</h2>
-      <p class="section-desc" data-i18n="labSub">
-        Filter by physics family to compare standard linear DOM behavior against tactile Game Feel mechanics.
-      </p>
-
-      <div class="filter-tabs" role="tablist">
-        <button type="button" class="filter-tab active" data-filter="all" data-i18n="tabAll">All (12)</button>
-        <button type="button" class="filter-tab" data-filter="impact" data-i18n="tabImpact">Impact &amp; Hitstop</button>
-        <button type="button" class="filter-tab" data-filter="spring" data-i18n="tabSpring">Spring &amp; Morph</button>
-        <button type="button" class="filter-tab" data-filter="coyote" data-i18n="tabCoyote">Coyote Forgiveness</button>
-        <button type="button" class="filter-tab" data-filter="audio" data-i18n="tabAudio">Audio &amp; Cadence</button>
-        <button type="button" class="filter-tab" data-filter="spatial" data-i18n="tabSpatial">Spatial &amp; 3D</button>
-      </div>
-
-      <div class="specimens-grid">
-        <!-- 01 -->
-        <article class="specimen" data-cat="impact">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-impact">01 · M01 + M04 · IMPACT &amp; HITSTOP</span>
-              <h3 class="specimen-title" data-i18n="s1Title">Primary Action Compression &amp; Freeze</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code1" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s1Desc">Compresses to <code>0.93</code> on pointerdown, holds a 75ms freeze-frame on release, then rebounds with spring overshoot.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Standard UI</span>
-              <button id="s1Flat" type="button" class="ui-btn-flat">Deploy</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
-              <button id="s1Juice" type="button" class="ui-btn-juice">
-                <span id="s1Icon">↑</span>
-                <span id="s1Text">Deploy</span>
-              </button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log1" class="specimen-foot-output">Click both buttons to compare response</span>
-          </div>
-          <pre id="code1" class="specimen-code">onPointerDown: () => el.style.transform = 'scale(0.93)',
-onPointerUp: async () => {
-  await sleep(75); // Hitstop freeze-frame
-  el.style.transform = 'scale(1.06)';
-  playHarmonicTriad();
-}</pre>
-        </article>
-
-        <!-- 02 -->
-        <article class="specimen" data-cat="impact coyote">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-coyote">02 · M21 · TENSION &amp; FORGIVENESS</span>
-              <h3 class="specimen-title" data-i18n="s2Title">Hold-to-Commit Destructive Action</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code2" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s2Desc">Replaces confirmation modals with a physical hold gauge, rising pitch tension, and reversible decay on early release.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Standard UI</span>
-              <button id="s2Flat" type="button" class="ui-btn-flat">Delete Key</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
-              <button id="s2Juice" type="button" class="ui-btn-hold">
-                <div id="s2Fill" class="hold-fill"></div>
-                <span id="s2Text" class="hold-text">Hold to Delete</span>
-              </button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log2" class="specimen-foot-output">Press and hold the right button for 900ms</span>
-          </div>
-          <pre id="code2" class="specimen-code">progress = Math.min(100, progress + dt * 0.11);
-oscillator.frequency.value = 220 + progress * 3.5;
-button.style.transform = `translate(${jitter}px, 0) scale(0.97)`;</pre>
-        </article>
-
-        <!-- 03 -->
-        <article class="specimen" data-cat="audio">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-audio">03 · M20 · AUDIO &amp; CADENCE</span>
-              <h3 class="specimen-title" data-i18n="s3Title">Combo Checklist Pitch Escalation</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code3" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s3Desc">Each consecutive completion ascends +2 semitones (<code>440 * 2^(n/12)</code>) and triggers an elastic nudge.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Standard UI</span>
-              <div style="display:flex;gap:6px;">
-                <button type="button" class="ui-btn-flat flat-step">1</button>
-                <button type="button" class="ui-btn-flat flat-step">2</button>
-                <button type="button" class="ui-btn-flat flat-step">3</button>
-              </div>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
-              <div style="display:flex;gap:6px;">
-                <button type="button" class="ui-btn-juice juice-step" data-step="0">1</button>
-                <button type="button" class="ui-btn-juice juice-step" data-step="1">2</button>
-                <button type="button" class="ui-btn-juice juice-step" data-step="2">3</button>
-              </div>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log3" class="specimen-foot-output">Click 1 → 2 → 3 on the right in sequence</span>
-          </div>
-          <pre id="code3" class="specimen-code">const freq = 440 * Math.pow(2, (streakIndex * 2) / 12);
-playSynthTick(freq, { durationMs: 40, waveform: 'triangle' });</pre>
-        </article>
-
-        <!-- 04 -->
-        <article class="specimen" data-cat="impact">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-impact">04 · M11 · IMPACT &amp; RECOIL</span>
-              <h3 class="specimen-title" data-i18n="s4Title">Physical Validation Resistance</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code4" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s4Desc">Invalid input triggers a horizontal damped harmonic shake (<code>±6px → 0px</code>) paired with a 140Hz sub-bass thud.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Standard UI</span>
-              <button type="button" id="s4FlatBtn" class="ui-btn-flat">Submit Invalid</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
-              <button type="button" id="s4JuiceBtn" class="ui-btn-juice">Submit Invalid</button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log4" class="specimen-foot-output">Click Submit Invalid to feel recoil</span>
-          </div>
-          <pre id="code4" class="specimen-code">@keyframes damped-shake {
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(5px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(2px); }
-}</pre>
-        </article>
-
-        <!-- 05 -->
-        <article class="specimen" data-cat="spring">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-spring">05 · M09 · SPRING &amp; MORPH</span>
-              <h3 class="specimen-title" data-i18n="s7Title">Squash &amp; Stretch Toggle Switch</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code7" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s7Desc">The thumb elongates horizontally (<code>scaleX(1.26)</code>) mid-flight and settles with spring overshoot.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Linear Toggle</span>
-              <div id="s7Flat" class="switch-track flat-switch"><div class="switch-thumb"></div></div>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Spring + Squash</span>
-              <div id="s7Juice" class="switch-track"><div id="s7Thumb" class="switch-thumb"></div></div>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log7" class="specimen-foot-output">Toggle both switches to feel thumb deformation</span>
-          </div>
-          <pre id="code7" class="specimen-code">thumb.style.transform = isOn
-  ? 'translateX(21px) scaleX(1.26) scaleY(0.85)'
-  : 'translateX(0px) scaleX(1.26) scaleY(0.85)';</pre>
-        </article>
-
-        <!-- 06 -->
-        <article class="specimen" data-cat="spring audio">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-spring">06 · M23 · SPRING &amp; CADENCE</span>
-              <h3 class="specimen-title" data-i18n="s8Title">Kinetic Odometer Number Roll</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code8" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s8Desc">Numbers roll vertically with directional momentum and pitch-matched ticks instead of swapping abruptly.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Instant Swap</span>
-              <div class="counter-pill">
-                <button type="button" class="counter-btn" id="s8FlatDec">−</button>
-                <span id="s8FlatVal">12</span>
-                <button type="button" class="counter-btn" id="s8FlatInc">+</button>
-              </div>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Kinetic Odometer</span>
-              <div class="counter-pill">
-                <button type="button" class="counter-btn" id="s8JuiceDec">−</button>
-                <span id="s8JuiceVal" class="odo-val">12</span>
-                <button type="button" class="counter-btn" id="s8JuiceInc">+</button>
-              </div>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log8" class="specimen-foot-output">Click + and − to compare vertical momentum</span>
-          </div>
-          <pre id="code8" class="specimen-code">valEl.style.transform = `translateY(${dir * -9}px) scale(1.15)`;
-requestAnimationFrame(() => valEl.style.transform = 'translateY(0) scale(1)');</pre>
-        </article>
-
-        <!-- 07 -->
-        <article class="specimen" data-cat="audio spatial">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-audio">07 · M25 · AUDIO &amp; DETENTS</span>
-              <h3 class="specimen-title" data-i18n="s9Title">Stepped Detent Slider with Pitch Ticks</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code9" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s9Desc">Dragging across steps produces ultra-short (9ms) mechanical rotary ticks whose frequency scales with value.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Silent Slider</span>
-              <input type="range" min="1" max="10" value="5" style="width:115px;" id="s9Flat" />
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Rotary Detent Synth</span>
-              <input type="range" min="1" max="10" value="5" style="width:115px;accent-color:var(--emerald);" id="s9Juice" />
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log9" class="specimen-foot-output">Drag the right slider to feel rotary detents</span>
-          </div>
-          <pre id="code9" class="specimen-code">slider.addEventListener('input', e => {
-  playRotaryTick(400 + Number(e.target.value) * 50, { durationMs: 9 });
-});</pre>
-        </article>
-
-        <!-- 08 -->
-        <article class="specimen" data-cat="coyote">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-coyote">08 · M19 · COYOTE FORGIVENESS</span>
-              <h3 class="specimen-title" data-i18n="s10Title">Optimistic Archive + 4s Undo Grace</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code10" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s10Desc">Removes the item in 0ms (Optimistic UI) while offering a 4-second reversible grace pill instead of a modal.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Blocking Confirm</span>
-              <button type="button" id="s10Flat" class="ui-btn-flat">Archive Item</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Optimistic + Undo</span>
-              <button type="button" id="s10Juice" class="ui-btn-juice">Archive Item</button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log10" class="specimen-foot-output">Click Archive on the right, then click Undo</span>
-          </div>
-          <pre id="code10" class="specimen-code">hideRowOptimistically(id);
-const commitTimer = setTimeout(() => api.delete(id), 4000);</pre>
-        </article>
-
-        <!-- 09 -->
-        <article class="specimen" data-cat="spatial">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-spatial">09 · M26 · SPATIAL &amp; PROXIMITY</span>
-              <h3 class="specimen-title" data-i18n="s5Title">Magnetic Cursor Gravity</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code5" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s5Desc">Translates the control up to <code>4px</code> toward the pointer vector on hover and snaps back elastically on leave.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Static Target</span>
-              <button type="button" class="ui-btn-flat">Hover Target</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Magnetic Pull</span>
-              <button type="button" id="s5JuiceBtn" class="ui-btn-juice">Hover Target</button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log5" class="specimen-foot-output">Move cursor across the right button</span>
-          </div>
-          <pre id="code5" class="specimen-code">const dx = (e.clientX - centerX) * 0.25;
-const dy = (e.clientY - centerY) * 0.25;
-btn.style.transform = `translate(${dx}px, ${dy}px)`;</pre>
-        </article>
-
-        <!-- 10 -->
-        <article class="specimen" data-cat="coyote">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-coyote">10 · M15 · COYOTE FORGIVENESS</span>
-              <h3 class="specimen-title" data-i18n="s6Title">160ms Coyote Grace on Menus</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code6" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s6Desc">Prevents dropdowns from snapping shut when the user's cursor briefly slips outside the hitbox on a diagonal path.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">0ms Grace</span>
-              <div class="popover-wrap" id="s6FlatWrap">
-                <div id="s6FlatMenu" class="popover-card">Closed on Leave</div>
-                <button type="button" class="ui-btn-flat">Hover Menu</button>
-              </div>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">160ms Coyote Grace</span>
-              <div class="popover-wrap" id="s6JuiceWrap">
-                <div id="s6JuiceMenu" class="popover-card">Protected (160ms)</div>
-                <button type="button" class="ui-btn-juice">Hover Menu</button>
-              </div>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log6" class="specimen-foot-output">Hover and slip cursor off both buttons</span>
-          </div>
-          <pre id="code6" class="specimen-code">onMouseLeave: () => closeTimer = setTimeout(close, 160),
-onMouseEnter: () => clearTimeout(closeTimer)</pre>
-        </article>
-
-        <!-- 11 -->
-        <article class="specimen" data-cat="spatial">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-spatial">11 · M24 · SPATIAL &amp; 3D</span>
-              <h3 class="specimen-title" data-i18n="s11Title">3D Perspective Tilt &amp; Specular Glare</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code11" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s11Desc">Rotates card subtly in 3D space (<code>rotateX/rotateY ±9deg</code>) with a specular light highlight tracking the pointer.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Flat Card</span>
-              <div class="tilt-card"><span>PRO TIER</span></div>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">3D Tilt + Glare</span>
-              <div id="s11Card" class="tilt-card">
-                <div id="s11Glare" class="tilt-glare"></div>
-                <span>PRO TIER</span>
-              </div>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log11" class="specimen-foot-output">Move pointer over the right card</span>
-          </div>
-          <pre id="code11" class="specimen-code">card.style.transform = `perspective(420px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;</pre>
-        </article>
-
-        <!-- 12 -->
-        <article class="specimen" data-cat="audio spring">
-          <div class="specimen-head">
-            <div>
-              <span class="fam-pill fam-audio">12 · M31 · AUDIO &amp; AI STREAMING</span>
-              <h3 class="specimen-title" data-i18n="s12Title">AI Stream Cadence &amp; Completion Chord</h3>
-            </div>
-            <button class="code-toggle" type="button" data-code="code12" aria-expanded="false">&lt;/&gt; Code</button>
-          </div>
-          <p class="specimen-desc" data-i18n="s12Desc">Throttles soft cadence ticks every 65ms during LLM token streaming so output feels alive without audio fatigue.</p>
-          <div class="stage-split">
-            <div class="stage-cell">
-              <span class="stage-tag">Silent Stream</span>
-              <button type="button" id="s12Flat" class="ui-btn-flat">Stream Tokens</button>
-            </div>
-            <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Throttled Cadence</span>
-              <button type="button" id="s12Juice" class="ui-btn-juice">Stream Tokens</button>
-            </div>
-          </div>
-          <div class="specimen-foot">
-            <span>telemetry</span>
-            <span id="log12" class="specimen-foot-output">Click Stream Tokens on the right</span>
-          </div>
-          <pre id="code12" class="specimen-code">if (performance.now() - lastTick > 65) {
-  playSoftTick(660 + (tokenIndex % 3) * 35, { gain: 0.02 });
-}</pre>
-        </article>
-      </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 5: THREE WORKFLOWS TABLE (GENJUTSU STYLE)
+         SECTION 4: THREE WORKFLOWS TABLE (GENJUTSU STYLE)
          ===================================================================== -->
     <section id="workflows" class="workflows-section container">
       <span class="section-kicker" data-i18n="wfKicker">AGENTIC WORKFLOWS</span>
@@ -2378,13 +2084,9 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
     // =========================================================================
     let audioCtx = null;
     let soundEnabled = true;
-    let gameFeelEnabled = true;
-    let dialJuice = 5;
-    let dialForgive = 8;
-    let dialAudio = 4;
 
     function getCtx() {
-      if (!soundEnabled || dialAudio === 0) return null;
+      if (!soundEnabled) return null;
       if (!audioCtx) {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (AC) audioCtx = new AC();
@@ -2393,11 +2095,7 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       return audioCtx;
     }
 
-    function scaledGain(base = 0.035) {
-      return Math.min(0.12, base * (dialAudio / 4));
-    }
-
-    function playTick(freq = 900, duration = 0.015, baseGain = 0.035) {
+    function playTick(freq = 900, duration = 0.018, gainVal = 0.04) {
       const c = getCtx();
       if (!c) return;
       const now = c.currentTime;
@@ -2406,7 +2104,7 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, now);
       osc.frequency.exponentialRampToValueAtTime(freq * 0.45, now + duration);
-      g.gain.setValueAtTime(scaledGain(baseGain), now);
+      g.gain.setValueAtTime(gainVal, now);
       g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
       osc.connect(g).connect(c.destination);
       osc.start(now);
@@ -2422,7 +2120,7 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
         const g = c.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(f, now);
-        g.gain.setValueAtTime(scaledGain(0.04), now);
+        g.gain.setValueAtTime(0.04, now);
         g.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
         osc.connect(g).connect(c.destination);
         osc.start(now);
@@ -2438,12 +2136,12 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       const g = c.createGain();
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(140, now);
-      osc.frequency.exponentialRampToValueAtTime(52, now + 0.12);
-      g.gain.setValueAtTime(scaledGain(0.05), now);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      osc.frequency.exponentialRampToValueAtTime(52, now + 0.14);
+      g.gain.setValueAtTime(0.055, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
       osc.connect(g).connect(c.destination);
       osc.start(now);
-      osc.stop(now + 0.12);
+      osc.stop(now + 0.14);
     }
 
     const soundToggle = document.getElementById('soundToggle');
@@ -2471,410 +2169,117 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
     });
 
     // =========================================================================
-    // 3. HERO 60FPS KINEMATIC OSCILLOSCOPE CANVAS
+    // 3. HERO SLOW-MOTION STACKED COMPARISON MICROSCOPE
     // =========================================================================
-    const oscCanvas = document.getElementById('oscCanvas');
-    const octx = oscCanvas.getContext('2d');
-    const oscTriggerBtn = document.getElementById('oscTriggerBtn');
-    const oscReadout = document.getElementById('oscReadout');
-    let oscPulseProgress = 1; // 0 to 1 when triggered
-    let oscAnimating = false;
+    const heroFlatSwitch = document.getElementById('heroFlatSwitch');
+    const heroFlatThumb = document.getElementById('heroFlatThumb');
+    const heroJuiceSwitch = document.getElementById('heroJuiceSwitch');
+    const heroJuiceThumb = document.getElementById('heroJuiceThumb');
+    const heroRunDemoBtn = document.getElementById('heroRunDemoBtn');
+    const speedSlowBtn = document.getElementById('speedSlowBtn');
+    const speedRealBtn = document.getElementById('speedRealBtn');
+    const hp1 = document.getElementById('hp1');
+    const hp2 = document.getElementById('hp2');
+    const hp3 = document.getElementById('hp3');
+    const hp4 = document.getElementById('hp4');
 
-    function drawOscilloscope() {
-      const w = oscCanvas.width;
-      const h = oscCanvas.height;
-      octx.clearRect(0, 0, w, h);
+    let isSlowMo = true;
+    let heroIsOn = false;
+    let heroAnimating = false;
 
-      // Baseline 1.0x
-      const baseY = 128;
-      octx.strokeStyle = 'rgba(255,255,255,0.12)';
-      octx.setLineDash([4, 4]);
-      octx.beginPath();
-      octx.moveTo(20, baseY);
-      octx.lineTo(w - 20, baseY);
-      octx.stroke();
-      octx.setLineDash([]);
+    speedSlowBtn.addEventListener('click', () => {
+      isSlowMo = true;
+      speedSlowBtn.classList.add('active');
+      speedRealBtn.classList.remove('active');
+      runHeroComparison();
+    });
 
-      // Hitstop Zone Highlight
-      octx.fillStyle = 'rgba(255, 87, 34, 0.08)';
-      octx.fillRect(130, 20, 95, h - 40);
+    speedRealBtn.addEventListener('click', () => {
+      isSlowMo = false;
+      speedRealBtn.classList.add('active');
+      speedSlowBtn.classList.remove('active');
+      runHeroComparison();
+    });
 
-      // Draw Kinematic Curve
-      const grad = octx.createLinearGradient(20, 0, w - 20, 0);
-      grad.addColorStop(0, '#f59e0b');
-      grad.addColorStop(0.32, '#ff5722');
-      grad.addColorStop(0.68, '#6366f1');
-      grad.addColorStop(1, '#10b981');
-
-      octx.strokeStyle = grad;
-      octx.lineWidth = 3.5;
-      octx.lineCap = 'round';
-      octx.beginPath();
-
-      const totalX = w - 40;
-      const maxDrawX = 20 + totalX * oscPulseProgress;
-
-      for (let x = 20; x <= maxDrawX; x += 2) {
-        const t = (x - 20) / totalX;
-        let y = baseY;
-        if (t < 0.22) {
-          // Phase 1: Anticipation Squash down to 0.93
-          const p = t / 0.22;
-          y = baseY + Math.sin(p * Math.PI * 0.5) * 48;
-        } else if (t < 0.42) {
-          // Phase 2: Hitstop Freeze at 0.93
-          y = baseY + 48;
-        } else if (t < 0.75) {
-          // Phase 3: Spring Rebound Overshoot to 1.06
-          const p = (t - 0.42) / 0.33;
-          y = baseY + 48 * Math.cos(p * Math.PI * 1.35) * Math.exp(-p * 1.4) - (p > 0.3 ? 38 * Math.sin(p * Math.PI) : 0);
-        } else {
-          // Phase 4: Harmonic Settle + Synth Ripple
-          const p = (t - 0.75) / 0.25;
-          y = baseY - Math.sin(p * Math.PI * 4) * (1 - p) * 10;
-        }
-        if (x === 20) octx.moveTo(x, y);
-        else octx.lineTo(x, y);
-      }
-      octx.stroke();
-
-      // Playhead Dot
-      if (oscAnimating && oscPulseProgress < 1) {
-        octx.fillStyle = '#ffffff';
-        octx.beginPath();
-        octx.arc(maxDrawX, baseY, 5, 0, Math.PI * 2);
-        octx.fill();
-      }
+    function clearPhasePills() {
+      hp1.className = 'phase-pill';
+      hp2.className = 'phase-pill';
+      hp3.className = 'phase-pill';
+      hp4.className = 'phase-pill';
     }
 
-    drawOscilloscope();
+    function runHeroComparison(withSound = true) {
+      if (heroAnimating) return;
+      heroAnimating = true;
+      heroIsOn = !heroIsOn;
+      const targetX = heroIsOn ? 102 : 0;
+      const startX = heroIsOn ? 0 : 102;
+      const dir = heroIsOn ? 1 : -1;
+      const mult = isSlowMo ? 4.2 : 1; // 0.25x slow-motion vs 1x real-time
 
-    function triggerOscPulse() {
-      oscPulseProgress = 0;
-      oscAnimating = true;
-      oscTriggerBtn.style.transform = 'scale(0.93)';
-      playTick(620, 0.015, 0.03);
-      oscReadout.textContent = '01 Squash (0.93x) → 02 Hitstop (75ms)';
+      clearPhasePills();
+
+      // 1. Standard Linear Switch (No preload, no stretch, no overshoot)
+      heroFlatSwitch.classList.toggle('on-flat', heroIsOn);
+      heroFlatThumb.animate(
+        [
+          { transform: `translateX(${startX}px)` },
+          { transform: `translateX(${targetX}px)` }
+        ],
+        { duration: 220 * mult, easing: 'linear', fill: 'forwards' }
+      );
+
+      // 2. Game Feel Switch (Anticipation -> Mid-air Stretch -> Overshoot -> Settle)
+      const totalDur = 320 * mult;
+      heroJuiceThumb.animate(
+        [
+          { transform: `translateX(${startX}px) scale(1, 1)`, offset: 0 },
+          // Phase 1: Preload Squash
+          { transform: `translateX(${startX - dir * 5}px) scale(0.84, 1.16)`, offset: 0.18 },
+          // Phase 2: Mid-Air Velocity Stretch
+          { transform: `translateX(${startX + dir * 52}px) scale(1.44, 0.74)`, offset: 0.46 },
+          // Phase 3: Wall Impact & Spring Overshoot
+          { transform: `translateX(${targetX + dir * 11}px) scale(0.84, 1.16)`, offset: 0.74 },
+          // Phase 4: Elastic Settle
+          { transform: `translateX(${targetX - dir * 3}px) scale(1.05, 0.96)`, offset: 0.88 },
+          { transform: `translateX(${targetX}px) scale(1, 1)`, offset: 1 }
+        ],
+        { duration: totalDur, easing: 'ease-out', fill: 'forwards' }
+      );
+
+      // Light up Phase Pills & Audio synced to phases
+      hp1.classList.add('lit-1');
+      if (withSound) playTick(420, 0.02, 0.03);
 
       setTimeout(() => {
-        oscTriggerBtn.style.transform = 'scale(1.07)';
-        playTriad();
-        oscReadout.textContent = '03 Spring (1.06x) → 04 Triad (523-784Hz)';
-        setTimeout(() => {
-          oscTriggerBtn.style.transform = '';
-        }, 180);
-      }, 95);
+        clearPhasePills();
+        hp2.classList.add('lit-2');
+        heroJuiceSwitch.classList.toggle('on-juice', heroIsOn);
+      }, totalDur * 0.24);
 
-      function step() {
-        oscPulseProgress = Math.min(1, oscPulseProgress + 0.032);
-        drawOscilloscope();
-        if (oscPulseProgress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          oscAnimating = false;
-          setTimeout(() => {
-            oscReadout.textContent = 'scale: 1.000 · 120ms cascade complete ✓';
-          }, 300);
-        }
-      }
-      requestAnimationFrame(step);
-    }
-
-    oscTriggerBtn.addEventListener('click', triggerOscPulse);
-
-    // =========================================================================
-    // 4. LIVE STUDIO SANDBOX & X-RAY INSPECTOR
-    // =========================================================================
-    const modeOffBtn = document.getElementById('modeOffBtn');
-    const modeOnBtn = document.getElementById('modeOnBtn');
-    const dialJuiceInput = document.getElementById('dialJuice');
-    const dialForgiveInput = document.getElementById('dialForgive');
-    const dialAudioInput = document.getElementById('dialAudio');
-    const dialJuiceVal = document.getElementById('dialJuiceVal');
-    const dialForgiveVal = document.getElementById('dialForgiveVal');
-    const dialAudioVal = document.getElementById('dialAudioVal');
-
-    const xrayBadge = document.getElementById('xrayBadge');
-    const xrayEventName = document.getElementById('xrayEventName');
-    const xrayEventMetrics = document.getElementById('xrayEventMetrics');
-    const xrayCode = document.getElementById('xrayCode');
-    const tokPress = document.getElementById('tokPress');
-    const tokHitstop = document.getElementById('tokHitstop');
-    const tokCoyote = document.getElementById('tokCoyote');
-    const tokGain = document.getElementById('tokGain');
-
-    function updateXray(badge, title, metrics, code) {
-      xrayBadge.textContent = badge;
-      xrayEventName.textContent = title;
-      xrayEventMetrics.textContent = metrics;
-      if (code) xrayCode.textContent = code;
-    }
-
-    function syncDials() {
-      dialJuice = Number(dialJuiceInput.value);
-      dialForgive = Number(dialForgiveInput.value);
-      dialAudio = Number(dialAudioInput.value);
-      dialJuiceVal.textContent = dialJuice;
-      dialForgiveVal.textContent = dialForgive;
-      dialAudioVal.textContent = dialAudio;
-
-      const press = (1 - dialJuice * 0.008).toFixed(3);
-      const overshoot = (1 + dialJuice * 0.007).toFixed(3);
-      const hitstop = dialJuice >= 4 ? dialJuice * 9 : 0;
-      const coyote = 60 + dialForgive * 12;
-      const gain = (dialAudio * 0.012).toFixed(3);
-
-      tokPress.textContent = press;
-      tokHitstop.textContent = hitstop + 'ms';
-      tokCoyote.textContent = coyote + 'ms';
-      tokGain.textContent = gain;
-
-      updateXray(
-        'BLUEPRINT CALIBRATED',
-        `Dials updated (Juice ${dialJuice} · Forgiveness ${dialForgive} · Audio ${dialAudio})`,
-        `press: ${press} | overshoot: ${overshoot} | hitstop: ${hitstop}ms | coyote: ${coyote}ms`,
-        `/* CLI: python scripts/search.py "app" --blueprint --juice ${dialJuice} --forgiveness ${dialForgive} --audio ${dialAudio} */\n:root {\n  --gf-press-scale: ${press};\n  --gf-overshoot-scale: ${overshoot};\n  --gf-hitstop-ms: ${hitstop}ms;\n  --gf-coyote-grace-ms: ${coyote}ms;\n  --gf-audio-max-gain: ${gain};\n}`
-      );
-    }
-
-    [dialJuiceInput, dialForgiveInput, dialAudioInput].forEach(inp => {
-      inp.addEventListener('input', () => {
-        syncDials();
-        playTick(480 + dialJuice * 35, 0.01, 0.025);
-      });
-    });
-
-    document.querySelectorAll('.preset-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        const [j, f, a] = pill.dataset.preset.split(',').map(Number);
-        dialJuiceInput.value = j;
-        dialForgiveInput.value = f;
-        dialAudioInput.value = a;
-        syncDials();
-        playTriad();
-      });
-    });
-
-    modeOffBtn.addEventListener('click', () => {
-      gameFeelEnabled = false;
-      modeOffBtn.classList.add('active');
-      modeOnBtn.classList.remove('active');
-      updateXray(
-        'STANDARD UI (OFF)',
-        'Physics Engine Disabled',
-        '0ms hitstop · 0ms coyote grace · 0 spring overshoot · silent clicks',
-        `/* Typical uncalibrated UI */\n.button { transition: opacity 0.2s linear; }`
-      );
-    });
-
-    modeOnBtn.addEventListener('click', () => {
-      gameFeelEnabled = true;
-      modeOnBtn.classList.add('active');
-      modeOffBtn.classList.remove('active');
-      playTriad();
-      syncDials();
-    });
-
-    // Sandbox Tasks
-    const sbTasks = document.querySelectorAll('.mock-task');
-    const sbProgressFill = document.getElementById('sbProgressFill');
-    const sbProgressBadge = document.getElementById('sbProgressBadge');
-
-    sbTasks.forEach(task => {
-      task.addEventListener('click', () => {
-        task.classList.toggle('done');
-        const doneCount = document.querySelectorAll('.mock-task.done').length;
-        sbProgressFill.style.width = `${(doneCount / 3) * 100}%`;
-        sbProgressBadge.textContent = `${doneCount} / 3 checks`;
-
-        if (!gameFeelEnabled) {
-          updateXray('STANDARD UI', 'Task toggled (No Game Feel)', 'Instant swap · 0Hz audio · linear bar', `setCompleted(!completed);`);
-          return;
-        }
-
-        const overshoot = (1 + dialJuice * 0.006).toFixed(3);
-        task.style.transform = `scale(${overshoot})`;
-        setTimeout(() => (task.style.transform = ''), 160);
-
-        if (task.classList.contains('done')) {
-          const freq = 440 * Math.pow(2, ((doneCount - 1) * 2) / 12);
-          playTick(freq, 0.04, 0.04);
-          if (doneCount === 3) setTimeout(playTriad, 70);
-          updateXray(
-            'M20 · PITCH ESCALATION',
-            `Checklist Streak ${doneCount}/3 (+${(doneCount - 1) * 2} semitones)`,
-            `freq: ${freq.toFixed(1)}Hz | row-spring: scale(${overshoot})`,
-            `// M20: Ascending semitone formula per consecutive check\nconst freq = 440 * Math.pow(2, (streak * 2) / 12);\nplaySynthTick(freq, { waveform: 'triangle', durationMs: 40 });`
-          );
-        } else {
-          playTick(310, 0.02, 0.02);
-        }
-      });
-    });
-
-    // Sandbox Coyote Menu
-    const sbMenuWrap = document.getElementById('sbMenuWrap');
-    const sbMenuCard = document.getElementById('sbMenuCard');
-    let sbCoyoteTimer = null;
-
-    sbMenuWrap.addEventListener('pointerenter', () => {
-      if (sbCoyoteTimer) {
-        clearTimeout(sbCoyoteTimer);
-        sbCoyoteTimer = null;
-        updateXray(
-          'M15 · COYOTE TIME SAVED',
-          'Menu stayed open during diagonal pointer slip!',
-          `grace-window: ${60 + dialForgive * 12}ms prevented accidental close`,
-          `onPointerEnter={() => clearTimeout(closeTimer)}\nonPointerLeave={() => closeTimer = setTimeout(close, ${60 + dialForgive * 12})}`
-        );
-      } else {
-        if (gameFeelEnabled) playTick(780, 0.01, 0.018);
-        updateXray(
-          'M15 · COYOTE TIME ARMED',
-          'Environment popover opened',
-          gameFeelEnabled ? `Protected by ${60 + dialForgive * 12}ms grace buffer` : '0ms grace buffer (Standard UI)',
-          `onPointerLeave={() => closeTimer = setTimeout(close, ${gameFeelEnabled ? 60 + dialForgive * 12 : 0})}`
-        );
-      }
-      sbMenuCard.classList.add('visible');
-    });
-
-    sbMenuWrap.addEventListener('pointerleave', () => {
-      const grace = gameFeelEnabled ? 60 + dialForgive * 12 : 0;
-      if (grace === 0) {
-        sbMenuCard.classList.remove('visible');
-        return;
-      }
-      sbCoyoteTimer = setTimeout(() => {
-        sbMenuCard.classList.remove('visible');
-        sbCoyoteTimer = null;
-      }, grace);
-    });
-
-    // Sandbox Webhook Shake
-    const sbWebhookBtn = document.getElementById('sbWebhookBtn');
-    const sbWebhookWrap = document.getElementById('sbWebhookWrap');
-    const sbWebhookInput = document.getElementById('sbWebhookInput');
-
-    sbWebhookBtn.addEventListener('click', () => {
-      sbWebhookInput.style.borderColor = '#ef4444';
-      if (!gameFeelEnabled) {
-        updateXray('STANDARD UI', 'Validation failed (Static border)', '0px recoil · silent failure', `input.style.borderColor = 'red';`);
-        return;
-      }
-      sbWebhookWrap.classList.remove('shake-active');
-      void sbWebhookWrap.offsetWidth;
-      sbWebhookWrap.classList.add('shake-active');
-      playErrorThud();
-      updateXray(
-        'M11 · DAMPED RECOIL SHAKE',
-        'Physical rejection on invalid webhook signature',
-        'oscillation: ±6px → ±3px → 0px (320ms) | synth: 140Hz→52Hz thud',
-        `el.animate([\n  { transform: 'translateX(-6px)' },\n  { transform: 'translateX(5px)' },\n  { transform: 'translateX(-3px)' },\n  { transform: 'translateX(0)' }\n], { duration: 320 });`
-      );
-    });
-
-    // Sandbox Hold-to-Revoke & Publish
-    const sbRevokeBtn = document.getElementById('sbRevokeBtn');
-    const sbRevokeFill = document.getElementById('sbRevokeFill');
-    const sbRevokeText = document.getElementById('sbRevokeText');
-    let sbHoldProg = 0, sbHoldRAF = null;
-
-    sbRevokeBtn.addEventListener('pointerdown', () => {
-      if (!gameFeelEnabled) {
-        updateXray('STANDARD UI', 'Blocking confirmation required', 'Standard UI interrupts user with window.confirm()', `if (window.confirm('Revoke?')) revoke();`);
-        return;
-      }
-      cancelAnimationFrame(sbHoldRAF);
-      function step() {
-        sbHoldProg = Math.min(100, sbHoldProg + 2.4);
-        sbRevokeFill.style.width = sbHoldProg + '%';
-        const jitter = (Math.random() - 0.5) * (sbHoldProg * 0.04);
-        sbRevokeBtn.style.transform = `translate(${jitter.toFixed(1)}px, 0) scale(0.97)`;
-        if (Math.round(sbHoldProg) % 15 === 0) playTick(220 + sbHoldProg * 3.4, 0.014, 0.022);
-        updateXray(
-          'M21 · HOLD-TO-COMMIT TENSION',
-          `Charging destructive action: ${Math.round(sbHoldProg)}%`,
-          `freq: ${(220 + sbHoldProg * 3.4).toFixed(0)}Hz | reversible decay on release`,
-          `progress = Math.min(100, progress + dt * 0.12);\nosc.frequency.value = 220 + progress * 3.4;`
-        );
-        if (sbHoldProg >= 100) {
-          playTriad();
-          sbRevokeBtn.style.transform = 'scale(1.04)';
-          sbRevokeText.textContent = 'Key Revoked ✓';
-          setTimeout(() => {
-            sbHoldProg = 0;
-            sbRevokeFill.style.width = '0%';
-            sbRevokeBtn.style.transform = '';
-            sbRevokeText.textContent = 'Hold to Revoke Key';
-          }, 1200);
-          return;
-        }
-        sbHoldRAF = requestAnimationFrame(step);
-      }
-      sbHoldRAF = requestAnimationFrame(step);
-    });
-
-    function stopSbHold() {
-      cancelAnimationFrame(sbHoldRAF);
-      function decay() {
-        sbHoldProg = Math.max(0, sbHoldProg - 6);
-        sbRevokeFill.style.width = sbHoldProg + '%';
-        sbRevokeBtn.style.transform = '';
-        if (sbHoldProg > 0) sbHoldRAF = requestAnimationFrame(decay);
-      }
-      sbHoldRAF = requestAnimationFrame(decay);
-    }
-    sbRevokeBtn.addEventListener('pointerup', stopSbHold);
-    sbRevokeBtn.addEventListener('pointerleave', stopSbHold);
-
-    const sbDeployBtn = document.getElementById('sbDeployBtn');
-    const sbDeployText = document.getElementById('sbDeployText');
-    const sbDeployIcon = document.getElementById('sbDeployIcon');
-
-    sbDeployBtn.addEventListener('pointerdown', () => {
-      if (!gameFeelEnabled) return;
-      const press = (1 - dialJuice * 0.008).toFixed(3);
-      sbDeployBtn.style.transform = `scale(${press})`;
-      playTick(600, 0.012, 0.025);
-    });
-
-    sbDeployBtn.addEventListener('pointerup', () => {
-      if (!gameFeelEnabled) {
-        sbDeployText.textContent = 'Published';
-        updateXray('STANDARD UI', 'Instant button click', '0ms hitstop · no squash', `onClick={() => publish()}`);
-        setTimeout(() => (sbDeployText.textContent = 'Publish Release'), 1000);
-        return;
-      }
-      const hitstop = dialJuice >= 4 ? dialJuice * 9 : 0;
-      const overshoot = (1 + dialJuice * 0.007).toFixed(3);
-      updateXray(
-        'M01 + M04 · HITSTOP & SPRING',
-        `Hitstop freeze (${hitstop}ms) → Spring overshoot (${overshoot})`,
-        `anticipation: ${(1 - dialJuice * 0.008).toFixed(3)} | freeze: ${hitstop}ms | chord: C5-E5-G5`,
-        `onPointerDown: () => btn.style.transform = 'scale(${(1 - dialJuice * 0.008).toFixed(3)})',\nonPointerUp: async () => {\n  await sleep(${hitstop});\n  btn.style.transform = 'scale(${overshoot})';\n  playHarmonicTriad();\n}`
-      );
       setTimeout(() => {
-        sbDeployBtn.style.transform = `scale(${overshoot})`;
-        sbDeployBtn.style.background = '#10b981';
-        sbDeployIcon.textContent = '✓';
-        sbDeployText.textContent = 'Published ✓';
-        playTriad();
-        setTimeout(() => {
-          sbDeployBtn.style.transform = '';
-          setTimeout(() => {
-            sbDeployBtn.style.background = '';
-            sbDeployIcon.textContent = '↑';
-            sbDeployText.textContent = 'Publish Release';
-          }, 1100);
-        }, 180);
-      }, hitstop);
-    });
+        clearPhasePills();
+        hp3.classList.add('lit-3');
+        if (withSound) playTick(heroIsOn ? 780 : 520, 0.03, 0.045);
+      }, totalDur * 0.65);
+
+      setTimeout(() => {
+        clearPhasePills();
+        hp4.classList.add('lit-4');
+        if (withSound && heroIsOn) playTriad();
+        heroAnimating = false;
+      }, totalDur * 0.92);
+    }
+
+    heroRunDemoBtn.addEventListener('click', () => runHeroComparison(true));
+    heroFlatSwitch.addEventListener('click', () => runHeroComparison(true));
+    heroJuiceSwitch.addEventListener('click', () => runHeroComparison(true));
+
+    // Auto-run once gently on page load so visitors immediately see the slow-mo comparison
+    setTimeout(() => runHeroComparison(false), 650);
 
     // =========================================================================
-    // 5. MECHANICS LAB FILTERING & 12 SPECIMENS
+    // 4. INTERACTIVE SANDBOX FILTERING & 12 DEMOS
     // =========================================================================
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -2882,7 +2287,7 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
         tab.classList.add('active');
         const filter = tab.dataset.filter;
         playTick(820, 0.01, 0.02);
-        document.querySelectorAll('#mechanics-lab .specimen').forEach(card => {
+        document.querySelectorAll('#sandbox .specimen').forEach(card => {
           card.setAttribute('data-hidden', filter === 'all' || card.dataset.cat.includes(filter) ? 'false' : 'true');
         });
       });
@@ -2897,35 +2302,38 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       });
     });
 
-    // Lab 01
+    // Demo 01: Hitstop
     const s1Flat = document.getElementById('s1Flat');
     const s1Juice = document.getElementById('s1Juice');
     const s1Icon = document.getElementById('s1Icon');
+    const s1Text = document.getElementById('s1Text');
     const log1 = document.getElementById('log1');
     s1Flat.addEventListener('click', () => (log1.textContent = 'Standard: scale(1.0) · 0ms hitstop · silent'));
     s1Juice.addEventListener('pointerdown', () => {
-      s1Juice.style.transform = 'scale(0.93)';
-      playTick(620, 0.012, 0.025);
-      log1.textContent = 'Anticipation: scale(0.93)...';
+      s1Juice.style.transform = 'scale(0.91)';
+      playTick(620, 0.012, 0.03);
+      log1.textContent = 'Anticipation: scale(0.91)...';
     });
     s1Juice.addEventListener('pointerup', () => {
-      log1.textContent = 'Hitstop 75ms → Spring 1.06 + Triad';
+      log1.textContent = 'Hitstop 75ms → Spring 1.08x + Triad';
       setTimeout(() => {
-        s1Juice.style.transform = 'scale(1.06)';
+        s1Juice.style.transform = 'scale(1.08)';
         s1Juice.style.background = '#10b981';
         s1Icon.textContent = '✓';
+        s1Text.textContent = 'Deployed';
         playTriad();
         setTimeout(() => {
           s1Juice.style.transform = '';
           setTimeout(() => {
             s1Juice.style.background = '';
             s1Icon.textContent = '↑';
+            s1Text.textContent = 'Deploy';
           }, 900);
         }, 180);
       }, 75);
     });
 
-    // Lab 02
+    // Demo 02: Hold to Delete
     const s2Flat = document.getElementById('s2Flat');
     const s2Juice = document.getElementById('s2Juice');
     const s2Fill = document.getElementById('s2Fill');
@@ -2938,15 +2346,19 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       function step() {
         prog2 = Math.min(100, prog2 + 2.3);
         s2Fill.style.width = prog2 + '%';
-        if (Math.round(prog2) % 15 === 0) playTick(220 + prog2 * 3.5, 0.014, 0.02);
+        const jitter = (Math.random() - 0.5) * (prog2 * 0.05);
+        s2Juice.style.transform = `translate(${jitter.toFixed(1)}px, 0) scale(0.97)`;
+        if (Math.round(prog2) % 14 === 0) playTick(220 + prog2 * 3.5, 0.015, 0.025);
         log2.textContent = `Charging: ${Math.round(prog2)}% · ${(220 + prog2 * 3.5).toFixed(0)}Hz`;
         if (prog2 >= 100) {
           playTriad();
+          s2Juice.style.transform = 'scale(1.06)';
           s2Text.textContent = 'Deleted ✓';
           log2.textContent = 'Committed at 100% without modal';
           setTimeout(() => {
             prog2 = 0;
             s2Fill.style.width = '0%';
+            s2Juice.style.transform = '';
             s2Text.textContent = 'Hold to Delete';
           }, 1100);
           return;
@@ -2960,6 +2372,7 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       function dec() {
         prog2 = Math.max(0, prog2 - 6);
         s2Fill.style.width = prog2 + '%';
+        s2Juice.style.transform = '';
         if (prog2 > 0) raf2 = requestAnimationFrame(dec);
       }
       raf2 = requestAnimationFrame(dec);
@@ -2967,22 +2380,30 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
     s2Juice.addEventListener('pointerup', stop2);
     s2Juice.addEventListener('pointerleave', stop2);
 
-    // Lab 03
+    // Demo 03: Pitch Escalation Steps + Visual Combo Badge
     const log3 = document.getElementById('log3');
-    document.querySelectorAll('.flat-step').forEach(b => b.addEventListener('click', () => (log3.textContent = 'Standard: silent click')));
+    const s3ComboBadge = document.getElementById('s3ComboBadge');
+    document.querySelectorAll('.flat-step').forEach(b => b.addEventListener('click', () => (log3.textContent = 'Standard: silent click · 0 combo')));
     document.querySelectorAll('.juice-step').forEach(b => {
       b.addEventListener('click', () => {
         const step = Number(b.dataset.step);
         const freq = 440 * Math.pow(2, (step * 2) / 12);
-        b.style.transform = 'scale(1.1)';
+        b.style.transform = 'scale(1.16)';
         setTimeout(() => (b.style.transform = ''), 160);
         playTick(freq, 0.045, 0.045);
+
+        s3ComboBadge.textContent = step === 2 ? '🔥 3x MAX COMBO!' : `Streak: ${step + 1}x (+${step * 2} st)`;
+        s3ComboBadge.style.transform = 'scale(1.2)';
+        s3ComboBadge.style.background = step === 2 ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.2)';
+        s3ComboBadge.style.color = step === 2 ? '#10b981' : '#f59e0b';
+        setTimeout(() => (s3ComboBadge.style.transform = ''), 180);
+
         if (step === 2) setTimeout(playTriad, 70);
         log3.textContent = `Step ${step + 1} · ${freq.toFixed(1)}Hz (+${step * 2} semitones)`;
       });
     });
 
-    // Lab 04
+    // Demo 04: Error Shake
     const s4FlatBtn = document.getElementById('s4FlatBtn');
     const s4JuiceBtn = document.getElementById('s4JuiceBtn');
     const log4 = document.getElementById('log4');
@@ -2995,10 +2416,10 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       void s4JuiceBtn.offsetWidth;
       s4JuiceBtn.classList.add('shake-active');
       playErrorThud();
-      log4.textContent = 'Recoil: ±6px damped shake + 140Hz→52Hz thud';
+      log4.textContent = 'Recoil: ±7px damped harmonic shake + 140Hz→52Hz thud';
     });
 
-    // Lab 05
+    // Demo 05: Squash & Stretch Toggle Switch
     const s7Flat = document.getElementById('s7Flat');
     const s7Juice = document.getElementById('s7Juice');
     const s7Thumb = document.getElementById('s7Thumb');
@@ -3010,14 +2431,14 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
     s7Juice.addEventListener('click', () => {
       const on = s7Juice.classList.toggle('on');
       s7Thumb.style.transform = on
-        ? 'translateX(21px) scaleX(1.26) scaleY(0.85)'
-        : 'translateX(0px) scaleX(1.26) scaleY(0.85)';
-      playTick(on ? 780 : 480, 0.018, 0.035);
-      log7.textContent = 'Thumb morph: scaleX(1.26) scaleY(0.85) → spring settle';
-      setTimeout(() => (s7Thumb.style.transform = on ? 'translateX(21px)' : 'translateX(0px)'), 140);
+        ? 'translateX(24px) scaleX(1.34) scaleY(0.8)'
+        : 'translateX(0px) scaleX(1.34) scaleY(0.8)';
+      playTick(on ? 780 : 480, 0.02, 0.04);
+      log7.textContent = 'Thumb morph: scaleX(1.34) scaleY(0.80) → spring settle';
+      setTimeout(() => (s7Thumb.style.transform = on ? 'translateX(24px)' : 'translateX(0px)'), 150);
     });
 
-    // Lab 06
+    // Demo 06: Kinetic Odometer
     let v8Flat = 12, v8Juice = 12;
     const s8FlatVal = document.getElementById('s8FlatVal');
     const s8JuiceVal = document.getElementById('s8JuiceVal');
@@ -3026,62 +2447,97 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
     document.getElementById('s8FlatDec').addEventListener('click', () => { s8FlatVal.textContent = --v8Flat; log8.textContent = 'Standard: instant text swap'; });
     function rollOdo(dir) {
       v8Juice += dir;
-      s8JuiceVal.style.transform = `translateY(${dir * -9}px) scale(1.15)`;
+      s8JuiceVal.style.transform = `translateY(${dir * -10}px) scale(1.2)`;
       s8JuiceVal.textContent = v8Juice;
-      playTick(dir > 0 ? 740 : 520, 0.015, 0.03);
-      log8.textContent = `Odometer roll: translateY(${dir * -9}px) → spring settle`;
+      playTick(dir > 0 ? 760 : 520, 0.016, 0.035);
+      log8.textContent = `Odometer roll: translateY(${dir * -10}px) → spring settle`;
       setTimeout(() => (s8JuiceVal.style.transform = 'translateY(0) scale(1)'), 140);
     }
     document.getElementById('s8JuiceInc').addEventListener('click', () => rollOdo(1));
     document.getElementById('s8JuiceDec').addEventListener('click', () => rollOdo(-1));
 
-    // Lab 07
+    // Demo 07: Upgraded Detent Slider (Pop Bubble + Notch Dots + Track Recoil + Pitch Tick)
     const s9Flat = document.getElementById('s9Flat');
+    const s9FlatBubble = document.getElementById('s9FlatBubble');
     const s9Juice = document.getElementById('s9Juice');
+    const s9JuiceBubble = document.getElementById('s9JuiceBubble');
+    const s9JuiceWrap = document.getElementById('s9JuiceWrap');
+    const s9Dots = document.querySelectorAll('#s9Notches .detent-dot');
     const log9 = document.getElementById('log9');
-    s9Flat.addEventListener('input', () => (log9.textContent = `Standard slider: ${s9Flat.value} (silent)`));
-    s9Juice.addEventListener('input', () => {
-      const val = Number(s9Juice.value);
-      const freq = 400 + val * 50;
-      playTick(freq, 0.009, 0.03);
-      log9.textContent = `Detent #${val} · 9ms rotary tick at ${freq}Hz`;
+
+    s9Flat.addEventListener('input', () => {
+      s9FlatBubble.textContent = `Level ${s9Flat.value}`;
+      log9.textContent = `Standard slider: Level ${s9Flat.value} (No physical snap)`;
     });
 
-    // Lab 08
+    s9Juice.addEventListener('input', () => {
+      const val = Number(s9Juice.value);
+      const freq = 400 + val * 80;
+      s9JuiceBubble.textContent = `Level ${val} · ${freq}Hz`;
+      s9JuiceBubble.style.transform = 'translateY(-4px) scale(1.24)';
+      s9JuiceWrap.style.transform = 'scale(1.03)';
+      setTimeout(() => {
+        s9JuiceBubble.style.transform = '';
+        s9JuiceWrap.style.transform = '';
+      }, 150);
+
+      s9Dots.forEach((dot, idx) => dot.classList.toggle('lit', idx < val));
+      playTick(freq, 0.014, 0.045);
+      log9.textContent = `Detent Snap #${val} · Bubble pop 1.24x + ${freq}Hz rotary click`;
+    });
+
+    // Demo 08: Upgraded Optimistic Archive + 4s Undo Grace
     const s10Flat = document.getElementById('s10Flat');
+    const s10Modal = document.getElementById('s10Modal');
+    const s10ModalCancel = document.getElementById('s10ModalCancel');
     const s10Juice = document.getElementById('s10Juice');
     const log10 = document.getElementById('log10');
     let undoTimer10 = null;
-    s10Flat.addEventListener('click', () => (log10.textContent = 'Standard: waits for server or shows modal'));
+
+    s10Flat.addEventListener('click', () => {
+      s10Flat.style.display = 'none';
+      s10Modal.style.display = 'block';
+      log10.textContent = 'Standard: workflow blocked by confirmation dialog!';
+    });
+    s10ModalCancel.addEventListener('click', () => {
+      s10Modal.style.display = 'none';
+      s10Flat.style.display = '';
+      log10.textContent = 'Dialog cancelled';
+    });
+
     s10Juice.addEventListener('click', () => {
       if (undoTimer10) {
         clearTimeout(undoTimer10);
         undoTimer10 = null;
-        s10Juice.textContent = 'Archive Item';
+        s10Juice.textContent = 'Archive Row';
         s10Juice.style.background = '';
-        playTick(880, 0.02, 0.035);
-        log10.textContent = 'Undo triggered! Item restored in 0ms';
+        s10Juice.style.transform = 'scale(1.08)';
+        setTimeout(() => (s10Juice.style.transform = ''), 160);
+        playTriad();
+        log10.textContent = 'Undo clicked! Row restored in 0ms with spring bounce';
         return;
       }
-      playTick(540, 0.02, 0.03);
-      s10Juice.textContent = 'Undo Archive (4s)';
+      playTick(540, 0.02, 0.035);
+      s10Juice.textContent = '↩ Undo Archive (4s)';
       s10Juice.style.background = '#f59e0b';
-      log10.textContent = 'Optimistic remove (0ms) · 4000ms Coyote undo window';
+      s10Juice.style.transform = 'scale(0.94)';
+      setTimeout(() => (s10Juice.style.transform = ''), 140);
+      log10.textContent = 'Archived in 0ms (Optimistic) · Click again within 4s to Undo';
       undoTimer10 = setTimeout(() => {
         undoTimer10 = null;
-        s10Juice.textContent = 'Archive Item';
+        s10Juice.textContent = 'Archive Row';
         s10Juice.style.background = '';
-        log10.textContent = '4000ms elapsed → Archive committed';
+        log10.textContent = '4000ms grace elapsed → Archive committed';
       }, 4000);
     });
 
-    // Lab 09
+    // Demo 09: Magnetic Pull
     const s5JuiceBtn = document.getElementById('s5JuiceBtn');
     const log5 = document.getElementById('log5');
     s5JuiceBtn.addEventListener('pointermove', e => {
       const r = s5JuiceBtn.getBoundingClientRect();
-      const dx = (e.clientX - (r.left + r.width / 2)) * 0.25;
-      const dy = (e.clientY - (r.top + r.height / 2)) * 0.25;
+      const dx = (e.clientX - (r.left + r.width / 2)) * 0.34;
+      const dy = (e.clientY - (r.top + r.height / 2)) * 0.34;
       s5JuiceBtn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
       log5.textContent = `Magnetic pull: dx=${dx.toFixed(1)}px, dy=${dy.toFixed(1)}px`;
     });
@@ -3090,35 +2546,62 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       log5.textContent = 'Elastic snapback → translate(0, 0)';
     });
 
-    // Lab 10
-    const s6FlatWrap = document.getElementById('s6FlatWrap');
-    const s6FlatMenu = document.getElementById('s6FlatMenu');
-    const s6JuiceWrap = document.getElementById('s6JuiceWrap');
-    const s6JuiceMenu = document.getElementById('s6JuiceMenu');
+    // Demo 10: Upgraded Coyote Time Hover Menu (Air Gap Challenge!)
+    const s6FlatTrigger = document.getElementById('s6FlatTrigger');
+    const s6FlatPopup = document.getElementById('s6FlatPopup');
+    const s6JuiceZone = document.getElementById('s6JuiceZone');
+    const s6JuicePopup = document.getElementById('s6JuicePopup');
+    const s6JuiceBar = document.getElementById('s6JuiceBar');
+    const s6JuiceAction = document.getElementById('s6JuiceAction');
     const log6 = document.getElementById('log6');
     let timer6 = null;
-    s6FlatWrap.addEventListener('pointerenter', () => s6FlatMenu.classList.add('visible'));
-    s6FlatWrap.addEventListener('pointerleave', () => {
-      s6FlatMenu.classList.remove('visible');
-      log6.textContent = 'Standard: snapped shut in 0ms';
+
+    // Left: 0ms grace on trigger leave -> impossible to cross the 10px air gap!
+    s6FlatTrigger.addEventListener('pointerenter', () => {
+      s6FlatPopup.classList.add('open');
+      log6.textContent = 'Now try moving your mouse up to click Copy Key...';
     });
-    s6JuiceWrap.addEventListener('pointerenter', () => {
+    s6FlatTrigger.addEventListener('pointerleave', () => {
+      s6FlatPopup.classList.remove('open');
+      log6.textContent = '✗ Closed in 0ms while crossing the gap! You missed it.';
+    });
+
+    // Right: 450ms Coyote grace buffer lets you easily cross the gap and click!
+    s6JuiceZone.addEventListener('pointerenter', () => {
       if (timer6) {
         clearTimeout(timer6);
         timer6 = null;
-        log6.textContent = 'Coyote Time saved hover (<160ms)!';
+        s6JuiceBar.style.transition = 'none';
+        s6JuiceBar.style.width = '100%';
+        log6.textContent = '✓ Coyote Time bridged the gap! Click Copy Key now.';
+      } else {
+        playTick(760, 0.012, 0.025);
+        log6.textContent = 'Menu open · 450ms Coyote grace bar active';
       }
-      s6JuiceMenu.classList.add('visible');
-    });
-    s6JuiceWrap.addEventListener('pointerleave', () => {
-      log6.textContent = 'Holding menu open for 160ms Coyote grace...';
-      timer6 = setTimeout(() => {
-        s6JuiceMenu.classList.remove('visible');
-        timer6 = null;
-      }, 160);
+      s6JuicePopup.classList.add('open');
     });
 
-    // Lab 11
+    s6JuiceZone.addEventListener('pointerleave', () => {
+      s6JuiceBar.style.transition = 'width 450ms linear';
+      s6JuiceBar.style.width = '0%';
+      log6.textContent = 'Pointer left hitbox · holding open for 450ms Coyote window...';
+      timer6 = setTimeout(() => {
+        s6JuicePopup.classList.remove('open');
+        s6JuiceBar.style.transition = 'none';
+        s6JuiceBar.style.width = '100%';
+        timer6 = null;
+        log6.textContent = 'Grace window finished → menu closed cleanly';
+      }, 450);
+    });
+
+    s6JuiceAction.addEventListener('click', () => {
+      playTriad();
+      s6JuiceAction.textContent = '✓ Key Copied!';
+      log6.textContent = '✓ Success! Coyote Time allowed you to click inside the menu.';
+      setTimeout(() => (s6JuiceAction.textContent = '⚡ Copy Key'), 1200);
+    });
+
+    // Demo 11: 3D Perspective Tilt
     const s11Card = document.getElementById('s11Card');
     const s11Glare = document.getElementById('s11Glare');
     const log11 = document.getElementById('log11');
@@ -3126,11 +2609,11 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       const r = s11Card.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width;
       const y = (e.clientY - r.top) / r.height;
-      const rotY = (x - 0.5) * 18;
-      const rotX = -(y - 0.5) * 18;
-      s11Card.style.transform = `perspective(420px) rotateX(${rotX.toFixed(1)}deg) rotateY(${rotY.toFixed(1)}deg) scale(1.03)`;
+      const rotY = (x - 0.5) * 20;
+      const rotX = -(y - 0.5) * 20;
+      s11Card.style.transform = `perspective(400px) rotateX(${rotX.toFixed(1)}deg) rotateY(${rotY.toFixed(1)}deg) scale(1.04)`;
       s11Glare.style.opacity = '1';
-      s11Glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.22), transparent 60%)`;
+      s11Glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.24), transparent 60%)`;
       log11.textContent = `3D Tilt: rotateX(${rotX.toFixed(1)}deg) rotateY(${rotY.toFixed(1)}deg)`;
     });
     s11Card.addEventListener('pointerleave', () => {
@@ -3139,44 +2622,81 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
       log11.textContent = 'Spring settle → rotateX(0deg) rotateY(0deg)';
     });
 
-    // Lab 12
+    // Demo 12: Upgraded AI Stream Cadence (Visual Mini-Terminal on Both Sides!)
     const s12Flat = document.getElementById('s12Flat');
+    const s12FlatBox = document.getElementById('s12FlatBox');
     const s12Juice = document.getElementById('s12Juice');
+    const s12JuiceBox = document.getElementById('s12JuiceBox');
     const log12 = document.getElementById('log12');
-    const sampleTokens = [' Analyzing', ' components...', ' Applying', ' spring', ' physics', ' ✓'];
-    s12Flat.addEventListener('click', () => (log12.textContent = 'Streaming silently...'));
+    const streamWords = ['Compiling', 'spring', 'physics', 'tokens', '→', '60fps', '✓'];
+
+    s12Flat.addEventListener('click', () => {
+      s12FlatBox.textContent = '';
+      log12.textContent = 'Standard: dumping raw text chunks silently...';
+      setTimeout(() => { s12FlatBox.textContent = 'Compiling spring physics...'; }, 180);
+      setTimeout(() => { s12FlatBox.textContent = 'Compiling spring physics tokens → 60fps ✓'; }, 520);
+    });
+
     s12Juice.addEventListener('click', () => {
+      s12JuiceBox.innerHTML = '';
+      const cursor = document.createElement('span');
+      cursor.className = 'stream-cursor';
+      s12JuiceBox.appendChild(cursor);
       let idx = 0;
-      log12.textContent = '';
       const iv = setInterval(() => {
-        if (idx < sampleTokens.length) {
-          log12.textContent += sampleTokens[idx];
-          playTick(660 + (idx % 3) * 35, 0.01, 0.02);
+        if (idx < streamWords.length) {
+          const span = document.createElement('span');
+          span.className = 'token-word';
+          span.textContent = streamWords[idx];
+          if (idx === streamWords.length - 1) span.style.color = '#10b981';
+          s12JuiceBox.insertBefore(span, cursor);
+          playTick(640 + (idx % 3) * 45, 0.012, 0.028);
+          log12.textContent = `Token ${idx + 1}/${streamWords.length} · kinetic pop + ${640 + (idx % 3) * 45}Hz tick`;
           idx++;
         } else {
           clearInterval(iv);
+          cursor.remove();
           playTriad();
+          s12JuiceBox.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+          log12.textContent = 'Stream complete · C5-E5-G5 harmonic completion triad ✓';
+          setTimeout(() => (s12JuiceBox.style.borderColor = ''), 1200);
         }
-      }, 65);
+      }, 95);
     });
 
     // =========================================================================
-    // 6. BILINGUAL SWITCHER (EN DEFAULT / PT)
+    // 5. BILINGUAL SWITCHER (EN DEFAULT / PT)
     // =========================================================================
     const i18n = {
       en: {
+        navLab: 'Interactive Sandbox (12)',
         navThesis: 'The 120ms Thesis',
-        navSandbox: 'Studio Sandbox',
-        navLab: 'Mechanics Lab (12)',
         navWorkflows: 'Agent Workflows',
         eyebrow: 'OPEN-SOURCE AGENT SKILL · 39 MECHANICS · 0 KB AUDIO ASSETS',
         heroTitle: 'Make interfaces feel <em>physical</em> in the first 120ms.',
-        heroLead: 'Game studios spend months tuning <strong>Anticipation</strong>, <strong>Hitstop freeze-frames</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.',
+        heroLead: 'Game studios spend months tuning <strong>Anticipation</strong>, <strong>Squash & Stretch</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.',
         copyBtn: 'Copy',
-        ctaSandbox: 'Launch Studio Sandbox ↓',
-        ctaLab: 'Explore 12 Mechanics',
         worksWith: 'Works with:',
-        oscBtn: 'Trigger Impact Pulse',
+        heroStageTitle: 'SQUASH & STRETCH COMPARISON',
+        laneFlatTitle: 'Without Skill · Standard CSS',
+        laneFlatSub: 'Rigid linear slide (Zero deformation)',
+        laneJuiceTitle: 'With game-feel-ui · Spring & Morph',
+        laneJuiceSub: 'Preload squash → Mid-air stretch (1.42x) → Overshoot',
+        hp1: '1. Preload 0.85x',
+        hp2: '2. Stretch 1.42x',
+        hp3: '3. Overshoot +10px',
+        hp4: '4. Spring Settle ✓',
+        runDemoBtn: 'Run Comparison Demo',
+        seeMoreDemos: 'See 12 more demos ↓',
+        labKicker: 'INTERACTIVE SANDBOX',
+        labTitle: 'Test 12 Game-Feel Mechanics <em>Live</em>',
+        labSub: 'Interact with both sides of each card below to feel the difference between standard linear UI (left) and calibrated Game Feel (right).',
+        tabAll: 'All (12)',
+        tabImpact: 'Impact & Hitstop',
+        tabSpring: 'Spring & Morph',
+        tabCoyote: 'Coyote Forgiveness',
+        tabAudio: 'Audio & Cadence',
+        tabSpatial: 'Spatial & 3D',
         thesisKicker: 'THE INTERACTION THESIS',
         thesisTitle: 'Most AI agents ship <em>lifeless</em> transitions. We engineer kinetic cascades.',
         thesisDesc: 'When you ask a vanilla LLM to polish an interface, it adds <code>transition: all 0.3s ease</code>. Real Game Feel coordinates four sensory layers within 120 milliseconds.',
@@ -3188,31 +2708,6 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
         us1: '✓ Physical preload on <code>pointerdown</code> + frame-freeze impact on release',
         us2: '✓ Modal-free <strong>Hold-to-Commit</strong> tension & 4s Optimistic Undo windows',
         us3: '✓ Invisible <strong>160ms Coyote Time</strong> forgiveness on menus & hitboxes',
-        sbKicker: 'FULL CONTEXT WORKBENCH',
-        sandboxTitle: 'Live Studio Sandbox',
-        sandboxSub: 'Toggle the physics engine ON/OFF, switch vertical profiles, and interact with the workspace below to inspect real-time telemetry.',
-        modeOff: 'Standard UI (OFF)',
-        modeOn: 'Game Feel (ON)',
-        sbEnvBtn: 'Environment ▴',
-        sbTask1: 'DB Migrations',
-        sbTask2: 'Edge Workers',
-        sbTask3: 'SSL Certificates',
-        sbVerifyBtn: 'Verify Secret',
-        sbHoldBtn: 'Hold to Revoke Key',
-        sbDeployBtn: 'Publish Release',
-        sbHint: '↑ Interact above: check tasks in sequence, hover Environment, verify the invalid secret, or hold Revoke Key.',
-        xrayTitle: 'LIVE X-RAY INSPECTOR',
-        xrayDefaultName: 'Interact with the workspace on the left',
-        xrayDefaultMetrics: 'Every click, hover, or hold streams its real-time physics parameters and generated code here.',
-        labKicker: 'ISOLATED A/B COMPARISONS',
-        labTitle: 'The Mechanics Lab',
-        labSub: 'Filter by physics family to compare standard linear DOM behavior against tactile Game Feel mechanics.',
-        tabAll: 'All (12)',
-        tabImpact: 'Impact & Hitstop',
-        tabSpring: 'Spring & Morph',
-        tabCoyote: 'Coyote Forgiveness',
-        tabAudio: 'Audio & Cadence',
-        tabSpatial: 'Spatial & 3D',
         wfKicker: 'AGENTIC WORKFLOWS',
         wfTitle: 'Three ways to use <em>game-feel-ui</em>',
         wfSub: 'Just describe what you want in Claude Code, Cursor, or Codex—or trigger the deterministic CLI modes directly.',
@@ -3224,18 +2719,34 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
         wf3Res: 'Calibrates all CSS Custom Properties (<code>--gf-press-scale</code>, <code>--gf-hitstop-ms</code>, <code>--gf-coyote-grace-ms</code>) and saves your team\'s contract to <code>game-feel-system/MASTER.md</code>.'
       },
       pt: {
+        navLab: 'Sandbox Interativo (12)',
         navThesis: 'A Tese dos 120ms',
-        navSandbox: 'Studio Sandbox',
-        navLab: 'Laboratório (12)',
         navWorkflows: 'Fluxos no Agente',
         eyebrow: 'SKILL OPEN-SOURCE · 39 MECÂNICAS · 0 KB DE ARQUIVOS DE ÁUDIO',
         heroTitle: 'Torne interfaces <em>táteis e físicas</em> nos primeiros 120ms.',
-        heroLead: 'Estúdios de jogos passam meses calibrando <strong>Antecipação</strong>, <strong>Hitstop</strong>, <strong>Coyote Time</strong> e <strong>áudio procedural</strong> para dar peso físico ao controle. A <code>game-feel-ui</code> entrega exatamente esse sistema de engenharia para o seu agente de IA.',
+        heroLead: 'Estúdios de jogos passam meses calibrando <strong>Antecipação</strong>, <strong>Squash & Stretch</strong>, <strong>Coyote Time</strong> e <strong>áudio procedural</strong> para dar peso físico ao controle. A <code>game-feel-ui</code> entrega exatamente esse sistema de engenharia para o seu agente de IA.',
         copyBtn: 'Copiar',
-        ctaSandbox: 'Abrir Studio Sandbox ↓',
-        ctaLab: 'Explorar 12 Mecânicas',
         worksWith: 'Compatível com:',
-        oscBtn: 'Disparar Pulso de Impacto',
+        heroStageTitle: 'COMPARAÇÃO EM CÂMERA LENTA',
+        laneFlatTitle: 'Sem a Skill · CSS Comum',
+        laneFlatSub: 'Deslize linear rígido (Zero deformação)',
+        laneJuiceTitle: 'Com game-feel-ui · Mola & Deformação',
+        laneJuiceSub: 'Pré-carga → Estica no ar (1.42x) → Overshoot na borda',
+        hp1: '1. Pré-carga 0.85x',
+        hp2: '2. Estica 1.42x',
+        hp3: '3. Overshoot +10px',
+        hp4: '4. Assenta c/ Mola ✓',
+        runDemoBtn: 'Ativar Demo Comparativa',
+        seeMoreDemos: 'Ver mais 12 demos ↓',
+        labKicker: 'SANDBOX INTERATIVO',
+        labTitle: 'Teste 12 Mecânicas de Game-Feel <em>ao Vivo</em>',
+        labSub: 'Interaja com os dois lados de cada card abaixo para sentir a diferença entre uma UI linear comum (esquerda) e o Game Feel calibrado (direita).',
+        tabAll: 'Todas (12)',
+        tabImpact: 'Impacto & Hitstop',
+        tabSpring: 'Mola & Morph',
+        tabCoyote: 'Coyote Time (Perdão)',
+        tabAudio: 'Áudio & Cadência',
+        tabSpatial: 'Espacial & 3D',
         thesisKicker: 'A TESE DE INTERAÇÃO',
         thesisTitle: 'Agentes comuns geram transições <em>sem vida</em>. Nós projetamos cascatas cinéticas.',
         thesisDesc: 'Quando você pede para uma IA comum polir uma tela, ela aplica <code>transition: all 0.3s ease</code>. O verdadeiro Game Feel coordena 4 camadas sensoriais em 120 milissegundos.',
@@ -3247,31 +2758,6 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
         us1: '✓ Pré-carga física no <code>pointerdown</code> + micro-pausa de impacto (Hitstop)',
         us2: '✓ Ações destrutivas com <strong>Hold-to-Commit</strong> e janela de Undo de 4s sem modal',
         us3: '✓ Tolerância invisível de <strong>160ms (Coyote Time)</strong> em menus e áreas de clique',
-        sbKicker: 'BANCADA DE CONTEXTO REAL',
-        sandboxTitle: 'Live Studio Sandbox',
-        sandboxSub: 'Ligue/desligue o motor físico, alterne os perfis de produto e interaja com o painel abaixo para inspecionar a telemetria ao vivo.',
-        modeOff: 'UI Comum (OFF)',
-        modeOn: 'Game Feel (ON)',
-        sbEnvBtn: 'Ambiente ▴',
-        sbTask1: 'Migrações DB',
-        sbTask2: 'Edge Workers',
-        sbTask3: 'Certificados SSL',
-        sbVerifyBtn: 'Validar Segredo',
-        sbHoldBtn: 'Segure p/ Revogar',
-        sbDeployBtn: 'Publicar Release',
-        sbHint: '↑ Interaja acima: marque as tarefas em sequência, passe o mouse em Ambiente, valide o token inválido ou segure Revogar.',
-        xrayTitle: 'INSPETOR RAIO-X AO VIVO',
-        xrayDefaultName: 'Interaja com o painel à esquerda',
-        xrayDefaultMetrics: 'Cada clique, hover ou pressão transmite seus parâmetros físicos e código gerado aqui em tempo real.',
-        labKicker: 'COMPARAÇÕES A/B ISOLADAS',
-        labTitle: 'Laboratório de Mecânicas',
-        labSub: 'Filtre por família física para comparar o comportamento linear padrão com as mecânicas táteis de Game Feel.',
-        tabAll: 'Todas (12)',
-        tabImpact: 'Impacto & Hitstop',
-        tabSpring: 'Mola & Morph',
-        tabCoyote: 'Coyote Time (Perdão)',
-        tabAudio: 'Áudio & Cadência',
-        tabSpatial: 'Espacial & 3D',
         wfKicker: 'FLUXOS AGÊNTICOS',
         wfTitle: 'Três formas de usar a <em>game-feel-ui</em>',
         wfSub: 'Basta descrever o que você quer no Claude Code, Cursor ou Codex — ou acionar os modos determinísticos via CLI.',

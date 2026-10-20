@@ -5,24 +5,129 @@
       <stop offset="55%" stop-color="#131318"/>
       <stop offset="100%" stop-color="#0B0B0E"/>
     </linearGradient>
-    <radialGradient id="glowVermilion" cx="68%" cy="45%" r="38%">
-      <stop offset="0%" stop-color="#FF5722" stop-opacity="0.18"/>
+    <radialGradient id="glowVermilion" cx="72%" cy="48%" r="40%">
+      <stop offset="0%" stop-color="#FF5722" stop-opacity="0.16"/>
       <stop offset="100%" stop-color="#FF5722" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glowIndigo" cx="82%" cy="55%" r="35%">
-      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.16"/>
+    <radialGradient id="glowIndigo" cx="84%" cy="62%" r="35%">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.14"/>
       <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#F59E0B"/>
-      <stop offset="28%" stop-color="#FF5722"/>
-      <stop offset="65%" stop-color="#6366F1"/>
-      <stop offset="100%" stop-color="#10B981"/>
-    </linearGradient>
     <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
       <circle cx="2" cy="2" r="1" fill="#F4F2ED" fill-opacity="0.08"/>
     </pattern>
   </defs>
+
+  <style>
+    /* 4.6s Infinite Slow-Motion Comparison Loop (Works natively in GitHub README!) */
+    @keyframes linearThumb {
+      0%, 15% { transform: translateX(0px); }
+      45%, 70% { transform: translateX(136px); }
+      90%, 100% { transform: translateX(0px); }
+    }
+
+    @keyframes linearTrack {
+      0%, 15% { fill: #23232C; }
+      45%, 70% { fill: #3E3E4C; }
+      90%, 100% { fill: #23232C; }
+    }
+
+    /* Game Feel Thumb: Anticipation Squash -> Mid-Air Stretch -> Wall Overshoot -> Spring Settle */
+    @keyframes juiceThumb {
+      0%, 10% {
+        transform: translateX(0px) scale(1, 1);
+      }
+      /* 1. Anticipation Preload (Squash back slightly before launch) */
+      16% {
+        transform: translateX(-4px) scale(0.86, 1.12);
+      }
+      /* 2. Mid-Air Velocity Stretch (Elongates oval like rubber) */
+      28% {
+        transform: translateX(68px) scale(1.42, 0.76);
+      }
+      /* 3. Impact & Spring Overshoot past 136px to 148px */
+      40% {
+        transform: translateX(148px) scale(0.84, 1.16);
+      }
+      /* 4. Elastic Rebound Settle */
+      48% {
+        transform: translateX(131px) scale(1.06, 0.96);
+      }
+      55%, 70% {
+        transform: translateX(136px) scale(1, 1);
+      }
+      /* Return Trip with Squash & Stretch */
+      75% {
+        transform: translateX(140px) scale(0.88, 1.1);
+      }
+      83% {
+        transform: translateX(65px) scale(1.38, 0.78);
+      }
+      91% {
+        transform: translateX(-8px) scale(0.86, 1.14);
+      }
+      96%, 100% {
+        transform: translateX(0px) scale(1, 1);
+      }
+    }
+
+    @keyframes juiceTrack {
+      0%, 16% { fill: #1F1F29; stroke: #383846; }
+      38%, 72% { fill: #FF5722; stroke: #FF8A65; }
+      92%, 100% { fill: #1F1F29; stroke: #383846; }
+    }
+
+    @keyframes phase1 {
+      0%, 9% { opacity: 0.25; }
+      10%, 21% { opacity: 1; }
+      22%, 100% { opacity: 0.25; }
+    }
+    @keyframes phase2 {
+      0%, 21% { opacity: 0.25; }
+      22%, 35% { opacity: 1; }
+      36%, 100% { opacity: 0.25; }
+    }
+    @keyframes phase3 {
+      0%, 35% { opacity: 0.25; }
+      36%, 52% { opacity: 1; }
+      53%, 100% { opacity: 0.25; }
+    }
+    @keyframes phase4 {
+      0%, 48% { opacity: 0.25; }
+      49%, 70% { opacity: 1; }
+      71%, 100% { opacity: 0.25; }
+    }
+
+    @keyframes impactRing {
+      0%, 37% { r: 18px; stroke-opacity: 0; }
+      40% { r: 24px; stroke-opacity: 0.85; }
+      54%, 100% { r: 46px; stroke-opacity: 0; }
+    }
+
+    .anim-linear-thumb {
+      animation: linearThumb 4.6s linear infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .anim-linear-track {
+      animation: linearTrack 4.6s linear infinite;
+    }
+    .anim-juice-thumb {
+      animation: juiceThumb 4.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .anim-juice-track {
+      animation: juiceTrack 4.6s ease infinite;
+    }
+    .anim-ring {
+      animation: impactRing 4.6s ease-out infinite;
+    }
+    .p1 { animation: phase1 4.6s infinite; }
+    .p2 { animation: phase2 4.6s infinite; }
+    .p3 { animation: phase3 4.6s infinite; }
+    .p4 { animation: phase4 4.6s infinite; }
+  </style>
 
   <!-- Background -->
   <rect width="1200" height="460" rx="20" fill="url(#bgGrad)" stroke="#2A2A32" stroke-width="2"/>
@@ -30,7 +135,7 @@
   <rect width="1200" height="460" rx="20" fill="url(#glowVermilion)"/>
   <rect width="1200" height="460" rx="20" fill="url(#glowIndigo)"/>
 
-  <!-- Left Editorial Column -->
+  <!-- LEFT COLUMN (Summary, Description, Install) -->
   <g transform="translate(64, 68)">
     <!-- Pill Badge -->
     <rect x="0" y="0" width="290" height="30" rx="15" fill="#1A1A20" stroke="#34343F" stroke-width="1"/>
@@ -62,55 +167,60 @@
     </g>
   </g>
 
-  <!-- Right Column: Oscilloscope Card -->
-  <g transform="translate(600, 52)">
-    <rect x="0" y="0" width="540" height="356" rx="16" fill="#121216" stroke="#2D2D38" stroke-width="1.5"/>
+  <!-- RIGHT COLUMN: ANIMATED 0.25x SLOW-MOTION COMPARISON DEMO -->
+  <g transform="translate(596, 46)">
+    <rect x="0" y="0" width="548" height="368" rx="16" fill="#121217" stroke="#2D2D38" stroke-width="1.5"/>
+
     <!-- Window Header -->
-    <rect x="0" y="0" width="540" height="38" rx="16" fill="#18181E"/>
+    <rect x="0" y="0" width="548" height="38" rx="16" fill="#181820"/>
     <circle cx="20" cy="19" r="5" fill="#FF5F57"/>
     <circle cx="36" cy="19" r="5" fill="#FFBD2E"/>
     <circle cx="52" cy="19" r="5" fill="#28C840"/>
-    <text x="270" y="23" text-anchor="middle" fill="#8E8B84" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">120ms KINEMATIC OSCILLOSCOPE · 60FPS</text>
+    <text x="274" y="23" text-anchor="middle" fill="#A6A29B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="600">0.25x SLOW-MOTION COMPARISON · SQUASH &amp; STRETCH</text>
 
-    <!-- Baseline 1.0x -->
-    <line x1="36" y1="195" x2="504" y2="195" stroke="#2E2E3A" stroke-width="1" stroke-dasharray="4 4"/>
-    <text x="42" y="186" fill="#686662" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10">scale(1.00) · rest state</text>
+    <!-- TOP TRACK: WITHOUT SKILL (STANDARD CSS) -->
+    <g transform="translate(28, 56)">
+      <rect x="0" y="0" width="492" height="106" rx="12" fill="#0B0B0E" stroke="#23232E" stroke-width="1"/>
+      <text x="18" y="26" fill="#78756F" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="600">WITHOUT SKILL · STANDARD LINEAR CSS</text>
+      <text x="18" y="44" fill="#585651" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10">transition: transform 200ms linear (Rigid, zero mass)</text>
 
-    <!-- Zone Dividers -->
-    <line x1="145" y1="58" x2="145" y2="285" stroke="#F59E0B" stroke-opacity="0.25" stroke-width="1"/>
-    <line x1="235" y1="58" x2="235" y2="285" stroke="#FF5722" stroke-opacity="0.3" stroke-width="1"/>
-    <line x1="385" y1="58" x2="385" y2="285" stroke="#6366F1" stroke-opacity="0.25" stroke-width="1"/>
-
-    <!-- Hitstop Highlight Zone -->
-    <rect x="145" y="58" width="90" height="227" fill="#FF5722" fill-opacity="0.07"/>
-
-    <!-- Physics Curve: Anticipation Squash -> Hitstop Freeze -> Spring Overshoot -> Settle -->
-    <path d="M 36 195 C 65 195, 95 252, 145 252 L 235 252 C 265 252, 285 96, 325 96 C 360 96, 375 212, 410 188 C 438 178, 465 195, 504 195" fill="none" stroke="url(#curveGrad)" stroke-width="4" stroke-linecap="round"/>
-
-    <!-- Keyframe Nodes -->
-    <circle cx="145" cy="252" r="6" fill="#F59E0B" stroke="#121216" stroke-width="2"/>
-    <circle cx="235" cy="252" r="6" fill="#FF5722" stroke="#121216" stroke-width="2"/>
-    <circle cx="325" cy="96" r="6" fill="#6366F1" stroke="#121216" stroke-width="2"/>
-    <circle cx="485" cy="195" r="6" fill="#10B981" stroke="#121216" stroke-width="2"/>
-
-    <!-- Phase Labels -->
-    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5">
-      <text x="52" y="76" fill="#F59E0B">01. ANTICIPATION</text>
-      <text x="52" y="92" fill="#8E8B84">scale(0.94)</text>
-
-      <text x="154" y="76" fill="#FF5722" font-weight="600">02. HITSTOP</text>
-      <text x="154" y="92" fill="#D5D2CD">75ms freeze</text>
-
-      <text x="250" y="76" fill="#818CF8">03. SPRING REBOUND</text>
-      <text x="250" y="92" fill="#8E8B84">overshoot 1.06x</text>
-
-      <text x="398" y="76" fill="#10B981">04. SYNTH TRIAD</text>
-      <text x="398" y="92" fill="#8E8B84">523Hz → 784Hz</text>
+      <!-- Linear Switch Track -->
+      <g transform="translate(274, 24)">
+        <rect class="anim-linear-track" x="0" y="0" width="194" height="58" rx="29" fill="#23232C" stroke="#343442" stroke-width="1.5"/>
+        <circle class="anim-linear-thumb" cx="29" cy="29" r="21" fill="#8E8B84"/>
+      </g>
     </g>
 
-    <!-- Bottom Telemetry Readout -->
-    <rect x="24" y="300" width="492" height="36" rx="8" fill="#0B0B0E" stroke="#252530" stroke-width="1"/>
-    <text x="40" y="322" fill="#10B981" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">● LIVE SANDBOX</text>
-    <text x="165" y="322" fill="#D5D2CD" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">--juice 5  ·  --forgiveness 8 (160ms Coyote)  ·  --audio 4</text>
+    <!-- BOTTOM TRACK: WITH GAME-FEEL-UI -->
+    <g transform="translate(28, 176)">
+      <rect x="0" y="0" width="492" height="122" rx="12" fill="#0D0D12" stroke="#FF5722" stroke-opacity="0.45" stroke-width="1.5"/>
+      <circle cx="22" cy="23" r="4" fill="#FF5722"/>
+      <text x="34" y="27" fill="#F4F2ED" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="600">WITH GAME-FEEL-UI · TACTILE SPRING &amp; DEFORMATION</text>
+      <text x="18" y="46" fill="#A6A29B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10">Preload squash → Mid-air stretch (1.42x) → Wall overshoot → Settle</text>
+
+      <!-- Ghost Silhouette of Mid-Air Stretch for visual clarity -->
+      <g transform="translate(274, 30)">
+        <rect class="anim-juice-track" x="0" y="0" width="194" height="58" rx="29" fill="#1F1F29" stroke="#383846" stroke-width="1.5"/>
+        <!-- Impact Ripple at right end -->
+        <circle class="anim-ring" cx="165" cy="29" r="22" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0"/>
+        <!-- Deforming Thumb -->
+        <circle class="anim-juice-thumb" cx="29" cy="29" r="21" fill="#FFFFFF"/>
+      </g>
+    </g>
+
+    <!-- LIVE PHASE CALLOUT BAR AT BOTTOM -->
+    <g transform="translate(28, 312)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="600">
+      <rect x="0" y="0" width="116" height="36" rx="7" fill="#181820" class="p1"/>
+      <text x="58" y="22" text-anchor="middle" fill="#F59E0B" class="p1">1. Preload 0.86x</text>
+
+      <rect x="125" y="0" width="116" height="36" rx="7" fill="#181820" class="p2"/>
+      <text x="183" y="22" text-anchor="middle" fill="#6366F1" class="p2">2. Stretch 1.42x</text>
+
+      <rect x="250" y="0" width="116" height="36" rx="7" fill="#181820" class="p3"/>
+      <text x="308" y="22" text-anchor="middle" fill="#FF5722" class="p3">3. Overshoot +12px</text>
+
+      <rect x="375" y="0" width="117" height="36" rx="7" fill="#181820" class="p4"/>
+      <text x="433" y="22" text-anchor="middle" fill="#10B981" class="p4">4. Spring Settle ✓</text>
+    </g>
   </g>
 </svg>
