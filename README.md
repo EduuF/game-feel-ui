@@ -7,9 +7,11 @@
 <br />
 
 <p align="center">
-  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Studio Sandbox</strong></a>
+  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Interactive Demos</strong></a>
   &nbsp;·&nbsp;
   <a href="https://eduuf.github.io/game-feel-ui/install.html"><strong>📖 Install &amp; Usage Tutorial</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#install"><strong>Quick Install</strong></a>
   &nbsp;·&nbsp;
   <a href="#three-workflows"><strong>Three Workflows</strong></a>
   &nbsp;·&nbsp;
@@ -37,7 +39,7 @@ Game developers spend months tuning the first **50ms–120ms** of player input�
 **`game-feel-ui`** is an open-source skill for **Claude Code**, **Cursor**, **Codex**, **Windsurf**, and **Gemini CLI** that brings **39 deterministic Game Feel mechanics**, **Coyote Time UX forgiveness**, and **zero-asset Web Audio synthesis** to modern web and mobile applications.
 
 > [!TIP]
-> **Want to feel the difference before reading?** Open the **[Live Studio Sandbox ↗](https://eduuf.github.io/game-feel-ui/)** to test the 60fps kinematic oscilloscope, toggle the physics engine ON/OFF inside a simulated app, and explore 12 side-by-side interactive mechanics.
+> **Want to feel the difference before reading?** Open the **[Live Interactive Showcase ↗](https://eduuf.github.io/game-feel-ui/)** to test the **0.25x Slow-Motion Comparison**, interact with **12 side-by-side Standard UI vs. Game Feel UI demos**, and hear the **0 KB Web Audio synthesizer** live in your browser.
 
 ---
 
@@ -46,6 +48,8 @@ Game developers spend months tuning the first **50ms–120ms** of player input�
 ```bash
 npx skills add EduuF/game-feel-ui
 ```
+
+> 📖 **Need a step-by-step walkthrough or ready-to-copy prompts?** Read the **[Interactive Installation & Prompting Tutorial ↗](https://eduuf.github.io/game-feel-ui/install.html)**.
 
 <details>
 <summary><strong>Claude Code Plugin Marketplace</strong></summary>

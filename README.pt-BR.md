@@ -7,9 +7,11 @@
 <br />
 
 <p align="center">
-  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Studio Sandbox</strong></a>
+  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Demos Interativas ao Vivo</strong></a>
   &nbsp;·&nbsp;
   <a href="https://eduuf.github.io/game-feel-ui/install.html"><strong>📖 Tutorial de Instalação e Uso</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#instalação"><strong>Instalação Rápida</strong></a>
   &nbsp;·&nbsp;
   <a href="#três-fluxos-de-uso"><strong>Três Fluxos de Uso</strong></a>
   &nbsp;·&nbsp;
@@ -37,7 +39,7 @@ Estúdios de jogos passam meses calibrando os primeiros **50ms a 120ms** de cada
 A **`game-feel-ui`** é uma skill open-source para **Claude Code**, **Cursor**, **Codex**, **Windsurf** e **Gemini CLI** que traz **39 mecânicas determinísticas de Game Feel**, **tolerância invisível de Coyote Time** e **síntese sonora Web Audio API sem arquivos externos** para aplicações web e mobile.
 
 > [!TIP]
-> **Quer sentir a diferença antes de ler?** Abra o **[Live Studio Sandbox ↗](https://eduuf.github.io/game-feel-ui/)** para testar o osciloscópio cinético a 60fps, ligar/desligar o motor físico dentro de um app simulado e explorar 12 comparações interativas lado a lado.
+> **Quer sentir a diferença antes de ler?** Abra o **[Showcase Interativo ao Vivo ↗](https://eduuf.github.io/game-feel-ui/)** para testar a **Comparação em Câmera Lenta (`0.25x`)**, interagir com **12 demonstrações lado a lado (Standard UI vs. Game Feel UI)** e ouvir o **sintetizador Web Audio de 0 KB** direto no navegador.
 
 ---
 
@@ -46,6 +48,8 @@ A **`game-feel-ui`** é uma skill open-source para **Claude Code**, **Cursor**, 
 ```bash
 npx skills add EduuF/game-feel-ui
 ```
+
+> 📖 **Quer um passo a passo detalhado ou prompts prontos para copiar?** Acesse o **[Tutorial Interativo de Instalação e Uso ↗](https://eduuf.github.io/game-feel-ui/install.html)**.
 
 <details>
 <summary><strong>Claude Code Plugin Marketplace</strong></summary>
@@ -95,6 +99,41 @@ Descreva o resultado desejado em linguagem natural, ou acione um fluxo determin�
 | **Hold-to-Commit (`M21`)** | Carregar um ataque forte com subida de tom e tremor. | **Ações Destrutivas sem Modal**: segurar "Revogar" preenche uma barra de tensão com reversão suave ao soltar. |
 | **Pitch Escalation (`M20`)** | Coletar moedas em sequência sobe a nota musical a cada moeda. | **Combo em Checklists e Kanban**: conclusões seguidas sobem `+2 semitons` (`440 * 2^(n/12)`) via Web Audio API. |
 | **Damped Recoil (`M11`)** | Atirador recua; alvo treme ao ser atingido. | **Error Shake Amortecido (`±6px → 0px`)** em inputs inválidos acompanhado de grave `140Hz→52Hz`. |
+
+---
+
+## Os 3 Dials de Calibração (Frequência vs. Intensidade)
+
+Uma tabela densa de B2B SaaS nunca deve animar como um caça-níquel. A `game-feel-ui` controla a sutileza através de três eixos independentes:
+
+- **`--juice` (`1–10`)**: Cinemática visual (`--gf-press-scale`, `--gf-overshoot-scale`, `--gf-spring-stiffness`, `--gf-hitstop-ms`).
+- **`--forgiveness` (`1–10`)**: Ergonomia invisível (`--gf-coyote-grace-ms`, `--gf-hit-slop-px`, `--gf-undo-window-ms`). Recomendado entre **`7–9`** para todas as aplicações produtivas.
+- **`--audio` (`0–10`)**: Ganho máximo do sintetizador Web Audio API (`--gf-audio-max-gain`) e intensidade de vibração háptica.
+
+---
+
+## Catálogo e Cobertura de Stacks
+
+| Dataset | Itens | Escopo |
+| :--- | :---: | :--- |
+| [`data/mechanics.csv`](./data/mechanics.csv) | **39** | *Anticipation*, *Impact & Hitstop*, *Spring & Morph*, *Coyote Forgiveness*, *Spatial 3D*, *Progression & Audio* |
+| [`data/components.csv`](./data/components.csv) | **23** | Receitas por componente em **L1 Subtle**, **L2 Balanced** e **L3 Juicy** |
+| [`data/audio-haptics.csv`](./data/audio-haptics.csv) | **11** | Receitas procedurais via Web Audio API (0 KB de assets) + padrões `navigator.vibrate` |
+| [`data/physics-curves.csv`](./data/physics-curves.csv) | **7** | Presets de `linear()`, `cubic-bezier` e parâmetros de mola (stiffness/damping/mass) |
+| [`data/app-profiles.csv`](./data/app-profiles.csv) | **8** | Perfis verticais (*B2B SaaS, Fintech, EdTech, DevTools, E-Commerce, AI Workspace, Consumer, Creative*) |
+| [`data/anti-patterns.csv`](./data/anti-patterns.csv) | **8** | Guardrails de performance a 60fps, prevenção de fadiga sonora e `prefers-reduced-motion` |
+| [`data/stacks/*.csv`](./data/stacks/) | **11** | `react`, `nextjs`, `framer-motion`, `html-tailwind`, `css-waapi`, `gsap`, `shadcn`, `vue`, `svelte`, `react-native`, `flutter` |
+
+---
+
+## Validação e Testes
+
+Zero dependências externas (usa apenas a biblioteca padrão do Python 3.8+):
+
+```bash
+python scripts/validate_data.py
+python scripts/tests/test_game_feel.py
+```
 
 ---
 

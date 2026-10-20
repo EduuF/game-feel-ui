@@ -20,102 +20,116 @@
 
   <style>
     @keyframes linearThumb {
-      0%, 15% { transform: translateX(0px); }
-      45%, 70% { transform: translateX(136px); }
-      90%, 100% { transform: translateX(0px); }
+      0%, 16% { transform: translateX(0px); }
+      32%, 64% { transform: translateX(136px); }
+      78%, 100% { transform: translateX(0px); }
     }
 
     @keyframes linearTrack {
-      0%, 15% { fill: #23232C; }
-      45%, 70% { fill: #3E3E4C; }
-      90%, 100% { fill: #23232C; }
+      0%, 16% { fill: #23232C; }
+      32%, 64% { fill: #3E3E4C; }
+      78%, 100% { fill: #23232C; }
     }
 
     @keyframes juiceThumb {
-      0%, 10% {
-        transform: translateX(0px) scale(1, 1);
-      }
-      16% {
-        transform: translateX(-4px) scale(0.86, 1.12);
-      }
-      28% {
-        transform: translateX(68px) scale(1.42, 0.76);
-      }
-      40% {
-        transform: translateX(148px) scale(0.84, 1.16);
-      }
-      48% {
-        transform: translateX(131px) scale(1.06, 0.96);
-      }
-      55%, 70% {
-        transform: translateX(136px) scale(1, 1);
-      }
-      75% {
-        transform: translateX(140px) scale(0.88, 1.1);
-      }
-      83% {
-        transform: translateX(65px) scale(1.38, 0.78);
-      }
-      91% {
-        transform: translateX(-8px) scale(0.86, 1.14);
-      }
-      96%, 100% {
-        transform: translateX(0px) scale(1, 1);
-      }
+      0%, 8%   { transform: translateX(0px) scale(1, 1); }
+      10%      { transform: translateX(-1.8px) scale(0.94, 1.06); }
+      12%      { transform: translateX(-3.8px) scale(0.88, 1.12); }
+      14%      { transform: translateX(-5.0px) scale(0.85, 1.16); }
+      16%      { transform: translateX(-4.2px) scale(0.86, 1.15); }
+      18%      { transform: translateX(5px) scale(1.08, 0.93); }
+      20%      { transform: translateX(22px) scale(1.25, 0.81); }
+      22%      { transform: translateX(45px) scale(1.39, 0.74); }
+      24%      { transform: translateX(70px) scale(1.45, 0.71); }
+      26%      { transform: translateX(96px) scale(1.40, 0.74); }
+      28%      { transform: translateX(120px) scale(1.26, 0.81); }
+      30%      { transform: translateX(138px) scale(1.04, 0.96); }
+      32%      { transform: translateX(147px) scale(0.86, 1.15); }
+      34%      { transform: translateX(149px) scale(0.82, 1.19); }
+      36%      { transform: translateX(143px) scale(0.91, 1.09); }
+      38%      { transform: translateX(135px) scale(1.02, 0.98); }
+      40%      { transform: translateX(130px) scale(1.07, 0.94); }
+      42%      { transform: translateX(132px) scale(1.04, 0.96); }
+      44%      { transform: translateX(135.5px) scale(1.00, 1.00); }
+      46%      { transform: translateX(137px) scale(0.99, 1.01); }
+      48%, 58% { transform: translateX(136px) scale(1, 1); }
+      60%      { transform: translateX(138px) scale(0.94, 1.06); }
+      62%      { transform: translateX(140.5px) scale(0.86, 1.15); }
+      64%      { transform: translateX(139px) scale(0.90, 1.10); }
+      66%      { transform: translateX(127px) scale(1.12, 0.90); }
+      68%      { transform: translateX(106px) scale(1.32, 0.78); }
+      70%      { transform: translateX(80px) scale(1.44, 0.72); }
+      72%      { transform: translateX(52px) scale(1.41, 0.73); }
+      74%      { transform: translateX(26px) scale(1.27, 0.80); }
+      76%      { transform: translateX(5px) scale(1.05, 0.96); }
+      78%      { transform: translateX(-8px) scale(0.85, 1.16); }
+      80%      { transform: translateX(-10px) scale(0.83, 1.18); }
+      82%      { transform: translateX(-3px) scale(0.94, 1.06); }
+      84%      { transform: translateX(4px) scale(1.05, 0.96); }
+      86%      { transform: translateX(1.5px) scale(1.02, 0.98); }
+      88%, 100%{ transform: translateX(0px) scale(1, 1); }
     }
 
     @keyframes juiceTrack {
-      0%, 16% { fill: #1F1F29; stroke: #383846; }
-      38%, 72% { fill: #FF5722; stroke: #FF8A65; }
-      92%, 100% { fill: #1F1F29; stroke: #383846; }
+      0%, 18%  { fill: #1F1F29; stroke: #383846; }
+      28%, 66% { fill: #FF5722; stroke: #FF8A65; }
+      76%, 100%{ fill: #1F1F29; stroke: #383846; }
     }
 
     @keyframes phase1 {
-      0%, 9% { opacity: 0.28; }
-      10%, 21% { opacity: 1; }
-      22%, 100% { opacity: 0.28; }
+      0%, 7%   { opacity: 0.28; }
+      8%, 17%  { opacity: 1; }
+      18%, 58% { opacity: 0.28; }
+      59%, 65% { opacity: 1; }
+      66%, 100%{ opacity: 0.28; }
     }
     @keyframes phase2 {
-      0%, 21% { opacity: 0.28; }
-      22%, 35% { opacity: 1; }
-      36%, 100% { opacity: 0.28; }
+      0%, 17%  { opacity: 0.28; }
+      18%, 30% { opacity: 1; }
+      31%, 65% { opacity: 0.28; }
+      66%, 76% { opacity: 1; }
+      77%, 100%{ opacity: 0.28; }
     }
     @keyframes phase3 {
-      0%, 35% { opacity: 0.28; }
-      36%, 52% { opacity: 1; }
-      53%, 100% { opacity: 0.28; }
+      0%, 30%  { opacity: 0.28; }
+      31%, 39% { opacity: 1; }
+      40%, 76% { opacity: 0.28; }
+      77%, 83% { opacity: 1; }
+      84%, 100%{ opacity: 0.28; }
     }
     @keyframes phase4 {
-      0%, 48% { opacity: 0.28; }
-      49%, 70% { opacity: 1; }
-      71%, 100% { opacity: 0.28; }
+      0%, 39%  { opacity: 0.28; }
+      40%, 58% { opacity: 1; }
+      59%, 83% { opacity: 0.28; }
+      84%, 96% { opacity: 1; }
+      97%, 100%{ opacity: 0.28; }
     }
 
     @keyframes impactRing {
-      0%, 37% { r: 18px; stroke-opacity: 0; }
-      40% { r: 24px; stroke-opacity: 0.85; }
-      54%, 100% { r: 46px; stroke-opacity: 0; }
+      0%, 31%  { transform: scale(0.8); opacity: 0; }
+      33%      { transform: scale(1.05); opacity: 0.85; }
+      46%, 100%{ transform: scale(2.1); opacity: 0; }
     }
 
     .anim-linear-thumb {
-      animation: linearThumb 4.6s linear infinite;
+      animation: linearThumb 7.2s linear infinite;
     }
     .anim-linear-track {
-      animation: linearTrack 4.6s linear infinite;
+      animation: linearTrack 7.2s linear infinite;
     }
     .anim-juice-thumb {
-      animation: juiceThumb 4.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+      animation: juiceThumb 7.2s linear infinite;
     }
     .anim-juice-track {
-      animation: juiceTrack 4.6s ease infinite;
+      animation: juiceTrack 7.2s linear infinite;
     }
     .anim-ring {
-      animation: impactRing 4.6s ease-out infinite;
+      animation: impactRing 7.2s linear infinite;
     }
-    .p1 { animation: phase1 4.6s infinite; }
-    .p2 { animation: phase2 4.6s infinite; }
-    .p3 { animation: phase3 4.6s infinite; }
-    .p4 { animation: phase4 4.6s infinite; }
+    .p1 { animation: phase1 7.2s linear infinite; }
+    .p2 { animation: phase2 7.2s linear infinite; }
+    .p3 { animation: phase3 7.2s linear infinite; }
+    .p4 { animation: phase4 7.2s linear infinite; }
   </style>
 
   <!-- Background -->
@@ -196,7 +210,9 @@
       <!-- Game Feel Switch Track -->
       <g transform="translate(274, 30)">
         <rect class="anim-juice-track" x="0" y="0" width="194" height="58" rx="29" fill="#1F1F29" stroke="#383846" stroke-width="1.5"/>
-        <circle class="anim-ring" cx="165" cy="29" r="22" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0"/>
+        <g transform="translate(165, 29)">
+          <circle class="anim-ring" cx="0" cy="0" r="21" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0"/>
+        </g>
         <g transform="translate(29, 29)">
           <circle class="anim-juice-thumb" cx="0" cy="0" r="21" fill="#FFFFFF"/>
         </g>
@@ -206,13 +222,13 @@
     <!-- LIVE PHASE CALLOUT BAR AT BOTTOM -->
     <g transform="translate(28, 312)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="600">
       <rect x="0" y="0" width="116" height="36" rx="7" fill="#181820" class="p1"/>
-      <text x="58" y="22" text-anchor="middle" fill="#F59E0B" class="p1">1. Preload 0.86x</text>
+      <text x="58" y="22" text-anchor="middle" fill="#F59E0B" class="p1">1. Preload 0.85x</text>
 
       <rect x="125" y="0" width="116" height="36" rx="7" fill="#181820" class="p2"/>
-      <text x="183" y="22" text-anchor="middle" fill="#6366F1" class="p2">2. Stretch 1.42x</text>
+      <text x="183" y="22" text-anchor="middle" fill="#6366F1" class="p2">2. Stretch 1.45x</text>
 
       <rect x="250" y="0" width="116" height="36" rx="7" fill="#181820" class="p3"/>
-      <text x="308" y="22" text-anchor="middle" fill="#FF5722" class="p3">3. Overshoot +12px</text>
+      <text x="308" y="22" text-anchor="middle" fill="#FF5722" class="p3">3. Overshoot +13px</text>
 
       <rect x="375" y="0" width="117" height="36" rx="7" fill="#181820" class="p4"/>
       <text x="433" y="22" text-anchor="middle" fill="#10B981" class="p4">4. Spring Settle ✓</text>

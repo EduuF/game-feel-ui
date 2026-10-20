@@ -221,17 +221,25 @@
     .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--vermilion);
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--vermilion);
+      padding: 8px 16px;
+      border-radius: 10px;
       text-decoration: none;
-      margin-bottom: 18px;
-      font-weight: 600;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-card);
+      transition: transform 150ms var(--spring-overshoot), background-color 150ms ease;
     }
 
     .back-link:hover {
-      text-decoration: underline;
+      background: var(--vermilion);
+      color: #ffffff;
+      transform: translateX(-3px);
     }
 
     h1 {
@@ -506,7 +514,7 @@
         <span>game-feel-ui</span>
       </a>
       <div class="topbar-controls">
-        <a href="index.html" class="pill-btn" data-i18n="backNav">← Live Demos</a>
+        <a href="index.html" class="pill-btn" style="border-color:var(--vermilion);color:var(--text);font-weight:700;" data-i18n="backNav">← Back to Homepage</a>
         <button id="themeToggle" class="pill-btn" type="button">
           <span>◐</span>
           <span id="themeLabel">Paper</span>
@@ -522,7 +530,7 @@
 
   <main class="container">
     <section class="tutorial-hero">
-      <a href="index.html" class="back-link" data-i18n="backLink">← Back to Interactive Comparison Sandbox</a>
+      <a href="index.html" class="back-link" data-i18n="backLink">← Back to Homepage (Interactive Demos)</a>
       <h1 data-i18n="pageTitle">Install &amp; Use <em>game-feel-ui</em> in 60 Seconds</h1>
       <p class="hero-sub" data-i18n="pageSub">
         Follow this step-by-step guide to connect the 39 Game Feel mechanics, Coyote Time UX patterns, and 0 KB Web Audio engine to your AI coding assistant.
@@ -700,7 +708,7 @@
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <span>game-feel-ui · MIT License · Built by Eduardo Fiuza</span>
       <span>
-        <a href="index.html" style="color:var(--vermilion);font-weight:600;">← Back to Live Sandbox</a>
+        <a href="index.html" style="color:var(--vermilion);font-weight:700;" data-i18n="footerHome">← Back to Homepage</a>
         &nbsp;·&nbsp;
         <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener">GitHub Repository</a>
       </span>
@@ -769,8 +777,9 @@
     // Bilingual Switcher (EN / PT)
     const i18n = {
       en: {
-        backNav: '← Live Demos',
-        backLink: '← Back to Interactive Comparison Sandbox',
+        backNav: '← Back to Homepage',
+        backLink: '← Back to Homepage (Interactive Demos)',
+        footerHome: '← Back to Homepage',
         pageTitle: 'Install &amp; Use <em>game-feel-ui</em> in 60 Seconds',
         pageSub: 'Follow this step-by-step guide to connect the 39 Game Feel mechanics, Coyote Time UX patterns, and 0 KB Web Audio engine to your AI coding assistant.',
         step1Title: 'Choose Your Installation Method',
@@ -811,8 +820,9 @@
         a4: 'All 11 major stacks: React, Next.js, Framer Motion, Tailwind CSS, Vanilla CSS/JS, Vue 3, Svelte, Angular, SwiftUI, React Native, and Flutter.'
       },
       pt: {
-        backNav: '← Demos ao Vivo',
-        backLink: '← Voltar para o Sandbox de Comparações ao Vivo',
+        backNav: '← Voltar para a Homepage',
+        backLink: '← Voltar para a Página Inicial (Homepage)',
+        footerHome: '← Voltar para a Página Inicial',
         pageTitle: 'Instale e Use a <em>game-feel-ui</em> em 60 Segundos',
         pageSub: 'Siga este passo a passo para conectar as 39 mecânicas de Game Feel, padrões de Coyote Time e síntese de áudio 0 KB ao seu assistente de código.',
         step1Title: 'Escolha o Método de Instalação',
