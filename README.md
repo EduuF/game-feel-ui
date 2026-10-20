@@ -32,11 +32,11 @@
 
 ---
 
-**Most AI-generated interfaces feel lifeless because clicks swap state in `0ms` or apply a generic `transition: all 0.3s ease`.**
+**AI-generated frontends work, but they often feel lifeless—pages look static, clicks have no weight, and interactions swap state in `0ms` or behind a generic `transition: all 0.3s ease`.**
 
-Game developers spend months tuning the first **50ms–120ms** of player input—using techniques coined by Steve Swink (*Game Feel*) and Martin Jonasson & Petri Purho (*Juice it or lose it*) so virtual objects carry mass, tension, and physical momentum.
+**`game-feel-ui`** is an open-source skill for **Claude Code**, **Cursor**, **Codex**, **Windsurf**, and **Gemini CLI** that spots dull, flat spots in your interface and makes your frontend feel **dynamic, fluid, tactile, and attractive**—using subtle, proven interaction tricks from game development.
 
-**`game-feel-ui`** is an open-source skill for **Claude Code**, **Cursor**, **Codex**, **Windsurf**, and **Gemini CLI** that brings **39 deterministic Game Feel mechanics**, **Coyote Time UX forgiveness**, and **zero-asset Web Audio synthesis** to modern web and mobile applications.
+Game studios spend months tuning the first **50ms–120ms** of user input—applying principles coined by Steve Swink (*Game Feel*) and Martin Jonasson & Petri Purho (*Juice it or lose it*) so virtual controls carry real mass, tension, and momentum. This skill brings **39 deterministic mechanics** (*Squash & Stretch, Hitstop, Spring Overshoot*), **invisible UX forgiveness** (*Coyote Time hover grace, Hold-to-Commit*), and **zero-asset Web Audio synthesis** to **11 modern web and mobile stacks** without turning serious software into distracting gamification.
 
 > [!TIP]
 > **Want to feel the difference before reading?** Open the **[Live Interactive Showcase ↗](https://e-fiuza.github.io/game-feel-ui/)** to test the **0.25x Slow-Motion Comparison**, interact with **12 side-by-side Standard UI vs. Game Feel UI demos**, and hear the **0 KB Web Audio synthesizer** live in your browser.
@@ -82,7 +82,7 @@ Describe the outcome you want in natural language, or trigger a specific determi
 
 | Mode | You type, for example | You get |
 | :--- | :--- | :--- |
-| **`01 · Component Polish`**<br />*Single interaction or screen* | `"Replace our Delete API Key confirmation modal with a Game Feel hold-to-commit button and add Coyote Time to the header dropdown."` | Queries 39 mechanics and 11 stack guides to deliver compositor-safe (`transform`/`opacity`) code, a reversible tension gauge, 160ms hover forgiveness, and `prefers-reduced-motion` fallbacks. |
+| **`01 · Component Polish`**<br />*Single interaction or screen* | `"Make our dashboard feel more dynamic and fluid—upgrade our primary buttons, toggles, and dropdowns with game-feel-ui."` | Queries 39 mechanics and 11 stack guides to deliver compositor-safe (`transform`/`opacity`) spring physics, preload compression, 160ms Coyote Time hover forgiveness, and `prefers-reduced-motion` fallbacks. |
 | **`02 · Codebase Audit`**<br />*Static repository scanner* | `"Audit our dashboard components with game-feel-ui and fix the top 3 dead interactions."` | Runs `scripts/search.py --audit`, calculates a **0–100 Juice Score**, pinpoints dead clicks, blocking `window.confirm()` dialogs, and layout-thrashing animations by `file:line`, and patches them. |
 | **`03 · System Blueprint`**<br />*Calibrated design tokens* | `"Generate a B2B SaaS Game Feel blueprint calibrated with juice 5, forgiveness 8, audio 3 and persist it."` | Runs `scripts/search.py --blueprint --persist`, calibrates CSS Custom Properties (`--gf-press-scale`, `--gf-hitstop-ms`, `--gf-coyote-grace-ms`), and writes the contract to `game-feel-system/MASTER.md`. |
 

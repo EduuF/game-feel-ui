@@ -32,11 +32,11 @@
 
 ---
 
-**A maioria das interfaces geradas por IA parece "morta" porque os cliques trocam estados em `0ms` ou aplicam um genérico `transition: all 0.3s ease`.**
+**Frontends gerados por IA até funcionam, mas quase sempre parecem "sem vida" — páginas estáticas, cliques secos em `0ms` ou escondidos atrás de um genérico `transition: all 0.3s ease`.**
 
-Estúdios de jogos passam meses calibrando os primeiros **50ms a 120ms** de cada interação — usando técnicas cunhadas por Steve Swink (*Game Feel*) e Martin Jonasson & Petri Purho (*Juice it or lose it*) para que objetos virtuais transmitam massa, tensão e inércia física real.
+A **`game-feel-ui`** é uma skill open-source para **Claude Code**, **Cursor**, **Codex**, **Windsurf** e **Gemini CLI** especializada em detectar pontos "sem graça" da sua interface e deixar seu frontend mais **dinâmico, fluido, tátil e atraente** — usando truques sutis comprovados no desenvolvimento de jogos.
 
-A **`game-feel-ui`** é uma skill open-source para **Claude Code**, **Cursor**, **Codex**, **Windsurf** e **Gemini CLI** que traz **39 mecânicas determinísticas de Game Feel**, **tolerância invisível de Coyote Time** e **síntese sonora Web Audio API sem arquivos externos** para aplicações web e mobile.
+Estúdios de jogos passam meses calibrando os primeiros **50ms a 120ms** de cada interação — aplicando princípios cunhados por Steve Swink (*Game Feel*) e Martin Jonasson & Petri Purho (*Juice it or lose it*) para que objetos virtuais transmitam peso, tensão e fluidez real. Esta skill traduz **39 mecânicas determinísticas** (*Squash & Stretch, Hitstop, Spring Overshoot*), **tolerância invisível de UX** (*Coyote Time em menus, Hold-to-Commit*) e **síntese sonora Web Audio API de 0 KB** para **11 stacks de web e mobile** sem transformar softwares sérios em gamificação exagerada.
 
 > [!TIP]
 > **Quer sentir a diferença antes de ler?** Abra o **[Showcase Interativo ao Vivo ↗](https://e-fiuza.github.io/game-feel-ui/)** para testar a **Comparação em Câmera Lenta (`0.25x`)**, interagir com **12 demonstrações lado a lado (Standard UI vs. Game Feel UI)** e ouvir o **sintetizador Web Audio de 0 KB** direto no navegador.
@@ -82,7 +82,7 @@ Descreva o resultado desejado em linguagem natural, ou acione um fluxo determin�
 
 | Modo | O que você digita no agente | O que você recebe no código |
 | :--- | :--- | :--- |
-| **`01 · Component Polish`**<br />*Componente ou tela* | `"Substitua o modal de confirmação do botão Excluir API Key por um botão Hold-to-Commit e adicione Coyote Time ao menu dropdown."` | Consulta 39 mecânicas e 11 stacks entregando código seguro a 60fps (`transform`/`opacity`), barra de tensão reversível, 160ms de perdão no hover e fallback para `prefers-reduced-motion`. |
+| **`01 · Component Polish`**<br />*Componente ou tela* | `"Deixe nosso dashboard mais dinâmico, fluido e atraente melhorando nossos botões, toggles e menus dropdown com a game-feel-ui."` | Consulta 39 mecânicas e 11 stacks entregando física de mola a 60fps (`transform`/`opacity`), pré-carga tátil no clique, 160ms de perdão no hover (Coyote Time) e fallback para `prefers-reduced-motion`. |
 | **`02 · Codebase Audit`**<br />*Scanner estático de código* | `"Faça uma auditoria no nosso dashboard com a game-feel-ui e corrija as 3 principais interações mortas."` | Executa `scripts/search.py --audit`, calcula o **Juice Score (0–100)**, aponta cliques secos, modais `window.confirm()` e animações pesadas por `arquivo:linha` e aplica as correções. |
 | **`03 · System Blueprint`**<br />*Tokens CSS calibrados* | `"Gere um blueprint de Game Feel para B2B SaaS com juice 5, forgiveness 8, audio 3 e salve no projeto."` | Executa `scripts/search.py --blueprint --persist`, calibra as Custom Properties (`--gf-press-scale`, `--gf-hitstop-ms`, `--gf-coyote-grace-ms`) e grava o contrato em `game-feel-system/MASTER.md`. |
 

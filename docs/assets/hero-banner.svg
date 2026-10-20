@@ -150,8 +150,8 @@
     <text x="0" y="138" fill="#A6A29B" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="28">The physics of the first 120 milliseconds.</text>
 
     <!-- Subtitle -->
-    <text x="0" y="184" fill="#8E8B84" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15.5">39 Game Dev mechanics—Hitstop, Squash &amp; Stretch, Coyote Time,</text>
-    <text x="0" y="208" fill="#8E8B84" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15.5">and 0 KB Web Audio synthesis—engineered for modern web &amp; mobile UI.</text>
+    <text x="0" y="184" fill="#8E8B84" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15.5">Turn flat, AI-looking frontends into dynamic, fluid, and tactile UIs</text>
+    <text x="0" y="208" fill="#8E8B84" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15.5">using 39 Game Dev mechanics, Coyote Time UX &amp; 0 KB Web Audio.</text>
 
     <!-- Terminal Pill -->
     <rect x="0" y="242" width="420" height="48" rx="10" fill="#09090B" stroke="#32323D" stroke-width="1.5"/>
