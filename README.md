@@ -1,15 +1,15 @@
 <div align="center">
 
-<a href="https://eduuf.github.io/game-feel-ui/">
+<a href="https://e-fiuza.github.io/game-feel-ui/">
   <img src="./docs/assets/hero-banner.svg" alt="game-feel-ui — The physics of the first 120 milliseconds" width="100%" />
 </a>
 
 <br />
 
 <p align="center">
-  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Interactive Demos</strong></a>
+  <a href="https://e-fiuza.github.io/game-feel-ui/"><strong>▶ Live Interactive Demos</strong></a>
   &nbsp;·&nbsp;
-  <a href="https://eduuf.github.io/game-feel-ui/install.html"><strong>📖 Install &amp; Usage Tutorial</strong></a>
+  <a href="https://e-fiuza.github.io/game-feel-ui/install.html"><strong>📖 Install &amp; Usage Tutorial</strong></a>
   &nbsp;·&nbsp;
   <a href="#install"><strong>Quick Install</strong></a>
   &nbsp;·&nbsp;
@@ -21,8 +21,8 @@
 </p>
 
 <p align="center">
-  <a href="https://eduuf.github.io/game-feel-ui/"><img src="https://img.shields.io/badge/Live_Sandbox-eduuf.github.io%2Fgame--feel--ui-ff5722?style=flat-square" alt="Live Interactive Sandbox" /></a>
-  <a href="https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml"><img src="https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml/badge.svg?style=flat-square" alt="CI Validation" /></a>
+  <a href="https://e-fiuza.github.io/game-feel-ui/"><img src="https://img.shields.io/badge/Live_Sandbox-e--fiuza.github.io%2Fgame--feel--ui-ff5722?style=flat-square" alt="Live Interactive Sandbox" /></a>
+  <a href="https://github.com/e-fiuza/game-feel-ui/actions/workflows/ci.yml"><img src="https://github.com/e-fiuza/game-feel-ui/actions/workflows/ci.yml/badge.svg?style=flat-square" alt="CI Validation" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-18181b?style=flat-square" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/works_with-Claude_Code_%2B_Cursor_%2B_Codex_%2B_Windsurf-18181b?style=flat-square" alt="Works with Claude Code, Cursor, Codex, Windsurf" />
   <img src="https://img.shields.io/badge/audio_assets-0_KB_(Web_Audio_API)-10b981?style=flat-square" alt="0 KB Audio Assets" />
@@ -39,17 +39,17 @@ Game developers spend months tuning the first **50ms–120ms** of player input�
 **`game-feel-ui`** is an open-source skill for **Claude Code**, **Cursor**, **Codex**, **Windsurf**, and **Gemini CLI** that brings **39 deterministic Game Feel mechanics**, **Coyote Time UX forgiveness**, and **zero-asset Web Audio synthesis** to modern web and mobile applications.
 
 > [!TIP]
-> **Want to feel the difference before reading?** Open the **[Live Interactive Showcase ↗](https://eduuf.github.io/game-feel-ui/)** to test the **0.25x Slow-Motion Comparison**, interact with **12 side-by-side Standard UI vs. Game Feel UI demos**, and hear the **0 KB Web Audio synthesizer** live in your browser.
+> **Want to feel the difference before reading?** Open the **[Live Interactive Showcase ↗](https://e-fiuza.github.io/game-feel-ui/)** to test the **0.25x Slow-Motion Comparison**, interact with **12 side-by-side Standard UI vs. Game Feel UI demos**, and hear the **0 KB Web Audio synthesizer** live in your browser.
 
 ---
 
 ## Install
 
 ```bash
-npx skills add EduuF/game-feel-ui
+npx skills add e-fiuza/game-feel-ui
 ```
 
-> 📖 **Need a step-by-step walkthrough or ready-to-copy prompts?** Read the **[Interactive Installation & Prompting Tutorial ↗](https://eduuf.github.io/game-feel-ui/install.html)**.
+> 📖 **Need a step-by-step walkthrough or ready-to-copy prompts?** Read the **[Interactive Installation & Prompting Tutorial ↗](https://e-fiuza.github.io/game-feel-ui/install.html)**.
 
 <details>
 <summary><strong>Claude Code Plugin Marketplace</strong></summary>
@@ -57,7 +57,7 @@ npx skills add EduuF/game-feel-ui
 Run inside a Claude Code session:
 
 ```text
-/plugin marketplace add EduuF/game-feel-ui
+/plugin marketplace add e-fiuza/game-feel-ui
 /plugin install game-feel-ui
 ```
 </details>
@@ -67,10 +67,10 @@ Run inside a Claude Code session:
 
 ```bash
 # Project-scoped skill
-git clone https://github.com/EduuF/game-feel-ui.git .claude/skills/game-feel-ui
+git clone https://github.com/e-fiuza/game-feel-ui.git .claude/skills/game-feel-ui
 
 # Global skill across all repositories
-git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui
+git clone https://github.com/e-fiuza/game-feel-ui.git ~/.claude/skills/game-feel-ui
 ```
 </details>
 
@@ -141,4 +141,4 @@ python scripts/tests/test_game_feel.py
 
 ## License
 
-MIT © [Eduardo Fiuza](https://github.com/EduuF)
+MIT © [Eduardo Fiuza](https://github.com/e-fiuza)

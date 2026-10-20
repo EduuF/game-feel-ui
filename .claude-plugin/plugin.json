@@ -1,7 +1,14 @@
 {
   "name": "game-feel-ui",
   "version": "1.0.0",
-  "description": "Game Feel, Juiciness, Invisible Forgiveness (Coyote Time, Input Buffering) & Sensory UI intelligence for Web, Mobile, and Desktop applications. Includes static codebase auditor (--audit), blueprint generator (--blueprint), BM25 search across 39 mechanics, 18 component recipes, 11 procedural Web Audio synths, and 11 stacks.",
+  "description": "Game Feel, Juiciness, Invisible Forgiveness (Coyote Time, Input Buffering) & Sensory UI intelligence for Web, Mobile, and Desktop applications. Includes static codebase auditor (--audit), blueprint generator (--blueprint), BM25 search across 39 mechanics, 23 component recipes, 11 procedural Web Audio synths, and 11 stacks.",
+  "author": {
+    "name": "Eduardo Fiuza",
+    "url": "https://github.com/e-fiuza"
+  },
+  "repository": "https://github.com/e-fiuza/game-feel-ui",
+  "homepage": "https://e-fiuza.github.io/game-feel-ui/",
+  "license": "MIT",
   "skills": [
     "."
   ]
