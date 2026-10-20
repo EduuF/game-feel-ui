@@ -9,11 +9,11 @@
 <p align="center">
   <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Studio Sandbox</strong></a>
   &nbsp;·&nbsp;
+  <a href="https://eduuf.github.io/game-feel-ui/install.html"><strong>📖 Install &amp; Usage Tutorial</strong></a>
+  &nbsp;·&nbsp;
   <a href="#three-workflows"><strong>Three Workflows</strong></a>
   &nbsp;·&nbsp;
   <a href="#from-game-engine-to-the-dom"><strong>39 Mechanics</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#install"><strong>Install</strong></a>
   &nbsp;·&nbsp;
   <a href="./README.pt-BR.md"><strong>Português (PT-BR)</strong></a>
 </p>

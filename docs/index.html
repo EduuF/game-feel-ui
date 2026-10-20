@@ -484,16 +484,47 @@
     }
 
     .lane-badge {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #d5d2cd;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lane-badge::after {
+      content: "WITHOUT SKILL";
       font-family: var(--font-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #8e8b84;
-      text-transform: uppercase;
     }
 
     .juice-lane .lane-badge {
-      color: var(--vermilion);
+      color: #ffffff;
+    }
+
+    .juice-lane .lane-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--vermilion);
+      box-shadow: 0 0 10px var(--vermilion);
+    }
+
+    .juice-lane .lane-badge::after {
+      content: "WITH SKILL";
+      background: rgba(255, 87, 34, 0.18);
+      border-color: rgba(255, 87, 34, 0.45);
+      color: #ff8a65;
     }
 
     .lane-sub {
@@ -799,13 +830,32 @@
       background-color: #0d0d11;
       background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
       background-size: 15px 15px;
-      min-height: 156px;
+      min-height: 174px;
       color: #f4f2ed;
+      position: relative;
+    }
+
+    .stage-split::after {
+      content: "VS";
+      position: absolute;
+      top: 56%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 99px;
+      background: #1a1a22;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #a6a29b;
+      z-index: 5;
+      pointer-events: none;
     }
 
     .stage-cell {
       padding: 14px;
-      padding-top: 32px;
+      padding-top: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -815,33 +865,62 @@
     }
 
     .stage-cell:first-child {
-      border-right: 1px dashed rgba(255, 255, 255, 0.1);
+      border-right: 1px dashed rgba(255, 255, 255, 0.12);
     }
 
     .stage-tag {
       position: absolute;
-      top: 9px;
-      left: 12px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: #78756f;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.025);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      font-family: var(--font-display);
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      color: #b8b4ad;
       pointer-events: none;
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: flex-start;
+      gap: 6px;
+    }
+
+    .stage-tag::after {
+      content: "WITHOUT SKILL";
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #78756f;
     }
 
     .stage-tag-active {
-      color: #d5d2cd;
-      font-weight: 500;
+      color: #ffffff;
+      background: rgba(255, 87, 34, 0.11);
+      border-bottom: 1px solid rgba(255, 87, 34, 0.28);
     }
 
     .stage-tag-active::before {
       content: "";
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--vermilion);
+      box-shadow: 0 0 8px var(--vermilion);
+      margin-right: 4px;
+    }
+
+    .stage-tag-active::after {
+      content: "WITH SKILL";
+      background: rgba(255, 87, 34, 0.22);
+      color: #ff8a65;
     }
 
     .specimen-foot {
@@ -1399,6 +1478,7 @@
         <a href="#sandbox" data-i18n="navLab">Interactive Sandbox (12)</a>
         <a href="#thesis" data-i18n="navThesis">The 120ms Thesis</a>
         <a href="#workflows" data-i18n="navWorkflows">Agent Workflows</a>
+        <a href="install.html" style="color:var(--vermilion);font-weight:600;" data-i18n="navInstall">Install Tutorial →</a>
       </nav>
       <div class="topbar-controls">
         <button id="soundToggle" class="pill-btn" type="button" title="Toggle Web Audio Synthesizer">
@@ -1437,12 +1517,18 @@
             Game studios spend months tuning <strong>Anticipation</strong>, <strong>Squash &amp; Stretch</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.
           </p>
 
-          <div id="installBtn" class="terminal-card" role="button" tabindex="0" aria-label="Copy npx install command">
+          <div id="installBtn" class="terminal-card" role="button" tabindex="0" aria-label="Copy npx install command" style="margin-bottom:12px;">
             <div class="terminal-cmd">
               <span class="terminal-prompt">$</span>
               <span>npx skills add EduuF/game-feel-ui</span>
             </div>
             <span id="copyBadge" class="terminal-copy" data-i18n="copyBtn">Copy</span>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <a href="install.html" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--vermilion);text-decoration:none;padding:6px 12px;border-radius:8px;background:var(--vermilion-soft);border:1px solid rgba(255,87,34,0.3);" data-i18n="heroInstallGuideLink">
+              📖 Step-by-Step Installation &amp; Usage Tutorial →
+            </a>
           </div>
 
           <div class="agent-strip">
@@ -1477,7 +1563,7 @@
             <!-- Top Lane: Without Skill -->
             <div class="comp-lane">
               <div class="lane-info">
-                <span class="lane-badge" data-i18n="laneFlatTitle">Without Skill · Standard CSS</span>
+                <span class="lane-badge" data-i18n="laneFlatTitle">Standard UI</span>
                 <span class="lane-sub" data-i18n="laneFlatSub">Rigid linear slide (Zero deformation)</span>
               </div>
               <div id="heroFlatSwitch" class="hero-switch" role="switch" aria-checked="false" aria-label="Standard CSS Toggle">
@@ -1488,7 +1574,7 @@
             <!-- Bottom Lane: With game-feel-ui -->
             <div class="comp-lane juice-lane">
               <div class="lane-info">
-                <span class="lane-badge" data-i18n="laneJuiceTitle">With game-feel-ui · Spring &amp; Morph</span>
+                <span class="lane-badge" data-i18n="laneJuiceTitle">Game Feel UI</span>
                 <span class="lane-sub" data-i18n="laneJuiceSub">Preload squash → Mid-air stretch (1.42x) → Overshoot</span>
               </div>
               <div id="heroJuiceSwitch" class="hero-switch" role="switch" aria-checked="false" aria-label="Game Feel Toggle">
@@ -1552,7 +1638,7 @@
               <button id="s1Flat" type="button" class="ui-btn-flat">Deploy</button>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <button id="s1Juice" type="button" class="ui-btn-juice">
                 <span id="s1Icon">↑</span>
                 <span id="s1Text">Deploy</span>
@@ -1587,7 +1673,7 @@ onPointerUp: async () => {
               <button id="s2Flat" type="button" class="ui-btn-flat">Delete Key</button>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <button id="s2Juice" type="button" class="ui-btn-hold">
                 <div id="s2Fill" class="hold-fill"></div>
                 <span id="s2Text" class="hold-text">Hold to Delete</span>
@@ -1624,7 +1710,7 @@ button.style.transform = `translate(${jitter}px, 0) scale(0.97)`;</pre>
               <span style="font-family:var(--font-mono);font-size:10px;color:#585651;">No streak feedback</span>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div style="display:flex;gap:6px;">
                 <button type="button" class="ui-btn-juice juice-step" data-step="0">1</button>
                 <button type="button" class="ui-btn-juice juice-step" data-step="1">2</button>
@@ -1657,7 +1743,7 @@ playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
               <button type="button" id="s4FlatBtn" class="ui-btn-flat">Submit Invalid</button>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <button type="button" id="s4JuiceBtn" class="ui-btn-juice">Submit Invalid</button>
             </div>
           </div>
@@ -1685,11 +1771,11 @@ playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
           <p class="specimen-desc" data-i18n="s7Desc">The thumb elongates horizontally (<code>scaleX(1.32)</code>) mid-flight and settles with spring overshoot.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Linear Toggle</span>
+              <span class="stage-tag">Standard UI</span>
               <div id="s7Flat" class="switch-track flat-switch"><div class="switch-thumb"></div></div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Spring + Squash</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div id="s7Juice" class="switch-track"><div id="s7Thumb" class="switch-thumb"></div></div>
             </div>
           </div>
@@ -1714,7 +1800,7 @@ playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
           <p class="specimen-desc" data-i18n="s8Desc">Numbers roll vertically with directional momentum and pitch-matched ticks instead of swapping abruptly.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Instant Swap</span>
+              <span class="stage-tag">Standard UI</span>
               <div class="counter-pill">
                 <button type="button" class="counter-btn" id="s8FlatDec">−</button>
                 <span id="s8FlatVal">12</span>
@@ -1722,7 +1808,7 @@ playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
               </div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Kinetic Odometer</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div class="counter-pill">
                 <button type="button" class="counter-btn" id="s8JuiceDec">−</button>
                 <span id="s8JuiceVal" class="odo-val">12</span>
@@ -1750,14 +1836,14 @@ requestAnimationFrame(() => valEl.style.transform = 'translateY(0) scale(1)');</
           <p class="specimen-desc" data-i18n="s9Desc">Each step pops the floating value badge with spring physics, lights physical notch detents, and plays a frequency-scaled rotary tick.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Plain Slider</span>
+              <span class="stage-tag">Standard UI</span>
               <div class="detent-wrap">
                 <span id="s9FlatBubble" class="detent-bubble">Level 3</span>
                 <input type="range" min="1" max="5" step="1" value="3" style="width:128px;" id="s9Flat" />
               </div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Tactile Detent Snap</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div id="s9JuiceWrap" class="detent-wrap">
                 <span id="s9JuiceBubble" class="detent-bubble juice-bubble">Level 3 · 640Hz</span>
                 <input type="range" min="1" max="5" step="1" value="3" style="width:128px;accent-color:var(--emerald);" id="s9Juice" />
@@ -1793,7 +1879,7 @@ requestAnimationFrame(() => valEl.style.transform = 'translateY(0) scale(1)');</
           <p class="specimen-desc" data-i18n="s10Desc">Standard UI interrupts you with a confirmation dialog; Game Feel archives in 0ms with a reversible 4s countdown pill.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Blocking Dialog</span>
+              <span class="stage-tag">Standard UI</span>
               <button type="button" id="s10Flat" class="ui-btn-flat">Archive Row</button>
               <div id="s10Modal" style="display:none;background:#1e1e28;border:1px solid #ef4444;border-radius:7px;padding:6px 10px;font-size:11px;text-align:center;">
                 <div style="margin-bottom:4px;color:#fca5a5;">Are you sure?</div>
@@ -1801,7 +1887,7 @@ requestAnimationFrame(() => valEl.style.transform = 'translateY(0) scale(1)');</
               </div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Optimistic + Undo</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <button type="button" id="s10Juice" class="ui-btn-juice">Archive Row</button>
             </div>
           </div>
@@ -1826,11 +1912,11 @@ onUndoClick(() => { clearTimeout(commitTimer); restoreRow(id); });</pre>
           <p class="specimen-desc" data-i18n="s5Desc">Pulls the button up to <code>6px</code> toward the pointer vector on hover and snaps back elastically on leave.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Static Target</span>
+              <span class="stage-tag">Standard UI</span>
               <button type="button" class="ui-btn-flat">Hover Target</button>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Magnetic Pull</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <button type="button" id="s5JuiceBtn" class="ui-btn-juice">Hover Target</button>
             </div>
           </div>
@@ -1855,7 +1941,7 @@ btn.style.transform = `translate(${dx}px, ${dy}px)`;</pre>
           <p class="specimen-desc" data-i18n="s6Desc">Try hovering each trigger and moving your mouse up across the gap to click <strong>⚡ Copy Key</strong> inside the popup.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">0ms Grace (Fails in gap)</span>
+              <span class="stage-tag">Standard UI</span>
               <div class="coyote-zone" id="s6FlatZone">
                 <div id="s6FlatPopup" class="coyote-popup">
                   <button type="button" class="coyote-action-btn">⚡ Copy Key</button>
@@ -1864,7 +1950,7 @@ btn.style.transform = `translate(${dx}px, ${dy}px)`;</pre>
               </div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">450ms Coyote Buffer</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div class="coyote-zone" id="s6JuiceZone">
                 <div id="s6JuicePopup" class="coyote-popup">
                   <button type="button" id="s6JuiceAction" class="coyote-action-btn">⚡ Copy Key</button>
@@ -1895,11 +1981,11 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
           <p class="specimen-desc" data-i18n="s11Desc">Rotates card subtly in 3D space (<code>rotateX/rotateY ±10deg</code>) with a specular light highlight tracking the pointer.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Flat Card</span>
+              <span class="stage-tag">Standard UI</span>
               <div class="tilt-card"><span>PRO TIER</span></div>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">3D Tilt + Glare</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div id="s11Card" class="tilt-card">
                 <div id="s11Glare" class="tilt-glare"></div>
                 <span>PRO TIER</span>
@@ -1925,12 +2011,12 @@ onMouseEnter: () => clearTimeout(closeTimer)</pre>
           <p class="specimen-desc" data-i18n="s12Desc">Compares jerky chunk dumping against smooth token pop-in, glowing cursor morph, throttled ticks, and completion spring.</p>
           <div class="stage-split">
             <div class="stage-cell">
-              <span class="stage-tag">Jerky Chunk Dump</span>
+              <span class="stage-tag">Standard UI</span>
               <div id="s12FlatBox" class="stream-box"><span style="color:#585651;">Click Run below...</span></div>
               <button type="button" id="s12Flat" class="ui-btn-flat" style="height:28px;font-size:11.5px;">Run Stream</button>
             </div>
             <div class="stage-cell">
-              <span class="stage-tag stage-tag-active">Kinetic Token Stream</span>
+              <span class="stage-tag stage-tag-active">Game Feel UI</span>
               <div id="s12JuiceBox" class="stream-box"><span style="color:#78756f;">Click Run below...</span></div>
               <button type="button" id="s12Juice" class="ui-btn-juice" style="height:28px;font-size:11.5px;">Run Stream</button>
             </div>
@@ -2052,6 +2138,8 @@ if (now - lastTick > 65) playSoftTick(660 + (idx % 3) * 35);</pre>
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <span>game-feel-ui · MIT License · Built by Eduardo Fiuza</span>
       <span>
+        <a href="install.html" style="color:var(--vermilion);font-weight:600;">Install &amp; Usage Tutorial</a>
+        &nbsp;·&nbsp;
         <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener">GitHub Repository</a>
         &nbsp;·&nbsp;
         <a href="https://github.com/EduuF/game-feel-ui/blob/main/SKILL.md" target="_blank" rel="noopener">SKILL.md</a>
@@ -2672,15 +2760,17 @@ if (now - lastTick > 65) playSoftTick(660 + (idx % 3) * 35);</pre>
         navLab: 'Interactive Sandbox (12)',
         navThesis: 'The 120ms Thesis',
         navWorkflows: 'Agent Workflows',
+        navInstall: 'Install Tutorial →',
         eyebrow: 'OPEN-SOURCE AGENT SKILL · 39 MECHANICS · 0 KB AUDIO ASSETS',
         heroTitle: 'Make interfaces feel <em>physical</em> in the first 120ms.',
         heroLead: 'Game studios spend months tuning <strong>Anticipation</strong>, <strong>Squash & Stretch</strong>, <strong>Coyote Time forgiveness</strong>, and <strong>procedural audio</strong> so virtual controls carry real mass. <code>game-feel-ui</code> gives your AI coding agent that exact engineering system.',
         copyBtn: 'Copy',
+        heroInstallGuideLink: '📖 Step-by-Step Installation & Usage Tutorial →',
         worksWith: 'Works with:',
         heroStageTitle: 'SQUASH & STRETCH COMPARISON',
-        laneFlatTitle: 'Without Skill · Standard CSS',
+        laneFlatTitle: 'Standard UI',
         laneFlatSub: 'Rigid linear slide (Zero deformation)',
-        laneJuiceTitle: 'With game-feel-ui · Spring & Morph',
+        laneJuiceTitle: 'Game Feel UI',
         laneJuiceSub: 'Preload squash → Mid-air stretch (1.42x) → Overshoot',
         hp1: '1. Preload 0.85x',
         hp2: '2. Stretch 1.42x',
@@ -2722,15 +2812,17 @@ if (now - lastTick > 65) playSoftTick(660 + (idx % 3) * 35);</pre>
         navLab: 'Sandbox Interativo (12)',
         navThesis: 'A Tese dos 120ms',
         navWorkflows: 'Fluxos no Agente',
+        navInstall: 'Tutorial de Instalação →',
         eyebrow: 'SKILL OPEN-SOURCE · 39 MECÂNICAS · 0 KB DE ARQUIVOS DE ÁUDIO',
         heroTitle: 'Torne interfaces <em>táteis e físicas</em> nos primeiros 120ms.',
         heroLead: 'Estúdios de jogos passam meses calibrando <strong>Antecipação</strong>, <strong>Squash & Stretch</strong>, <strong>Coyote Time</strong> e <strong>áudio procedural</strong> para dar peso físico ao controle. A <code>game-feel-ui</code> entrega exatamente esse sistema de engenharia para o seu agente de IA.',
         copyBtn: 'Copiar',
+        heroInstallGuideLink: '📖 Tutorial Passo a Passo de Instalação e Uso →',
         worksWith: 'Compatível com:',
         heroStageTitle: 'COMPARAÇÃO EM CÂMERA LENTA',
-        laneFlatTitle: 'Sem a Skill · CSS Comum',
+        laneFlatTitle: 'Standard UI',
         laneFlatSub: 'Deslize linear rígido (Zero deformação)',
-        laneJuiceTitle: 'Com game-feel-ui · Mola & Deformação',
+        laneJuiceTitle: 'Game Feel UI',
         laneJuiceSub: 'Pré-carga → Estica no ar (1.42x) → Overshoot na borda',
         hp1: '1. Pré-carga 0.85x',
         hp2: '2. Estica 1.42x',

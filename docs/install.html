@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation & Usage Tutorial — game-feel-ui</title>
+  <meta name="description" content="Step-by-step tutorial on how to install and use game-feel-ui in Claude Code, Cursor, Codex, Windsurf, and Gemini CLI." />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('gf:theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg: #0e0e11;
+      --bg-dots: rgba(244, 242, 237, 0.07);
+      --surface: #15151a;
+      --surface-2: #1c1c23;
+      --surface-3: #24242d;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f4f2ed;
+      --text-secondary: #a6a29b;
+      --text-muted: #6e6b65;
+      --vermilion: #ff5722;
+      --vermilion-soft: rgba(255, 87, 34, 0.14);
+      --indigo: #6366f1;
+      --indigo-soft: rgba(99, 102, 241, 0.15);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.15);
+      --emerald: #10b981;
+      --emerald-soft: rgba(16, 185, 129, 0.15);
+      --shadow-card: 0 18px 40px -15px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      --header-bg: rgba(21, 21, 26, 0.84);
+    }
+
+    [data-theme="light"] {
+      --bg: #f6f4ef;
+      --bg-dots: rgba(20, 20, 19, 0.08);
+      --surface: #ffffff;
+      --surface-2: #efece6;
+      --surface-3: #e4e0d8;
+      --border: rgba(20, 20, 19, 0.09);
+      --border-strong: rgba(20, 20, 19, 0.16);
+      --text: #141413;
+      --text-secondary: #57544e;
+      --text-muted: #87837b;
+      --vermilion: #e64a19;
+      --vermilion-soft: rgba(230, 74, 25, 0.1);
+      --indigo: #4f46e5;
+      --indigo-soft: rgba(79, 70, 229, 0.1);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.1);
+      --emerald: #059669;
+      --emerald-soft: rgba(5, 150, 105, 0.1);
+      --shadow-card: 0 16px 36px -14px rgba(20, 20, 19, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      --header-bg: rgba(246, 244, 239, 0.86);
+    }
+
+    :root {
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --spring-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --spring-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--bg-dots) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 220ms ease, color 220ms ease;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Header */
+    .topbar-wrap {
+      position: sticky;
+      top: 14px;
+      z-index: 100;
+      padding: 0 20px;
+    }
+
+    .topbar {
+      max-width: 1040px;
+      margin: 0 auto;
+      height: 54px;
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .brand-seal {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--vermilion);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 140ms var(--spring-snappy);
+    }
+
+    .pill-btn:hover {
+      border-color: var(--vermilion);
+      color: var(--text);
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 2px;
+      height: 32px;
+      align-items: center;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--vermilion);
+      color: #fff;
+    }
+
+    /* Page Hero */
+    .tutorial-hero {
+      padding: 56px 0 36px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--vermilion);
+      text-decoration: none;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      margin-bottom: 14px;
+    }
+
+    h1 em {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--vermilion);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 680px;
+    }
+
+    /* Step Blocks */
+    .step-section {
+      margin-bottom: 48px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: var(--vermilion-soft);
+      border: 1px solid var(--vermilion);
+      color: var(--vermilion);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .step-desc {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      max-width: 740px;
+    }
+
+    /* Method Cards Grid */
+    .methods-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .methods-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .method-card.recommended {
+      border-color: var(--vermilion);
+    }
+
+    .method-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--surface-2);
+      color: var(--text-secondary);
+    }
+
+    .method-card.recommended .method-badge {
+      background: var(--vermilion-soft);
+      color: var(--vermilion);
+    }
+
+    .method-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .method-text {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      flex-grow: 1;
+    }
+
+    .code-box {
+      background: #0b0b0e;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #f4f2ed;
+      position: relative;
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .copy-mini-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #d5d2cd;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 140ms var(--spring-overshoot), background-color 140ms ease;
+    }
+
+    .copy-mini-btn:hover {
+      background: var(--vermilion);
+      color: #fff;
+      border-color: var(--vermilion);
+    }
+
+    .copy-mini-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Prompts Grid */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 780px) {
+      .prompts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prompt-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--vermilion);
+    }
+
+    .prompt-title {
+      font-family: var(--font-display);
+      font-size: 16.5px;
+      font-weight: 700;
+    }
+
+    .prompt-quote {
+      background: #0b0b0e;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 13px 14px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #f4f2ed;
+      line-height: 1.55;
+    }
+
+    .prompt-outcome {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ List */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 780px) {
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .faq-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .faq-q {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .faq-a {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0 56px;
+      margin-top: 40px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--vermilion);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar-wrap">
+    <header class="topbar">
+      <a href="index.html" class="brand">
+        <span class="brand-seal">GF</span>
+        <span>game-feel-ui</span>
+      </a>
+      <div class="topbar-controls">
+        <a href="index.html" class="pill-btn" data-i18n="backNav">← Live Demos</a>
+        <button id="themeToggle" class="pill-btn" type="button">
+          <span>◐</span>
+          <span id="themeLabel">Paper</span>
+        </button>
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="pt">PT</button>
+        </div>
+        <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener" class="pill-btn">★ GitHub ↗</a>
+      </div>
+    </header>
+  </div>
+
+  <main class="container">
+    <section class="tutorial-hero">
+      <a href="index.html" class="back-link" data-i18n="backLink">← Back to Interactive Comparison Sandbox</a>
+      <h1 data-i18n="pageTitle">Install &amp; Use <em>game-feel-ui</em> in 60 Seconds</h1>
+      <p class="hero-sub" data-i18n="pageSub">
+        Follow this step-by-step guide to connect the 39 Game Feel mechanics, Coyote Time UX patterns, and 0 KB Web Audio engine to your AI coding assistant.
+      </p>
+    </section>
+
+    <!-- STEP 1: INSTALLATION -->
+    <section class="step-section">
+      <div class="step-header">
+        <span class="step-num">01</span>
+        <h2 class="step-title" data-i18n="step1Title">Choose Your Installation Method</h2>
+      </div>
+      <p class="step-desc" data-i18n="step1Desc">
+        You only need one of the three methods below depending on which AI coding tool you use.
+      </p>
+
+      <div class="methods-grid">
+        <!-- Method A -->
+        <div class="method-card recommended">
+          <span class="method-badge" data-i18n="m1Badge">RECOMMENDED · ALL AGENTS</span>
+          <h3 class="method-title" data-i18n="m1Title">Universal Skills CLI (npx)</h3>
+          <p class="method-text" data-i18n="m1Text">
+            Works automatically with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Codex</strong>, and <strong>Gemini CLI</strong>. Run inside your project root:
+          </p>
+          <div class="code-box">
+            <code>npx skills add EduuF/game-feel-ui</code>
+            <button type="button" class="copy-mini-btn" data-copy="npx skills add EduuF/game-feel-ui">Copy</button>
+          </div>
+        </div>
+
+        <!-- Method B -->
+        <div class="method-card">
+          <span class="method-badge" data-i18n="m2Badge">CLAUDE CODE MARKETPLACE</span>
+          <h3 class="method-title" data-i18n="m2Title">Claude Code Plugin</h3>
+          <p class="method-text" data-i18n="m2Text">
+            If you use Claude Code's native plugin manager, run these two slash commands directly inside your Claude session:
+          </p>
+          <div class="code-box">
+            <code>/plugin marketplace add EduuF/game-feel-ui</code>
+            <button type="button" class="copy-mini-btn" data-copy="/plugin marketplace add EduuF/game-feel-ui">Copy</button>
+          </div>
+          <div class="code-box">
+            <code>/plugin install game-feel-ui</code>
+            <button type="button" class="copy-mini-btn" data-copy="/plugin install game-feel-ui">Copy</button>
+          </div>
+        </div>
+
+        <!-- Method C -->
+        <div class="method-card">
+          <span class="method-badge" data-i18n="m3Badge">MANUAL GIT CLONE</span>
+          <h3 class="method-title" data-i18n="m3Title">Global ~/.claude Folder</h3>
+          <p class="method-text" data-i18n="m3Text">
+            Clone directly into your global skills directory so every repository on your machine has access to <code>game-feel-ui</code>:
+          </p>
+          <div class="code-box">
+            <code>git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui</code>
+            <button type="button" class="copy-mini-btn" data-copy="git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: HOW TO PROMPT YOUR AGENT -->
+    <section class="step-section">
+      <div class="step-header">
+        <span class="step-num">02</span>
+        <h2 class="step-title" data-i18n="step2Title">How to Ask Your Agent to Apply Game Feel</h2>
+      </div>
+      <p class="step-desc" data-i18n="step2Desc">
+        Once installed, your agent automatically loads <code>SKILL.md</code> when you ask for UI polish, micro-interactions, or tactile feedback. Copy any prompt below to test it right away:
+      </p>
+
+      <div class="prompts-grid">
+        <!-- Prompt 1: Audit -->
+        <div class="prompt-card">
+          <span class="prompt-tag" data-i18n="p1Tag">WORKFLOW A · AUDIT EXISTING CODEBASE</span>
+          <h3 class="prompt-title" data-i18n="p1Title">Find &amp; Fix Dead Interactions</h3>
+          <div class="prompt-quote" id="p1Text">"Use game-feel-ui to audit our src/ directory, calculate our Juice Score, and implement the top 3 highest-impact tactile upgrades."</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <span class="prompt-outcome" data-i18n="p1Out">Scans files, ranks dead clicks, and patches components.</span>
+            <button type="button" class="copy-mini-btn" data-copy="Use game-feel-ui to audit our src/ directory, calculate our Juice Score, and implement the top 3 highest-impact tactile upgrades.">Copy Prompt</button>
+          </div>
+        </div>
+
+        <!-- Prompt 2: Component Polish -->
+        <div class="prompt-card">
+          <span class="prompt-tag" data-i18n="p2Tag">WORKFLOW B · UPGRADE SPECIFIC COMPONENT</span>
+          <h3 class="prompt-title" data-i18n="p2Title">Add Squash &amp; Stretch + Hitstop</h3>
+          <div class="prompt-quote">"Upgrade our ToggleSwitch and primary CTA buttons using game-feel-ui with preload squash, mid-air stretch, 70ms Hitstop, and subtle 0KB Web Audio ticks."</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <span class="prompt-outcome" data-i18n="p2Out">Generates 60fps CSS/Framer Motion + Web Audio synth.</span>
+            <button type="button" class="copy-mini-btn" data-copy="Upgrade our ToggleSwitch and primary CTA buttons using game-feel-ui with preload squash, mid-air stretch, 70ms Hitstop, and subtle 0KB Web Audio ticks.">Copy Prompt</button>
+          </div>
+        </div>
+
+        <!-- Prompt 3: Coyote Time & Modals -->
+        <div class="prompt-card">
+          <span class="prompt-tag" data-i18n="p3Tag">WORKFLOW C · UX FORGIVENESS (COYOTE TIME)</span>
+          <h3 class="prompt-title" data-i18n="p3Title">Replace Blocking Modals &amp; Fix Hover Menus</h3>
+          <div class="prompt-quote">"Use game-feel-ui to replace our window.confirm delete dialog with a Hold-to-Commit gauge (or 4s Optimistic Undo) and add a 160ms Coyote Time grace buffer to our dropdown menus."</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <span class="prompt-outcome" data-i18n="p3Out">Eliminates accidental menu closes and annoying popups.</span>
+            <button type="button" class="copy-mini-btn" data-copy="Use game-feel-ui to replace our window.confirm delete dialog with a Hold-to-Commit gauge (or 4s Optimistic Undo) and add a 160ms Coyote Time grace buffer to our dropdown menus.">Copy Prompt</button>
+          </div>
+        </div>
+
+        <!-- Prompt 4: System Blueprint -->
+        <div class="prompt-card">
+          <span class="prompt-tag" data-i18n="p4Tag">WORKFLOW D · TEAM DESIGN CONTRACT</span>
+          <h3 class="prompt-title" data-i18n="p4Title">Generate a Calibrated Design System</h3>
+          <div class="prompt-quote">"Generate a game-feel-ui blueprint for our B2B SaaS app (Juice: 5, Forgiveness: 8, Audio: 3) and persist the CSS tokens to game-feel-system/MASTER.md."</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <span class="prompt-outcome" data-i18n="p4Out">Saves reusable CSS variables &amp; guardrails for your team.</span>
+            <button type="button" class="copy-mini-btn" data-copy="Generate a game-feel-ui blueprint for our B2B SaaS app (Juice: 5, Forgiveness: 8, Audio: 3) and persist the CSS tokens to game-feel-system/MASTER.md.">Copy Prompt</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: OPTIONAL DETERMINISTIC CLI -->
+    <section class="step-section">
+      <div class="step-header">
+        <span class="step-num">03</span>
+        <h2 class="step-title" data-i18n="step3Title">Optional: Run the Deterministic CLI Directly</h2>
+      </div>
+      <p class="step-desc" data-i18n="step3Desc">
+        Under the hood, <code>game-feel-ui</code> includes a zero-dependency Python 3 reasoning engine that your agent calls automatically—or you can run yourself in any terminal:
+      </p>
+
+      <div class="method-card" style="gap:10px;">
+        <div class="code-box">
+          <code>python scripts/search.py --audit ./src</code>
+          <button type="button" class="copy-mini-btn" data-copy="python scripts/search.py --audit ./src">Copy</button>
+        </div>
+        <div class="code-box">
+          <code>python scripts/search.py "destructive delete button" --contract --stack react</code>
+          <button type="button" class="copy-mini-btn" data-copy='python scripts/search.py "destructive delete button" --contract --stack react'>Copy</button>
+        </div>
+        <div class="code-box">
+          <code>python scripts/search.py "fintech dashboard" --blueprint --juice 5 --forgiveness 8 --persist</code>
+          <button type="button" class="copy-mini-btn" data-copy='python scripts/search.py "fintech dashboard" --blueprint --juice 5 --forgiveness 8 --persist'>Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4: FAQ -->
+    <section class="step-section">
+      <div class="step-header">
+        <span class="step-num">04</span>
+        <h2 class="step-title" data-i18n="step4Title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card">
+          <h3 class="faq-q" data-i18n="q1">Does this add MP3/WAV files or heavy npm packages?</h3>
+          <p class="faq-a" data-i18n="a1">No. Every sound effect is synthesized in real time via the browser's native Web Audio API (0 KB of external audio assets), and animations prioritize compositor-safe CSS <code>transform</code> and <code>opacity</code>.</p>
+        </div>
+        <div class="faq-card">
+          <h3 class="faq-q" data-i18n="q2">Is it safe for enterprise/B2B SaaS apps?</h3>
+          <p class="faq-a" data-i18n="a2">Yes. The skill calibrates intensity by product archetype—subtle <code>scale(0.97)</code> + 160ms Coyote Time for B2B SaaS, and more expressive spring overshoot for consumer or gaming apps.</p>
+        </div>
+        <div class="faq-card">
+          <h3 class="faq-q" data-i18n="q3">What about users with motion sensitivity?</h3>
+          <p class="faq-a" data-i18n="a3">Every code pattern generated by <code>game-feel-ui</code> enforces <code>@media (prefers-reduced-motion: reduce)</code>, collapsing spatial motion to clean opacity fades while preserving UX forgiveness.</p>
+        </div>
+        <div class="faq-card">
+          <h3 class="faq-q" data-i18n="q4">Which frontend stacks are supported?</h3>
+          <p class="faq-a" data-i18n="a4">All 11 major stacks: React, Next.js, Framer Motion, Tailwind CSS, Vanilla CSS/JS, Vue 3, Svelte, Angular, SwiftUI, React Native, and Flutter.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span>game-feel-ui · MIT License · Built by Eduardo Fiuza</span>
+      <span>
+        <a href="index.html" style="color:var(--vermilion);font-weight:600;">← Back to Live Sandbox</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener">GitHub Repository</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Switcher
+    const themeToggle = document.getElementById('themeToggle');
+    const themeLabel = document.getElementById('themeLabel');
+    function updateThemeUI() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      themeLabel.textContent = current === 'dark' ? 'Paper' : 'Dark';
+    }
+    updateThemeUI();
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('gf:theme', next); } catch (e) {}
+      updateThemeUI();
+      playTriad(true);
+    });
+
+    // Procedural Web Audio feedback on copy
+    let audioCtx = null;
+    function playTriad(shortOnly = false) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const notes = shortOnly ? [780] : [523.25, 659.25, 783.99];
+      notes.forEach((f, idx) => {
+        const now = audioCtx.currentTime + idx * 0.03;
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now);
+        g.gain.setValueAtTime(0.035, now);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+        osc.connect(g).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      });
+    }
+
+    document.querySelectorAll('.copy-mini-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        navigator.clipboard.writeText(text);
+        playTriad();
+        const orig = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        btn.style.background = '#10b981';
+        btn.style.borderColor = '#10b981';
+        btn.style.color = '#0b0b0e';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 1400);
+      });
+    });
+
+    // Bilingual Switcher (EN / PT)
+    const i18n = {
+      en: {
+        backNav: '← Live Demos',
+        backLink: '← Back to Interactive Comparison Sandbox',
+        pageTitle: 'Install &amp; Use <em>game-feel-ui</em> in 60 Seconds',
+        pageSub: 'Follow this step-by-step guide to connect the 39 Game Feel mechanics, Coyote Time UX patterns, and 0 KB Web Audio engine to your AI coding assistant.',
+        step1Title: 'Choose Your Installation Method',
+        step1Desc: 'You only need one of the three methods below depending on which AI coding tool you use.',
+        m1Badge: 'RECOMMENDED · ALL AGENTS',
+        m1Title: 'Universal Skills CLI (npx)',
+        m1Text: 'Works automatically with <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Codex</strong>, and <strong>Gemini CLI</strong>. Run inside your project root:',
+        m2Badge: 'CLAUDE CODE MARKETPLACE',
+        m2Title: 'Claude Code Plugin',
+        m2Text: 'If you use Claude Code\'s native plugin manager, run these two slash commands directly inside your Claude session:',
+        m3Badge: 'MANUAL GIT CLONE',
+        m3Title: 'Global ~/.claude Folder',
+        m3Text: 'Clone directly into your global skills directory so every repository on your machine has access to <code>game-feel-ui</code>:',
+        step2Title: 'How to Ask Your Agent to Apply Game Feel',
+        step2Desc: 'Once installed, your agent automatically loads <code>SKILL.md</code> when you ask for UI polish, micro-interactions, or tactile feedback. Copy any prompt below to test it right away:',
+        p1Tag: 'WORKFLOW A · AUDIT EXISTING CODEBASE',
+        p1Title: 'Find &amp; Fix Dead Interactions',
+        p1Out: 'Scans files, ranks dead clicks, and patches components.',
+        p2Tag: 'WORKFLOW B · UPGRADE SPECIFIC COMPONENT',
+        p2Title: 'Add Squash &amp; Stretch + Hitstop',
+        p2Out: 'Generates 60fps CSS/Framer Motion + Web Audio synth.',
+        p3Tag: 'WORKFLOW C · UX FORGIVENESS (COYOTE TIME)',
+        p3Title: 'Replace Blocking Modals &amp; Fix Hover Menus',
+        p3Out: 'Eliminates accidental menu closes and annoying popups.',
+        p4Tag: 'WORKFLOW D · TEAM DESIGN CONTRACT',
+        p4Title: 'Generate a Calibrated Design System',
+        p4Out: 'Saves reusable CSS variables &amp; guardrails for your team.',
+        step3Title: 'Optional: Run the Deterministic CLI Directly',
+        step3Desc: 'Under the hood, <code>game-feel-ui</code> includes a zero-dependency Python 3 reasoning engine that your agent calls automatically—or you can run yourself in any terminal:',
+        step4Title: 'Frequently Asked Questions',
+        q1: 'Does this add MP3/WAV files or heavy npm packages?',
+        a1: 'No. Every sound effect is synthesized in real time via the browser\'s native Web Audio API (0 KB of external audio assets), and animations prioritize compositor-safe CSS <code>transform</code> and <code>opacity</code>.',
+        q2: 'Is it safe for enterprise/B2B SaaS apps?',
+        a2: 'Yes. The skill calibrates intensity by product archetype—subtle <code>scale(0.97)</code> + 160ms Coyote Time for B2B SaaS, and more expressive spring overshoot for consumer or gaming apps.',
+        q3: 'What about users with motion sensitivity?',
+        a3: 'Every code pattern generated by <code>game-feel-ui</code> enforces <code>@media (prefers-reduced-motion: reduce)</code>, collapsing spatial motion to clean opacity fades while preserving UX forgiveness.',
+        q4: 'Which frontend stacks are supported?',
+        a4: 'All 11 major stacks: React, Next.js, Framer Motion, Tailwind CSS, Vanilla CSS/JS, Vue 3, Svelte, Angular, SwiftUI, React Native, and Flutter.'
+      },
+      pt: {
+        backNav: '← Demos ao Vivo',
+        backLink: '← Voltar para o Sandbox de Comparações ao Vivo',
+        pageTitle: 'Instale e Use a <em>game-feel-ui</em> em 60 Segundos',
+        pageSub: 'Siga este passo a passo para conectar as 39 mecânicas de Game Feel, padrões de Coyote Time e síntese de áudio 0 KB ao seu assistente de código.',
+        step1Title: 'Escolha o Método de Instalação',
+        step1Desc: 'Você só precisa escolher um dos três métodos abaixo, dependendo de qual ferramenta de IA você utiliza.',
+        m1Badge: 'RECOMENDADO · TODOS OS AGENTES',
+        m1Title: 'CLI Universal de Skills (npx)',
+        m1Text: 'Funciona automaticamente com <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>Windsurf</strong>, <strong>Codex</strong> e <strong>Gemini CLI</strong>. Rode na pasta do seu projeto:',
+        m2Badge: 'MARKETPLACE DO CLAUDE CODE',
+        m2Title: 'Plugin Nativo do Claude Code',
+        m2Text: 'Se você usa o gerenciador de plugins do Claude Code, basta rodar estes dois comandos dentro da sessão do Claude:',
+        m3Badge: 'CLONE MANUAL VIA GIT',
+        m3Title: 'Pasta Global ~/.claude',
+        m3Text: 'Clone diretamente na sua pasta global de skills para que todos os projetos da sua máquina tenham acesso à <code>game-feel-ui</code>:',
+        step2Title: 'Como Pedir para o Agente Aplicar Game Feel',
+        step2Desc: 'Após instalada, seu agente carrega o <code>SKILL.md</code> automaticamente quando você pede melhorias de UI ou microinterações. Copie qualquer prompt abaixo para testar:',
+        p1Tag: 'FLUXO A · AUDITAR PROJETO EXISTENTE',
+        p1Title: 'Encontrar e Corrigir Cliques Sem Vida',
+        p1Out: 'Escaneia os arquivos, calcula o Juice Score e aplica melhorias.',
+        p2Tag: 'FLUXO B · MELHORAR UM COMPONENTE',
+        p2Title: 'Adicionar Squash &amp; Stretch + Hitstop',
+        p2Out: 'Gera código 60fps em CSS/Framer Motion + som Web Audio.',
+        p3Tag: 'FLUXO C · PERDÃO DE UX (COYOTE TIME)',
+        p3Title: 'Trocar Modais Chatos e Corrigir Menus Hover',
+        p3Out: 'Elimina fechamentos acidentais de menus e popups bloqueantes.',
+        p4Tag: 'FLUXO D · CONTRATO DE DESIGN DO TIME',
+        p4Title: 'Gerar um Sistema de Tokens Calibrado',
+        p4Out: 'Salva variáveis CSS reutilizáveis em game-feel-system/MASTER.md.',
+        step3Title: 'Opcional: Rodar o Motor CLI Diretamente',
+        step3Desc: 'Por trás dos panos, a <code>game-feel-ui</code> possui um motor determinístico em Python 3 (zero dependências) que o agente chama sozinho — ou você pode rodar no terminal:',
+        step4Title: 'Perguntas Frequentes (FAQ)',
+        q1: 'Isso adiciona arquivos MP3/WAV ou pacotes npm pesados?',
+        a1: 'Não. Todo efeito sonoro é sintetizado em tempo real via Web Audio API nativa do navegador (0 KB de arquivos externos), e as animações usam apenas <code>transform</code> e <code>opacity</code>.',
+        q2: 'É seguro para aplicações corporativas / B2B SaaS?',
+        a2: 'Sim. A skill calibra a intensidade pelo tipo de produto — compressão sutil <code>scale(0.97)</code> + 160ms de Coyote Time para B2B SaaS, e molas mais expressivas para apps de consumidor ou jogos.',
+        q3: 'E usuários com sensibilidade a movimento?',
+        a3: 'Todo código gerado inclui obrigatoriamente <code>@media (prefers-reduced-motion: reduce)</code>, convertendo movimentos espaciais em transições suaves de opacidade.',
+        q4: 'Quais stacks de front-end são suportadas?',
+        a4: 'Todas as 11 principais stacks: React, Next.js, Framer Motion, Tailwind CSS, Vanilla CSS/JS, Vue 3, Svelte, Angular, SwiftUI, React Native e Flutter.'
+      }
+    };
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        document.documentElement.lang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.getAttribute('data-i18n');
+          if (i18n[lang][k]) el.innerHTML = i18n[lang][k];
+        });
+        playTriad(true);
+      });
+    });
+  </script>
+</body>
+</html>
