@@ -55,7 +55,10 @@ Copy or symlink this folder into your global Claude skills directory or your rep
 
 ```powershell
 # Global installation (available in all projects)
-xcopy /E /I "C:\Users\eduar\Desktop\Eduardo\claude-skills\game-feel-ui" "$env:USERPROFILE\.claude\skills\game-feel-ui"
+git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui
+
+# Or via npx skills CLI
+npx skills add EduuF/game-feel-ui
 ```
 
 ---
