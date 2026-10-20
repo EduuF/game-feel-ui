@@ -1,0 +1,12 @@
+{
+  "name": "game-feel-ui-marketplace",
+  "version": "1.0.0",
+  "description": "Official Claude Code marketplace manifest for game-feel-ui skill.",
+  "plugins": [
+    {
+      "name": "game-feel-ui",
+      "description": "Bring subtle Game Dev engagement (Hitstop, Squash & Stretch, Coyote Time, Input Buffering, Spring Physics, Procedural Web Audio) to Web and Mobile UIs.",
+      "source": "."
+    }
+  ]
+}

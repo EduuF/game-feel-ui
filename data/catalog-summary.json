@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "skillName": "game-feel-ui",
+  "verifiedAt": "2026-10-20",
+  "counts": {
+    "mechanics": 29,
+    "components": 15,
+    "audioHaptics": 8,
+    "physicsCurves": 7,
+    "appProfiles": 8,
+    "antiPatterns": 8,
+    "stacks": 11
+  },
+  "capabilities": [
+    "bm25-domain-search",
+    "stack-specific-search",
+    "game-feel-blueprint-generator",
+    "sensory-dials-juice-forgiveness-audio",
+    "static-codebase-auditor",
+    "procedural-web-audio-synthesis"
+  ]
+}

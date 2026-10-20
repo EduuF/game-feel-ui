@@ -1,0 +1,360 @@
+No,Mechanic ID,Mechanic Name,Game Dev Origin,Category,Frequency Tier,Intensity,Keywords,UI Equivalent,Trigger,Timing / Physics Spec,CSS / JS Snippet,When to Use,Anti-Patterns (Avoid),Reduced Motion Fallback,Performance Notes
+1,anticipation-press,Tactile Press Compression,Anticipation (Squash before Jump / Crouching before Leap),Spatial & Physics,High-Frequency Subliminal,2,"button press, active scale, mousedown, pointerdown, anticipation, spring compress, click feedback, tap, tactile",Subtle inward scale compression (0.96-0.98) on pointerdown before action fires on pointerup,pointerdown / :active,50-80ms compress to scale(0.96) on press; 180ms spring release to scale(1) on pointerup,".btn-tactile {
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), background-color 120ms ease;
+  will-change: transform;
+}
+.btn-tactile:active:not(:disabled) {
+  transform: scale(0.965) translateY(1px);
+  transition-duration: 50ms;
+}","All primary and secondary buttons, interactive cards, toolbar controls, and selectable pills",Compressing below scale(0.90) on standard buttons (looks cartoonish) or using slow (>150ms) press-in duration which makes the button feel mushy,Keep instant background/border color shift on :active; set transform: none under @media (prefers-reduced-motion: reduce),Compositor-only transform; zero layout reflow
+2,hitstop-micro-pause,Hitstop Micro-Tension Pause,Hitstop / Freeze Frames (Street Fighter / Hollow Knight / Smash Bros),Temporal & Impact,Low-Frequency Hero,7,"hitstop, freeze frame, impact pause, tension, publish, deploy, complete, milestone, hero action, weight",Intentional 65-100ms freeze in the compressed/charged state at the exact moment of action confirmation before releasing the expansion/reward animation,click / submit confirmation on high-stakes action,"Hold compressed state (scale 0.94) for 70-100ms, then release with spring overshoot (scale 1.06 -> 1.00 over 320ms)","async function triggerWithHitstop(el, onCommit) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return onCommit();
+  el.style.transition = 'transform 45ms ease-out';
+  el.style.transform = 'scale(0.94)';
+  await new Promise(r => setTimeout(r, 85)); // 85ms hitstop freeze
+  onCommit();
+  el.style.transition = 'transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+  el.style.transform = 'scale(1)';
+}","Hero actions: deploying to production, completing a major workflow, confirming a checkout payment, publishing a campaign, unlocking a milestone","NEVER apply hitstop to high-frequency navigation, tabs, typing, or standard filter clicks—it will read as UI lag",Skip the 85ms hold and scale overshoot; execute onCommit() immediately with a crisp color/icon state change,Use non-blocking async Promise/setTimeout; never block the main thread with a synchronous loop
+3,squash-and-stretch-morph,Elastic Squash & Stretch,Squash & Stretch (Disney 12 Principles / Platformer Jump & Land),Spatial & Physics,Medium-Frequency Kinetic,5,"squash, stretch, morph, toggle, switch, checkbox, pill, deformation, velocity, oval, elastic","Velocity-dependent aspect ratio deformation where a thumb, indicator, or badge stretches along its travel axis and squashes slightly on impact/arrival",state toggle / drag release / sliding active indicator,"In-transit: scaleX(1.16) scaleY(0.88); Arrival impact: scaleX(0.94) scaleY(1.06); Settle: scale(1, 1) via spring (stiffness 500, damping 28)","@keyframes squashPop {
+  0% { transform: scale(1, 1); }
+  30% { transform: scale(1.14, 0.88); }
+  65% { transform: scale(0.95, 1.05); }
+  100% { transform: scale(1, 1); }
+}
+.badge-pop { animation: squashPop 280ms cubic-bezier(0.22, 1, 0.36, 1); }","Toggle switches (thumb elongates while sliding), checkboxes popping into checked state, sliding active tab pills, and notification badges",Applying squash & stretch to containers holding dense body text or data tables (warps typography and hurts legibility),Use a clean opacity crossfade (120ms) without scale deformation,Animate transform: scale3d() on the background/thumb node separate from text labels so text never distorts
+4,recoil-kickback,Directional Recoil & Kickback,Weapon Recoil / Spell Cast Pushback (Nuclear Throne / Enter the Gungeon),Spatial & Physics,Medium-Frequency Kinetic,4,"recoil, kickback, send, submit, launch, arrow, directional impulse, pushback, chat send",Brief backward impulse of the trigger control in the opposite direction of the emitted element or action vector,form submit / message send / item launch,"3-5px impulse opposite to action direction over 55ms, followed by 220ms damped spring return to origin","@keyframes sendRecoil {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(-4px, 1px, 0) scale(0.96); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.send-btn-firing { animation: sendRecoil 240ms cubic-bezier(0.22, 1, 0.36, 1); }","Chat message send button (button kicks back slightly as message bubble launches upward), file upload trigger, shooting an item into a cart or archive",Large recoil distances (>8px) that cause the user's cursor to fall outside the button's hitbox during rapid clicking,Omit spatial translation; provide an instant icon swap or subtle opacity pulse,Keep transform within 4px so the hit target remains stable under the pointer
+5,neighbor-knockback,Neighbor Knockback & Reactive Displacement,Explosion Shockwave / Collision Knockback,Spatial & Physics,Medium-Frequency Kinetic,5,"knockback, neighbor, list insert, card delete, kanban, shockwave, reflow, displacement, sibling, bento","Adjacent cards or list items reactively nudge away and spring back when a new item is dropped, expanded, or deleted nearby",list item insert / remove / drag drop / accordion expand,"Siblings displace by 4-6px away from the impact point with a 25ms distance-based stagger, settling via spring (stiffness 420, damping 28)","neighbors.forEach((el, idx) => {
+  const dir = idx < targetIdx ? -1 : 1;
+  const dist = Math.max(1, Math.abs(idx - targetIdx));
+  const push = (dir * 6) / dist;
+  el.animate([
+    { transform: 'translateY(0)' },
+    { transform: `translateY(${push.toFixed(1)}px)` },
+    { transform: 'translateY(0)' }
+  ], { duration: 260, delay: dist * 20, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+});","Kanban board card drops, todo list item insertion/deletion, bento grid card expansion, tag chip insertion",Triggering layout thrashing by animating margin/height on 100+ unvirtualized list rows simultaneously,Instant layout reflow without spring overshoot or neighbor bounce,"Use CSS transform or FLIP (First, Last, Invert, Play) so browser layout is calculated only once"
+6,trauma-error-shake,Damped Trauma Shake (Error Reject),Camera Trauma / Hit Shake (Vlambeer / Celeste / God of War),Spatial & Physics,Medium-Frequency Kinetic,5,"error shake, invalid input, reject, trauma, vibration, wrong password, denied, shake, validation",High-frequency horizontal oscillation with exponential decay that communicates physical resistance or rejection when an action is invalid,invalid form submit / unauthorized action / character limit reached,3-4 oscillations over 300ms; amplitude starts at ±6px and decays exponentially to 0px (±6px -> ∓4px -> ±2px -> 0px),"@keyframes traumaShake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  15% { transform: translate3d(-6px, 0, 0); }
+  35% { transform: translate3d(5px, 0, 0); }
+  55% { transform: translate3d(-3px, 0, 0); }
+  75% { transform: translate3d(2px, 0, 0); }
+  90% { transform: translate3d(-1px, 0, 0); }
+}
+.input-error-shake { animation: traumaShake 320ms ease-out; }","Invalid OTP/PIN code entry, submitting an empty required field, hitting a hard limit, attempting a locked action",Shaking the entire page/viewport (full-screen shake in a web app causes motion sickness) or shaking for >400ms with constant amplitude,Replace horizontal shake with a 150ms border-color pulse + error icon + aria-live announcement,"Use translate3d() on the specific input or modal card only, never on document.body"
+7,coyote-time-hover-grace,Coyote Time Hover & Menu Grace Period,Coyote Time (Celeste / Super Mario Ledge Jump Forgiveness),Forgiveness & Input,High-Frequency Subliminal,1,"coyote time, hover grace, dropdown, submenu, tooltip, popover, forgiveness, menu close delay, safe triangle","Allowing a dropdown, submenu, or hover card to remain interactive for 120-180ms after the pointer accidentally leaves the bounds or crosses a diagonal gap",pointerleave on menu / dropdown / tooltip / hover card,150ms grace timer on pointerleave before closing; cancelled immediately if pointer re-enters trigger or menu surface,"let closeTimer = null;
+function onPointerEnter() {
+  if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+  setOpen(true);
+}
+function onPointerLeave() {
+  closeTimer = setTimeout(() => setOpen(false), 150); // 150ms Coyote Time
+}","Navigation mega-menus, nested context submenus, interactive tooltips, hover-triggered profile cards, floating toolbars","Setting the grace period too long (>400ms), which makes menus feel sticky and unresponsive when the user genuinely moves away","Identical behavior (Coyote Time is a temporal forgiveness mechanic, safe and beneficial for all users)",Always clear timeout on component unmount to prevent memory leaks
+8,coyote-time-undo-window,Deferred Commit with Silent Undo Window,Last-Chance Save / Death Defiance / Undo Buffer,Forgiveness & Input,Medium-Frequency Kinetic,3,"undo, delete, archive, toast, grace period, optimistic delete, destructive forgiveness, soft delete",Immediately collapsing the item visually (0ms perceived latency) while delaying the hard delete or keeping a reversible state for 4-5 seconds with a one-click Undo,destructive action (delete / archive / remove / bulk move),0ms UI collapse (200ms height/opacity transition); 4500ms countdown window before hard commit; instant spring restoration on Undo,"function deleteWithGrace(item, commitDelete, restoreItem) {
+  optimisticallyRemove(item.id);
+  const timer = setTimeout(() => commitDelete(item.id), 4500);
+  showToast({
+    message: 'Item removed',
+    onUndo: () => { clearTimeout(timer); restoreItem(item); }
+  });
+}","Deleting tasks, archiving emails/cards, removing items from a cart, bulk status changes","Using blocking 'Are you sure?' modal dialogs for routine, recoverable actions (breaks user flow and causes confirmation fatigue)",Instant visual removal/restoration without sliding movement,Ensure pending deletes flush on page unload or use soft-delete endpoints on the backend
+9,input-buffering-queue,Input Buffering & Intent Queueing,Input Buffering (Street Fighter / Elden Ring Roll & Attack Queue),Forgiveness & Input,High-Frequency Subliminal,2,"input buffer, queue click, rapid click, transition lock, async button, modal open, responsiveness, typeahead","Capturing and queuing a user's click or keystroke that occurs 50-150ms before an animation finishes or while a prerequisite state is resolving, then executing it on completion",click/keydown during active transition or brief initialization lock,Buffer window: 150ms; stores latest user intent and flushes immediately on transitionend / state ready,"let bufferedAction = null;
+function handleInteraction(action) {
+  if (isTransitioning) {
+    bufferedAction = action; // Buffer instead of dropping input!
+    return;
+  }
+  execute(action);
+}
+function onTransitionComplete() {
+  isTransitioning = false;
+  if (bufferedAction) {
+    const next = bufferedAction;
+    bufferedAction = null;
+    execute(next);
+  }
+}","Multi-step wizards, carousel/tab switching, command palette typing while modal is still opening, rapid pagination, keyboard navigation in menus",Swallowing/ignoring clicks or keystrokes during a 250ms entrance animation (makes fast users feel like the app is dropping inputs),"With reduced motion, transitions are near-instant (0-50ms), so buffered actions execute immediately",Store only the most recent intent or an idempotent queue to prevent accidental double-submits
+10,hitbox-magnetic-assist,Invisible Hitbox Expansion & Corner Correction,Aim Assist / Bullet Magnetism / Platformer Corner Correction,Forgiveness & Input,High-Frequency Subliminal,2,"hitbox, aim assist, fat finger, touch target, corner correction, pseudo element, padding, close button, icon button",Expanding the clickable/tappable area 8-12px beyond the visible boundary of small controls so near-misses register as clean hits,pointer approach / tap / click on compact control,Invisible ::after hit area extending -8px to -12px on all sides (ensuring >=44x44px target without altering visual layout),".icon-btn-forgiving {
+  position: relative;
+}
+.icon-btn-forgiving::after {
+  content: '';
+  position: absolute;
+  inset: -8px; /* Expands hit area by 16px total without changing layout */
+}","Close 'X' buttons on modals/toasts, compact table action icons, checkbox/radio controls, slider thumbs, resize handles, breadcrumb links",Overlapping expanded hitboxes of two adjacent destructive buttons without an 8px dead-zone gap between them,Keep the expanded ::after hitbox in all modes; it is a spatial usability enhancer,Zero runtime cost with CSS ::after inset; prevents mis-click frustration on mobile and desktop
+11,spring-overshoot-pop,Critical-Damped & Under-Damped Spring Pop,Physics Engine Spring / Mass-Damper Suspension,Spatial & Physics,Medium-Frequency Kinetic,4,"spring, overshoot, pop, modal, popover, badge, scale, inertia, natural motion, linear()",Replacing robotic linear/cubic-bezier transitions with spring physics that carry momentum and settle with a subtle 2-5% overshoot,element mount / modal open / badge count increment,"Modal/Popover: stiffness 380, damping 26, mass 1 (~2-3% overshoot); Badge pop: stiffness 520, damping 20 (~6% overshoot)",":root {
+  --spring-snappy: linear(0, 0.45 14%, 0.82 28%, 1.01 42%, 1.04 54%, 1.01 72%, 1);
+}
+.popover-enter {
+  animation: popIn 260ms var(--spring-snappy) forwards;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}","Modals, popovers, dropdown menus, toast notifications, newly created cards, floating toolbars, status badges","Using heavy bounce (stiffness 200, damping 8) on enterprise modals—multiple oscillations look amateurish and delay reading",Fade in over 120ms from scale(1) with opacity only,CSS linear() easing runs natively on the compositor thread in all modern browsers
+12,charge-up-anticipation,Hold-to-Confirm Charge-Up Tension,Charged Attack / Bow Draw / Limit Break Gauge (Monster Hunter / Zelda),Temporal & Impact,Low-Frequency Hero,8,"hold to confirm, charge up, delete, deploy, destructive, tension, progress fill, shake, anticipation","Requiring a 600-1000ms press-and-hold where a fill bar sweeps across the button, micro-vibration escalates, and releasing early cancels with a spring snapback",pointerdown + hold on critical/destructive button,Charge duration: 800ms linear fill; micro-jitter ±1px starting at 50% charge; release early -> 150ms snapback; 100% -> hitstop + burst,"// On pointerdown: transition fill layer transform: scaleX(1) over 800ms linear
+// On pointerup before 800ms: cancel timer & transition scaleX(0) over 160ms ease-out
+// On 800ms complete: triggerHitstop() -> executeAction()","Destructive actions (Delete Workspace, Revoke API Key, Cancel Subscription) replacing confirmation modals, or Hero actions (Launch Campaign, Deploy Production)",Requiring hold-to-confirm on frequent routine actions (like saving a form or deleting a single todo item),"Keep the progress fill bar (scaleX 0 -> 1 over 800ms) and color shift, but omit the escalating micro-jitter shake",Animate transform: scaleX() with transform-origin: left on the fill layer for 60fps compositing
+13,cursor-radial-ripple,Cursor-Originated Radial Impact Pulse,Shockwave / Water Impact Ring / Hit Marker,Visual & Surface,High-Frequency Subliminal,3,"ripple, shockwave, click origin, radial pulse, coordinates, surface feedback, spotlight","Spawning a soft, fast-decaying radial illumination or shockwave ring from the exact (x, y) pointer coordinates where the user clicked",pointerdown on interactive surface,"Origin: (e.clientX - rect.left, e.clientY - rect.top); scale 0 -> 16 over 320ms cubic-bezier(0.16, 1, 0.3, 1); opacity 0.20 -> 0","function spawnImpactPulse(e, btn) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rect = btn.getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const pulse = document.createElement('span');
+  pulse.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:12px;height:12px;border-radius:999px;background:currentColor;pointer-events:none;`;
+  btn.appendChild(pulse);
+  pulse.animate([
+    { transform: 'translate(-50%,-50%) scale(0)', opacity: 0.2 },
+    { transform: 'translate(-50%,-50%) scale(16)', opacity: 0 }
+  ], { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }).onfinish = () => pulse.remove();
+}","Primary buttons, interactive bento cards, command palette items, selectable rows","Slow (>600ms), high-opacity Material v1 ripples that linger and make the interface feel dated and sluggish",Replace expanding radial ring with an instant 120ms uniform surface highlight,Always remove the spawned DOM node in .onfinish to prevent DOM node accumulation
+14,specular-shimmer-sweep,Specular Light Sheen Sweep,Loot Glint / Weapon Enchantment Gleam / Foil Card Reflection,Visual & Surface,Low-Frequency Hero,5,"shimmer, sheen, glint, glare, primary cta, badge, unlock, upgrade, specular",A diagonal band of specular highlight sweeping across a surface on hover or upon unlocking/completing a state,hover entry / state unlock / hero CTA mount,"550ms sweep from translateX(-120%) skewX(-20deg) to translateX(120%) skewX(-20deg) using cubic-bezier(0.22, 1, 0.36, 1)",".btn-sheen { position: relative; overflow: hidden; }
+.btn-sheen::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%);
+  transform: translateX(-120%);
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.btn-sheen:hover::before { transform: translateX(120%); }","Hero CTA buttons, Pro/Upgrade badges, newly unlocked feature cards, achievement toasts",Running an infinite continuous shimmer loop on 5+ buttons simultaneously (drains GPU and distracts reading),Disable the sweeping translation; show a static subtle border/surface brighten on hover,Use transform: translateX() on a pseudo-element instead of animating background-position for compositor acceleration
+15,particle-micro-burst,Localized Particle Micro-Burst,Hit Sparks / Loot Burst / Level-Up Confetti,Visual & Surface,Low-Frequency Hero,8,"particles, sparks, confetti, burst, milestone, celebration, like, favorite, complete, embers","Emitting 6-14 tiny, physics-driven vector particles (sparks, dots, or geometric shards) radially from the interaction point with gravity and rapid fade",task completion / milestone / favorite toggle / onboarding finish,8-12 particles; initial velocity 40-90px/s outward; gravity +120px/s²; scale 1 -> 0 over 450-650ms,"function burstSparks(originEl, colors = ['#10B981', '#3B82F6', '#F59E0B']) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rect = originEl.getBoundingClientRect();
+  for (let i = 0; i < 10; i++) {
+    const angle = (Math.PI * 2 * i) / 10 + (Math.random() - 0.5) * 0.4;
+    const dist = 24 + Math.random() * 28;
+    const dot = document.createElement('span');
+    dot.style.cssText = `position:fixed;left:${rect.left+rect.width/2}px;top:${rect.top+rect.height/2}px;width:5px;height:5px;border-radius:999px;background:${colors[i%colors.length]};pointer-events:none;z-index:9999;`;
+    document.body.appendChild(dot);
+    dot.animate([
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist + 10}px)) scale(0)`, opacity: 0 }
+    ], { duration: 480 + Math.random() * 150, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }).onfinish = () => dot.remove();
+  }
+}","Completing all tasks in a sprint/list ('Inbox Zero'), hitting a revenue/usage milestone, liking/bookmarking a key item, finishing onboarding","Full-screen 3-second confetti cannons on routine actions (e.g., saving settings or checking a single sub-task)",Skip particle generation completely; rely on the checkmark/badge state change,Cap particle count <= 14 for DOM/WAAPI bursts; use a single <canvas> if > 30 particles are needed
+16,pitch-escalation-combo,Combo Pitch Escalation (Musical Ramp),Coin Combo / Peggle / Super Mario 1-Up Semitone Ramp,Audio & Haptic,Medium-Frequency Kinetic,6,"pitch escalation, combo, audio, sound, streak, batch check, kanban, semitone, frequency ramp",Synthesizing ultra-short (8-25ms) procedural audio clicks/pops whose fundamental frequency rises by a musical interval (+1 semitone or pentatonic step) with each consecutive action within a 2-second combo window,consecutive task checks / multi-select / rapid increments,Combo window: 2000ms; Base freq: 320Hz; Step multiplier: 2^(n/12) capped at +12 semitones; resets after 2s idle,"let comboCount = 0, lastHit = 0;
+function playComboTick(audioCtx) {
+  const now = performance.now();
+  comboCount = (now - lastHit < 2000) ? Math.min(comboCount + 1, 12) : 0;
+  lastHit = now;
+  const freq = 320 * Math.pow(2, comboCount / 12);
+  const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + 0.025);
+  gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.032);
+}","Checking off multiple todo items in a row, selecting multiple cards, stepping through an onboarding checklist, adding items to a bundle",Playing loud (>0.15 gain) or long (>100ms) audio samples without a user-accessible mute preference,"Audio is orthogonal to vestibular motion, but always respect a global sound-enabled setting and keep gain subtle (<=0.06)",Reuse a single singleton AudioContext initialized on first user gesture; zero network asset downloads
+17,impact-flash-frame,Chromatic Impact Flash Frame,Damage Flash / Parry Flash / Anime Impact Frame,Visual & Surface,Medium-Frequency Kinetic,5,"impact frame, flash, highlight, state change, row update, live data, webhook, incoming, pulse","Flashing a surface's border and background tint at high luminance for 40-70ms upon state mutation or live data arrival, followed by a smooth 450ms decay back to resting surface token",live metric update / row status change / keyboard shortcut trigger,0-50ms: instant jump to accent tint (15-22% opacity) + bright border; 50-500ms: exponential ease-out decay to resting state,"@keyframes impactFlash {
+  0%, 10% { background-color: rgba(16, 185, 129, 0.22); border-color: rgba(16, 185, 129, 0.8); }
+  100% { background-color: transparent; border-color: var(--border-subtle); }
+}
+.row-just-updated { animation: impactFlash 550ms cubic-bezier(0.16, 1, 0.3, 1); }","Real-time table rows updating via WebSocket, newly pasted items, copying a code block, triggering a card action via hotkey (e.g., pressing 'E' to archive)",Flashing large screen areas with pure white/red at >3Hz (WCAG 2.3.1 seizure risk—never flash more than 3 times per second or cover large viewport areas),"Use a softer, slower tint fade (300ms) with lower peak opacity (0.10)",Safe for layout; combine with tabular-nums if numbers are updating simultaneously
+18,odometer-number-roll,Slot/Odometer Numeric Roll & Scale Pulse,Arcade Score Counter / RPG Damage Roll / Balatro Mult Counter,Visual & Surface,Medium-Frequency Kinetic,5,"counter, odometer, number roll, kpi, price, score, metric, tabular-nums, increment, ticker","Rolling digits vertically (or interpolating values with an ease-out curve) paired with a brief 1.04x scale pulse when a metric, price, or counter changes",metric update / pricing toggle (monthly vs annual) / cart total change,"Digit roll: 280-420ms cubic-bezier(0.22, 1, 0.36, 1) with font-variant-numeric: tabular-nums; Upward change slides from bottom, downward from top",".odometer-value {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}","Pricing page Monthly/Annual toggle, dashboard KPI cards, live upvote/like counters, shopping cart subtotals, credit/token balances",Forgetting font-variant-numeric: tabular-nums (causes horizontal jitter as '1' and '8' have different widths) or taking >1.5s to count up,Update the number text immediately without vertical sliding; keep tabular-nums,Clip each digit column with overflow: hidden and translate translateY() for 60fps rendering
+19,magnetic-cursor-pull,Gravity Well / Magnetic Element Pull,Item Pickup Magnetism / Gravity Well (Vampire Survivors / Ratchet & Clank),Spatial & Physics,Medium-Frequency Kinetic,5,"magnetic button, cursor pull, gravity well, hover follow, focal cta, pointermove, spring","Subtly translating a focal button or icon 2-6px toward the user's cursor when the pointer enters its proximity field, snapping back elastically on exit",pointermove inside element bounds / pointerleave,"Pull factor: 15-25% of cursor offset from center (clamped to ±6px); Return: spring (stiffness 350, damping 22)","function attachMagnetic(el, strength = 0.2) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  el.addEventListener('pointermove', (e) => {
+    const r = el.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width / 2)) * strength;
+    const dy = (e.clientY - (r.top + r.height / 2)) * strength;
+    el.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0)`;
+  });
+  el.addEventListener('pointerleave', () => {
+    el.style.transition = 'transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+    el.style.transform = 'translate3d(0, 0, 0)';
+    setTimeout(() => { el.style.transition = ''; }, 350);
+  });
+}","Hero section primary CTA, floating action buttons, dock icons, creative portfolio navigation links","Applying magnetic pull to dense form buttons, data table cells, or dropdown items (makes clicking feel slippery and inaccurate)",Disable pointermove translation completely,Clamp displacement to <=6px so the element never pulls away from its own DOM hit area
+20,3d-perspective-tilt,Micro-Perspective 3D Surface Tilt & Glare,Collectible Card Inspection (Balatro / Hearthstone / Marvel Snap),Spatial & Physics,Low-Frequency Hero,6,"3d tilt, card tilt, perspective, balatro, glare, rotateX, rotateY, hover card, pricing card","Tilting a card's plane in 3D space (±3deg to ±7deg rotateX/rotateY) in response to cursor position, paired with a counter-moving radial glare layer",pointermove over feature/pricing/profile card,"perspective(900px) rotateX(±5deg) rotateY(±5deg); damping transition 150ms out, 400ms spring reset on pointerleave","function onCardMove(e, card) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const r = card.getBoundingClientRect();
+  const nx = (e.clientX - r.left) / r.width - 0.5;
+  const ny = (e.clientY - r.top) / r.height - 0.5;
+  card.style.transform = `perspective(900px) rotateX(${(-ny * 7).toFixed(2)}deg) rotateY(${(nx * 7).toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
+}","Pricing tier cards, showcase bento cards, digital badges/passes, profile/member cards, hero previews","Tilting beyond ±12deg on cards containing paragraphs or inputs, or applying 3D tilt to every row in a dashboard list",Disable rotateX/rotateY; use a simple border highlight on hover,Apply transform-style: preserve-3d and will-change: transform only while hovered
+21,optimistic-choreography,Optimistic Instant Commit + Rollback Choreography,Client-Side Prediction / Lag Compensation (Rollback Netcode),Forgiveness & Input,High-Frequency Subliminal,4,"optimistic ui, lag compensation, netcode, instant feedback, rollback, async, server action, latency","Applying the target UI state in <16ms on click (as if network latency is 0ms), playing the micro-reward animation immediately, and choreographing a graceful Shake + Snapback only if the server rejects",click / toggle / drag reorder / comment post,0ms local state transition; if Promise rejects: 300ms traumaShake + reverse FLIP transition + non-intrusive error toast,"async function optimisticToggle(current, setState, apiCall, el) {
+  const next = !current;
+  setState(next); // 0ms Client-Side Prediction!
+  try {
+    await apiCall(next);
+  } catch (err) {
+    setState(current); // Rollback
+    el?.classList.add('input-error-shake');
+    setTimeout(() => el?.classList.remove('input-error-shake'), 350);
+  }
+}","Likes/reactions, bookmarking, task status toggles, Kanban card reordering, inline title edits, comment posting",Showing a blocking spinner on a simple toggle switch or checkbox while waiting 300ms for a REST/GraphQL response,Keep the 0ms optimistic state update; replace rollback shake with a clean state revert + accessible error alert,Drastically improves perceived app speed; ensure rapid toggles cancel or sequence in-flight requests properly
+22,asymmetric-enter-exit,Asymmetric Enter vs. Exit Velocity,Combat Recovery Cancel / Snappy Menu Dismissal,Temporal & Impact,High-Frequency Subliminal,2,"asymmetric timing, exit faster than enter, modal close, dropdown dismiss, responsiveness, easing","Making exit/dismissal animations 35-45% shorter than entrance animations, using deceleration (ease-out) for arrival and acceleration (ease-in) for dismissal",modal / popover / drawer / toast open vs. close,"Enter: 220-260ms cubic-bezier(0.22, 1, 0.36, 1) (decelerate in); Exit: 120-150ms cubic-bezier(0.4, 0, 1, 1) (accelerate out)",".dialog[data-state='open'] {
+  animation: dialogIn 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.dialog[data-state='closed'] {
+  animation: dialogOut 135ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}","All modals, drawers, dropdown menus, tooltips, command palettes, and toasts","Using the exact same 300ms ease-in-out curve for both opening and closing (once a user clicks 'Close', they want the overlay gone immediately)",Reduce both enter and exit to <=80ms opacity crossfade,Ensure pointer-events: none is applied immediately when the exit animation begins so the closing overlay never blocks clicks underneath
+23,shared-element-flip-morph,Shared-Element FLIP Morph & Active Pill Glide,Shape-Shifting / Portal Spatial Continuity,Visual & Surface,Medium-Frequency Kinetic,5,"flip, layoutId, shared element, sliding pill, active tab, morph, card expand, spatial continuity",Smoothly gliding a single visual indicator (like an active tab background pill) or expanding a compact card directly into its detail modal so the eye tracks a single continuous object,tab switch / filter change / card-to-modal expand,"Duration: 240-320ms; Spring stiffness 420, damping 30; uses FLIP (First, Last, Invert, Play) or CSS View Transitions","function selectTab(newTabId) {
+  if (!document.startViewTransition) return updateDOM(newTabId);
+  document.startViewTransition(() => updateDOM(newTabId));
+}
+/* CSS */
+.active-tab-pill { view-transition-name: active-nav-pill; }","Segmented controls, navigation tab bars, filter pills, expanding a thumbnail/card into a detail drawer or modal","Teleporting an active indicator instantly across 5 tabs without spatial continuity, or morphing across unrelated text blocks that cause smeared typography",Instant tab indicator swap without sliding motion,"Prefer layoutId (Framer Motion), document.startViewTransition, or transform-only FLIP inversions"
+24,follow-through-stagger,Cascading Follow-Through & Secondary Motion,Follow-Through & Overlapping Action (Capes / Hair / Secondary Physics),Temporal & Impact,Medium-Frequency Kinetic,4,"follow through, overlapping action, stagger, cascade, modal content, card children, secondary motion","When a parent container (modal, card, drawer, dropdown) arrives, its internal children (icon, title, body, action buttons) arrive 25-40ms apart with slightly different spring mass",container open / section reveal / card mount,Parent: 0ms delay; Child 1 (Icon/Badge): +25ms; Child 2 (Heading): +50ms; Child 3 (Body/Actions): +75ms; total stagger cap <= 120ms,".stagger-child {
+  opacity: 0; transform: translateY(6px);
+  animation: childArrive 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.stagger-child:nth-child(1) { animation-delay: 25ms; }
+.stagger-child:nth-child(2) { animation-delay: 50ms; }
+.stagger-child:nth-child(3) { animation-delay: 75ms; }","Command palettes, onboarding cards, empty states, feature modals, dropdown menu items (capped at 6 items)","Staggering 20+ items with 80ms delay each (the bottom of the list takes 1.6 seconds to appear, frustrating the user)",Render all children simultaneously at opacity: 1 without delay,Keep total stagger delay budget under 120ms for high/medium-frequency UI
+25,viscous-rubber-band,Viscous Rubber-Banding & Boundary Resistance,Map Edge Boundary / Physics Tether Resistance,Spatial & Physics,Medium-Frequency Kinetic,4,"rubber band, overscroll, drag limit, boundary resistance, slider max, drawer pull, damping","Applying hyperbolic/logarithmic resistance when a user drags, scrolls, or pulls an element past its minimum or maximum allowed boundary",drag past boundary / drawer over-pull / carousel end,Resistance coefficient c = 0.30; formula: (d * dim * c) / (dim + c * abs(d)); snaps back with spring on release,"function rubberBand(distance, dimension, constant = 0.3) {
+  return (distance * dimension * constant) / (dimension + constant * Math.abs(distance));
+}","Bottom sheets / drawers pulled past full height, carousels at first/last slide, kanban columns dragged out of bounds, range sliders hitting min/max",Hard-clamping a dragged element at 0px with zero give (feels like hitting a dead brick wall or a frozen UI),Clamp softly or show a subtle border glow at the boundary without spatial over-pull,Pure math transform on pointermove; zero layout cost
+26,detent-haptic-tick,Mechanical Detent Snapping & Micro-Tick,Rotary Encoder / Ratchet Detent / Inventory Grid Snap,Audio & Haptic,Medium-Frequency Kinetic,4,"detent, snap, slider, scrubber, picker, stepper, haptic tick, mechanical click, grid snap",Emitting a 6ms procedural filter-click + 4ms mobile haptic pulse + 1px visual scale notch each time a continuous drag or scrubber crosses a discrete step or threshold,slider step change / drag-and-drop slot cross / number scrubber,Audio: 8ms triangle pitch drop 1400Hz->180Hz (gain 0.04); Haptic: navigator.vibrate?.(4); Visual: 60ms scale(1.03) pulse on value label,"function triggerDetentTick(audioCtx) {
+  navigator.vibrate?.(4);
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.008);
+  gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.009);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.01);
+}","Range sliders with discrete steps, timeline scrubbers, color pickers, drag-and-drop column crossings, date/time wheel pickers",Firing ticks on every raw pixel of mousemove without throttling to discrete threshold crossings (creates a harsh buzzing sound),Visual label updates cleanly without scale pulse,"Throttle ticks to a minimum interval of 25ms so fast scrubbing sounds like a crisp ratchet, not audio clipping"
+27,icon-elastic-morph,Stateful SVG Path & Icon Elastic Morph,Weapon Transform / Character State Transition,Visual & Surface,Medium-Frequency Kinetic,4,"icon morph, copy to check, play pause, menu close, bookmark fill, stroke-dashoffset, svg animation","Deforming an action icon smoothly into its confirmation state (e.g., Copy icon compresses and springs into a Checkmark with stroke-dashoffset draw + 15deg rotational settle)",copy button click / bookmark / play-pause / theme toggle,Phase 1 (60ms): outgoing icon scales to 0.5 + rotates -20deg + fades out; Phase 2 (220ms): incoming icon springs from scale 0.5 + rotates +15deg -> 0deg,".icon-swap-enter {
+  animation: iconSpringIn 240ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconSpringIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-25deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}","Copy-to-clipboard buttons, dark/light theme sun-to-moon toggles, favorite/bookmark heart fill, expand/collapse chevrons, mute/unmute buttons","Instant, jarring 0ms SVG swaps with no transition, or spinning an icon 720 degrees for a simple toggle",Crossfade opacity over 100ms without rotation or scale overshoot,Animate SVG wrapper <g> or <svg> transform and stroke-dashoffset
+28,skeleton-breathing-sheen,Synchronized Skeleton Wave & Dissolve Unveil,Fog of War Reveal / Hologram Materialization,Visual & Surface,High-Frequency Subliminal,3,"skeleton, shimmer, loading, unveil, blur dissolve, content reveal, progressive loading",Syncing all skeleton placeholders on a unified viewport wave and cross-dissolving loaded content in with a 4px -> 0px blur-to-crisp materialization,async data load -> content mount,Skeleton loop: 1.5s wave; Unveil: 220ms opacity 0->1 + filter: blur(4px)->blur(0px) + translateY(4px->0),"@keyframes contentMaterialize {
+  from { opacity: 0; filter: blur(4px); transform: translateY(4px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+.loaded-content { animation: contentMaterialize 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }","Dashboard widgets loading async data, AI streaming responses, profile cards, search result lists",Independent unsynchronized shimmer loops on every tiny skeleton box (creates chaotic visual noise) or flashing skeletons for <150ms fast responses,"Static muted surface placeholder while loading, followed by a simple 100ms opacity fade when data arrives",Remove filter: blur(0) at animation end so the browser drops the temporary offscreen compositing layer
+29,border-energy-beam,Perimeter Energy Beam / Focus Charge,Shield Recharge / Active Slot Highlight / Skill Ready Glow,Visual & Surface,Low-Frequency Hero,6,"border beam, conic gradient, active card, ai generating, focus ring, glowing border, perimeter","A focused band of light traveling smoothly along the perimeter border of an active container (e.g., an AI prompt input while generating, or a selected pricing tier)",AI generation active / active workflow node / featured card,"Conic-gradient mask rotating 360deg over 2.5s-4s linear, or 400ms single perimeter trace on selection","@property --beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes rotateBeam { to { --beam-angle: 360deg; } }
+.card-active-beam {
+  background: linear-gradient(var(--surface), var(--surface)) padding-box,
+              conic-gradient(from var(--beam-angle), transparent 72%, var(--accent) 100%) border-box;
+  border: 1.5px solid transparent;
+  animation: rotateBeam 3s linear infinite;
+}","AI chat/prompt box while streaming a response, active node in a workflow builder, highlighted 'Most Popular' pricing card, active dropzone during file drag",Putting rotating border beams on more than 1-2 elements per screen (turns a professional SaaS into a slot machine),Static 1.5px accent border without rotation,Pause or remove the infinite animation when the element scrolls offscreen or when the async operation completes
+30,drag-elevation-shadow,"Physical Lift, Velocity Tilt & Shadow Projection on Drag",Tabletop Card Pickup (Inscryption / Balatro / Solitaire),Spatial & Physics,Medium-Frequency Kinetic,5,"drag and drop, kanban pickup, elevation, shadow, tilt, velocity tilt, cursor grab, z-index","When a user picks up a draggable item, it physically lifts toward the camera (scale 1.04), casts a deeper diffused shadow, and tilts slightly (±3deg) proportional to horizontal drag velocity",dragstart / pointerdown on draggable item,"Pickup: 160ms spring to scale(1.04) + shadow elevation; Move: rotateZ(clamp(vx * 0.15, -4, 4)deg); Drop: 220ms spring settle to slot",".draggable-item[data-dragging='true'] {
+  transform: scale(1.04) rotate(1.5deg);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.25);
+  z-index: 50;
+  cursor: grabbing;
+}","Kanban cards, sortable list items, dashboard widget rearrangement, file/image tiles","Dragging a dead, flat 1:1 rectangle with zero scale or shadow separation from the underlying list","Increase border contrast and box-shadow on pickup, but omit scale overshoot and velocity tilt","Use transform: translate3d(x, y, 0) scale(1.04) during drag; never update top/left CSS properties on pointermove"
+31,progress-tension-deceleration,Asymptotic Progress Bar Tension & Snap Finish,Boss HP Bar / Loading Bar Final Sprint,Temporal & Impact,Medium-Frequency Kinetic,4,"progress bar, loading bar, optimistic progress, nprogress, upload progress, tension, snap finish","Advancing an indeterminate/async progress bar rapidly to 30%, coasting asymptotically toward 90% with decelerating velocity, then snapping from current% -> 100% in 120ms with a brief glow pulse on completion",route transition / file upload / async generation,"0->30% in 150ms; 30->88% asymptotic decay over 4s; on complete: 120ms cubic-bezier(0.22, 1, 0.36, 1) to 100% + 180ms opacity fadeout",".progress-bar-fill {
+  transform-origin: left;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+}","Top-of-viewport route loaders, AI response generation, file uploads, multi-step batch processing",Freezing a progress bar at 99% with zero movement for several seconds or jumping backward,Keep smooth scaleX progress updates; omit completion glow pulse,Animate transform: scaleX(0..1) instead of width: 0..100% to avoid layout recalculation on every tick
+32,contextual-scrim-depth,Receding Background Scale & Depth Focus (Camera Rack Focus),Camera Rack Focus / Pause Menu Depth-of-Field,Spatial & Physics,Low-Frequency Hero,5,"rack focus, background scale, sheet, drawer, modal backdrop, depth of field, ios sheet, receding","Scaling the underlying app shell down slightly (scale 0.97, border-radius 12px) and dimming it when a primary modal or drawer opens in front, creating true 3D layer separation",primary modal / sheet / command palette open,"App shell: transform: scale(0.975) translateY(4px) over 280ms cubic-bezier(0.22, 1, 0.36, 1); restores in 200ms on close",".app-shell[data-modal-open='true'] {
+  transform: scale(0.975);
+  border-radius: 12px;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 280ms ease;
+  overflow: hidden;
+}","Mobile/tablet bottom sheets, major workspace dialogs, command palettes, onboarding overlays",Applying receding scale on tiny confirmation popovers or nested modals (causes dizzying multi-layer scaling),Dim backdrop scrim opacity without scaling the background shell,Prefer scaling the main wrapper with a solid dark body background behind it over animating backdrop-filter blur radius every frame
+33,harmonic-chord-confirm,Harmonic Dyad/Triad Resolution Chime,Quest Complete / Puzzle Solved Chime (Zelda / Monument Valley),Audio & Haptic,Low-Frequency Hero,6,"chime, chord, success sound, quest complete, audio reward, arpeggio, web audio, confirmation","Playing a soft, warm two-note or three-note major fifth/triad arpeggio (e.g., C5 -> G5 -> E6) with a gentle low-pass filter envelope when a user completes a major workflow",onboarding complete / deployment live / inbox zero / checkout success,"Notes at 0ms (523.25Hz), +65ms (659.25Hz), +130ms (783.99Hz); sine/triangle blend; exponential decay 380ms; max gain 0.06","function playSuccessChime(ctx) {
+  [523.25, 659.25, 783.99].forEach((freq, i) => {
+    const t = ctx.currentTime + i * 0.065;
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.05, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.4);
+  });
+}","Completing onboarding, publishing a site/workflow, passing all tests/checks, completing a purchase",Playing a 3-note chime on routine button clicks or form field blurs,Respect user audio/mute preferences; pair with a clear visual checkmark and aria-live polite message,Pure Web Audio API synthesis; zero external MP3 dependencies
+34,spring-tether-tooltip,Cursor-Tethered Elastic Tooltip Follow,Floating Companion / Cursor Reticle Lag,Spatial & Physics,Medium-Frequency Kinetic,3,"tooltip follow, cursor tether, chart crosshair, hover preview, spring follow, lerp",Having an interactive chart tooltip or preview card follow the cursor's X/Y position with a subtle spring lag (lerp factor 0.25) instead of rigid 1:1 locking,"pointermove over chart, timeline, or gallery row","Linear interpolation (lerp) factor 0.22-0.30 per 16ms frame, or GSAP quickTo(el, 'x', { duration: 0.18, ease: 'power3.out' })","// Smooth Lerp loop or Web Animations
+currentX += (targetX - currentX) * 0.25;
+currentY += (targetY - currentY) * 0.25;
+tooltip.style.transform = `translate3d(${currentX.toFixed(1)}px, ${currentY.toFixed(1)}px, 0)`;","Time-series chart scrubbers, timeline previews, interactive map pins, portfolio project row image previews",Using a very low lerp factor (<0.08) which makes the tooltip feel sluggish and trail far behind the cursor,Snap tooltip position directly to the active data point or anchor without trailing interpolation,Stop the requestAnimationFrame loop immediately on pointerleave
+35,keycap-shortcut-depression,Physical Keycap Depression on Hotkey Press,Rhythm Game Lane Hit / Arcade Button Light-Up,Visual & Surface,High-Frequency Subliminal,3,"keyboard shortcut, kbd, hotkey, cmd+k, keycap, depression, visual echo, accessibility",Visually depressing the on-screen <kbd> badge or corresponding button (`scale(0.92) translateY(1.5px)` + border-bottom collapse) when the user presses the physical keyboard shortcut,"keydown matching a visible UI shortcut (e.g., Cmd+K, Esc, Enter, E, C)",keydown: 40ms compress translateY(1.5px) + bottom-border 2px->0px; keyup: 140ms spring release,"kbd.keycap {
+  border-bottom: 2px solid var(--border-strong);
+  transition: transform 60ms ease, border-bottom-width 60ms ease;
+}
+kbd.keycap[data-pressed='true'] {
+  transform: translateY(1.5px) scale(0.95);
+  border-bottom-width: 0px;
+}","Command palettes, keyboard-first SaaS tools (Linear/Raycast style), modal Esc badges, form Cmd+Enter buttons",Executing a hotkey action silently with zero visual echo on the screen (leaves the user unsure what their keystroke just triggered),Highlight the <kbd> badge background color for 150ms without vertical translation,Toggle a data-pressed attribute on keydown/keyup; lightweight and builds muscle memory
+36,dropzone-magnetic-awakening,Dropzone Magnetic Awakening & Expansion,Portal Activation / Socket Magnet Ready State,Spatial & Physics,Medium-Frequency Kinetic,5,"dropzone, file upload, dragover, dragenter, dashed border, magnetic slot, drop target","When a dragged file or card enters the viewport/dropzone, the target container expands (`scale(1.02)`), its dashed border begins marching/glowing, and its central icon floats upward in anticipation",dragenter / dragover / drop,dragenter: scale(1.02) + icon translateY(-4px) over 220ms spring; drop: 70ms hitstop compress scale(0.98) -> spring settle scale(1),".dropzone[data-dragover='true'] {
+  transform: scale(1.015);
+  border-color: var(--accent);
+  background-color: var(--accent-subtle);
+}
+.dropzone[data-dragover='true'] .dropzone-icon {
+  transform: translateY(-5px) scale(1.1);
+}","File upload dropzones, Kanban empty columns, dashboard widget slots, image attachment areas","Static dropzones that show zero reaction when a file is hovered over them, or flickering on dragleave when crossing child elements",Change border color and background tint on dragover without scaling or icon floating,Use pointer-events: none on inner dropzone children to prevent dragenter/dragleave flickering
+37,toast-stack-deck-physics,3D Card-Deck Toast Stacking & Fan-Out,Card Hand Fan-Out (Slay the Spire / Balatro),Spatial & Physics,Medium-Frequency Kinetic,4,"toast stack, sonner, notification deck, fan out, hover expand, swipe dismiss",Collapsing multiple notifications into a neat 3D receding deck (`scale(1 - i*0.05) translateY(-i*10px)`) that smoothly fans out into a full vertical list when hovered,toast mount / hover over toast container / swipe to dismiss,"Resting stack: depth scale -5% per layer; Hover fan-out: 260ms cubic-bezier(0.22, 1, 0.36, 1) to full height with 8px gaps",".toast-item {
+  transform: translate3d(0, calc(var(--index) * -10px), 0) scale(calc(1 - var(--index) * 0.05));
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+}","Notification toast systems, activity feeds, multi-item upload queues","Covering 60% of the viewport with 6 unstacked vertical toasts, or auto-dismissing a toast while the user's pointer is hovering over it",Show the latest toast cleanly and crossfade replacements without 3D deck scaling,Cap visible stacked DOM nodes to 3-4 items; pause auto-dismiss timers on pointerenter and focusin (Coyote Time)
+38,focus-ring-spring-glide,Elastic Focus Ring Expansion & Glide,Menu Cursor Reticle Snap (Persona 5 / Zelda Inventory),Visual & Surface,High-Frequency Subliminal,2,"focus ring, focus-visible, keyboard navigation, reticle, outline offset, accessibilityjuice","Animating `outline-offset` from `0px` to `3px` with a snappy 140ms spring when an element receives `:focus-visible`, making keyboard navigation feel crisp and alive",":focus-visible on buttons, links, inputs, and cards","140ms cubic-bezier(0.22, 1, 0.36, 1) transition on outline-offset (0px -> 3px) and box-shadow ring",".focus-juicy:focus-visible {
+  outline: 2px solid var(--ring-color, #3B82F6);
+  outline-offset: 3px;
+  transition: outline-offset 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}",Every keyboard-focusable control across the entire application,"Removing focus outlines (`outline: none`) without a high-contrast replacement, or using slow (>250ms) focus transitions that lag behind fast Tab presses",Instant outline-offset: 3px with 0ms transition,Keep transition duration <=140ms so rapid Tab key navigation never feels delayed
+39,strikethrough-sweep-decay,Task Completion Strikethrough Sweep & Row Settle,Quest Objective Cross-Out (Hades / Witcher Journal),Visual & Surface,Medium-Frequency Kinetic,4,"todo check, strikethrough, task complete, checklist, line draw, opacity settle","When a checkbox pops into checked state, a horizontal strikethrough line sweeps left-to-right across the task text over 220ms, followed by the row softly dimming to 55% opacity",checkbox checked on task / checklist item,0-180ms: checkbox squashPop; 60-260ms: strikethrough scaleX(0 -> 1); 180-360ms: text opacity 1 -> 0.55,".task-label { position: relative; transition: color 250ms ease, opacity 250ms ease; }
+.task-label::after {
+  content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1.5px;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.task-done .task-label { opacity: 0.55; }
+.task-done .task-label::after { transform: scaleX(1); }","Todo lists, onboarding checklists, subtask trackers, issue checklists, shopping lists",Instantly deleting or hiding a checked task in 0ms before the user can savor the satisfaction of crossing it out,Apply standard text-decoration: line-through and opacity: 0.55 immediately,Uses pseudo-element transform: scaleX()—works cleanly on single-line labels; use background-size transition for multi-line wrapping text
+40,ghost-slot-magnet,Magnetic Ghost Slot Preview on Drag,Building Placement Hologram (Factorio / RTS Blueprint Snap),Spatial & Physics,Medium-Frequency Kinetic,4,"ghost slot, placeholder, kanban drop target, drag preview, blueprint, snap preview","Rendering a soft-bordered translucent 'ghost' footprint in the exact destination slot while a card is hovered over a column, pulsing gently before the card snaps into it on release",dragover valid slot in Kanban / sortable list / grid,"Ghost slot expands height in 180ms cubic-bezier(0.22, 1, 0.36, 1); dropped card FLIP-glides into the exact ghost bounding box over 220ms",".drag-ghost-slot {
+  border: 1.5px dashed var(--accent);
+  background: rgba(59, 130, 246, 0.06);
+  border-radius: var(--radius);
+  transition: height 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}","Kanban boards, dashboard widget grids, block editors (Notion-style), sortable lists",Leaving the user guessing where a dropped card will land until after they release the mouse button,Show static dashed drop indicator line without height animation,Measure target slot height once on dragstart and reuse it for the ghost element
+41,live-pulse-beacon,Sonar Ring & Live Status Beacon,Radar Ping / Objective Waypoint Pulse,Visual & Surface,High-Frequency Subliminal,2,"sonar, live badge, status dot, online indicator, ping, webhook active, recording","A 6-8px status dot with an expanding, fading outer ring that communicates real-time connection, active recording, or live streaming state",active connection / live stream / incident status,"2s cycle: ring scales 1 -> 2.6 while opacity fades 0.6 -> 0 using cubic-bezier(0, 0, 0.2, 1)","@keyframes sonarPing {
+  75%, 100% { transform: scale(2.5); opacity: 0; }
+}
+.beacon-ring { animation: sonarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite; }","Live system status indicators, active AI agent state, collaborative multiplayer cursors, live recording badges",Putting pulsing sonar rings on 20 table rows at once (visual cacophony—limit to 1-2 active indicators),Solid static status dot without expanding outer ring,Pure transform + opacity on a tiny 8px pseudo-element; pause when offscreen
+42,scroll-anchor-forgiveness,Smart Scroll-Lock & Floating 'Jump to Bottom' Pill,Camera Free-Look Override (RTS Camera Detach on Pan),Forgiveness & Input,High-Frequency Subliminal,2,"auto scroll, ai streaming scroll, chat scroll, scroll lock, jump to bottom, forgiveness",Automatically scrolling down as new streaming tokens or chat messages arrive ONLY when the user is within 40px of the bottom; immediately detaching auto-scroll the instant the user wheels/scrolls upward,wheel / touchmove upward during active content stream,Detach threshold: scrollHeight - scrollTop - clientHeight > 40px; spawns a spring-popping '↓ New output' pill when detached,"const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+if (isAtBottom) el.scrollTo({ top: el.scrollHeight, behavior: 'instant' });","AI chat streaming interfaces, live log tails, terminal outputs, real-time messaging feeds",Forcing scrollTop = scrollHeight on every token while the user is trying to read earlier paragraphs (one of the most frustrating UX bugs in AI apps),Use behavior: 'instant' when clicking 'Jump to bottom',Use passive scroll listeners and avoid smooth scroll animations on every token tick
+43,morphing-submit-button,choreographed Idle → Processing → Hitstop → Success Button Morph,Multi-Stage Combo Finisher / Reload State Machine,Temporal & Impact,Medium-Frequency Kinetic,6,"submit button, loading button, morphing button, checkout button, save button, state machine","Transitioning a submit button smoothly through 4 states—Idle label slides up/out, Spinner springs in, 80ms Hitstop on server resolve, Emerald Checkmark + 'Saved!' springs in—while locking button width or smoothly FLIP-interpolating width",form submit / checkout click / save settings,Label swap: 180ms translateY(±12px) + opacity; Minimum loading hold: 300ms (prevents 40ms spinner flash on fast APIs); Success hold: 1500ms,".btn-state-label {
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
+}
+.btn-state-label[data-state='hidden'] { transform: translateY(-12px); opacity: 0; }","Checkout Pay buttons, Save Changes buttons, Deploy triggers, Send Invite forms",Allowing the button width to jump wildly when 'Save Changes' changes to '...' or flashing a spinner for 30ms,Crossfade label text in place without vertical translation,Keep button min-width locked during loading or wrap inner content in a FLIP container
+44,reward-early-validate-late,"Reward Early, Punish Late Validation Choreography",Dynamic Hit Confirmation vs. Delayed Miss Penalty,Forgiveness & Input,High-Frequency Subliminal,3,"form validation, inline error, blur validation, reward early punish late, input ux","Waiting until field `blur` (or submit) before showing a red validation error ('Punish Late'), but clearing the error and springing in a green valid indicator on the exact `input` keystroke that fixes the issue ('Reward Early')",onBlur (first validation) + onChange (when field is already in dirty/error state),"Error clear: 0ms on valid keystroke; Valid checkmark pop: 200ms cubic-bezier(0.34, 1.56, 0.64, 1)","function onInputChange(val) {
+  setValue(val);
+  if (hasBlurred && isInvalid) setIsInvalid(!validate(val)); // Reward Early!
+}
+function onInputBlur() {
+  setHasBlurred(true);
+  setIsInvalid(!validate(value)); // Punish Late!
+}","Email inputs, password strength meters, username availability fields, credit card inputs",Screaming 'INVALID EMAIL ADDRESS' in red after the user has only typed the first letter 'e',Same timing logic; instant icon appearance without spring scale,Zero layout shift if helper/error row reserves min-height: 20px
+45,otp-auto-advance-pop,OTP / PIN Cell Pop & Auto-Advance Cascade,Combination Lock Tumbler Click (Resident Evil / Skyrim Lockpick),Visual & Surface,Medium-Frequency Kinetic,5,"otp, pin code, 2fa, verification code, auto advance, tumbler, digit input","Each entered digit pops its cell (`scale(1.08 -> 1.0)`), advances focus in 0ms to the next cell, and upon entering the final digit, cascades a green wave across all 6 cells before auto-submitting",digit keydown / paste on 6-digit OTP input,Per-cell pop: 160ms spring; Final 6-cell wave: 30ms stagger across cells + 70ms hitstop before auto-submit,".otp-cell[data-filled='true'] {
+  animation: cellPop 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-color: var(--accent);
+}","2FA / OTP verification screens, PIN entry, invite code inputs",Breaking Cmd+V paste across cells or forcing the user to manually click a 'Verify' button after typing all 6 digits,Highlight border color on fill without scale bounce,Support full string paste on any cell and Backspace auto-retreat
+46,safe-triangle-aim,Diagonal Safe-Triangle Submenu Aiming,Directional Aim Cone / Look-Ahead Vector Prediction,Forgiveness & Input,High-Frequency Subliminal,2,"safe triangle, submenu, mega menu, amazon menu, diagonal cursor, hover forgiveness","Tracking the cursor's velocity vector `(dx, dy)` when moving from a parent menu item toward an open submenu; as long as the cursor stays inside the triangle formed by the previous cursor point and the submenu's top/bottom corners, hovering over sibling items is ignored",pointermove across parent menu while a child submenu is open,Vector cone check + 180ms fallback timeout if cursor stops inside a sibling row,"// Check if current (x,y) lies inside triangle(prevX,prevY, subTopLeft, subBottomLeft)
+// If inside cone: delay switching active parent item by 180ms","Nested context menus, IDE menubars, e-commerce category mega-menus, cascading dropdowns",Instantly switching the open submenu the millisecond the cursor grazes a sibling row on its diagonal path to the submenu,Identical behavior—pure spatial usability forgiveness,Simple 2D cross-product point-in-triangle math (<0.01ms per pointermove)
+47,warm-tooltip-handoff,Warm-State Instant Tooltip Handoff,Combo Window Continuation (No Wind-up on Follow-up Attacks),Temporal & Impact,High-Frequency Subliminal,3,"tooltip delay, warm tooltip, toolbar hover, instant handoff, radix tooltip","The first tooltip in a toolbar waits 400ms before opening (preventing accidental popups), but once 'warm', hovering adjacent toolbar buttons within 300ms opens their tooltips in 0ms and smoothly glides the tooltip box across",pointerenter across sibling toolbar buttons,Cold delay: 400ms; Warm window: 300ms after leaving a tooltip (0ms delay + 140ms FLIP position slide),"// Cold state: openDelay = 400ms
+// Once open: set isWarm = true; on close: keep isWarm = true for 300ms
+// While isWarm: openDelay = 0ms","Icon toolbars, formatting bars, sidebar navigation rails, dock icons",Forcing the user to wait 500ms on EVERY single icon when scanning across a 6-button toolbar to find out what each icon does,Keep the 0ms warm handoff; snap tooltip position without sliding,Built into Radix UI TooltipProvider (skipDelayDuration={300}) and Floating UI
+48,multi-select-action-bar-rise,Spring-Rising Floating Bulk Action Dock,Contextual Command Wheel / Tactical HUD Summon,Spatial & Physics,Medium-Frequency Kinetic,5,"bulk actions, multi select, floating bar, dock, table selection, bottom bar","When the first row/card is selected, a floating action dock springs up from the bottom edge of the viewport (`translateY(120% -> 0)`) and its selected-count badge pulses (`scale(1.18 -> 1.0)`) with an odometer roll on each additional selection",selectedIds.length transitions 0 -> 1 (mount) and n -> n+1 (pulse),"Mount: 280ms cubic-bezier(0.34, 1.56, 0.64, 1); Count increment: 160ms badge pop; Dismiss (0 selected): 140ms ease-in drop",".bulk-dock {
+  transform: translate3d(-50%, 140%, 0);
+  transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bulk-dock[data-visible='true'] { transform: translate3d(-50%, 0, 0); }","Data tables, issue trackers, email clients, photo galleries, file managers",Shifting the top table header downward when rows are selected (causes the entire table to jump under the user's cursor),Fade the floating dock in/out at its resting position over 120ms,Fixed bottom positioning with translate3d() causes zero table reflow
+49,hover-spotlight-border,Proximity Cursor-Tracking Border & Surface Spotlight,Torchlight / Fog-of-War Proximity Illumination (Windows Fluent Reveal),Visual & Surface,High-Frequency Subliminal,4,"spotlight, glowing border, fluent reveal, bento grid hover, radial gradient cursor","Tracking cursor `(x, y)` across a grid of cards so nearby card borders illuminate proportionally to their distance from the pointer, even before the pointer directly enters a card",pointermove over card grid container,"CSS radial-gradient(350px circle at var(--x) var(--y), rgba(255,255,255,0.14), transparent 40%) updated via requestAnimationFrame","grid.addEventListener('pointermove', (e) => {
+  for (const card of cards) {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--x', `${e.clientX - r.left}px`);
+    card.style.setProperty('--y', `${e.clientY - r.top}px`);
+  }
+});","Bento feature grids, command dashboards, integration directories, dark-mode settings panels",Using high-opacity neon colors on light-mode cards or triggering React re-renders on mousemove,Simple static border brighten on :hover,Mutate --x and --y CSS custom properties directly on DOM nodes; zero layout or React render cost

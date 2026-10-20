@@ -1,0 +1,3 @@
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Mechanic Ref
+1,List Physics,Use <TransitionGroup> with v-move for Neighbor Knockback,"Vue's <TransitionGroup> automatically applies FLIP transitions via the -move class when items are inserted, deleted, or reordered.",Add position: absolute to .list-leave-active so remaining siblings smoothly glide into place via .list-move,Omit position: absolute on leave-active (causes siblings to snap abruptly only after the fade-out finishes),".list-move, .list-enter-active, .list-leave-active { transition: all 240ms cubic-bezier(0.22, 1, 0.36, 1); }
+.list-leave-active { position: absolute; }",.list-leave-active { transition: opacity 300ms; } /* Siblings jump at end */,High,neighbor-knockback

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Feel UI — Claude Code Skill & Interactive Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --spring-pop: linear(0, 0.55 14%, 0.98 28%, 1.06 42%, 1.01 60%, 1);
+      --ease-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    /* 1. Tactile Press */
+    .btn-juicy {
+      transition: transform 160ms var(--ease-snappy), box-shadow 160ms ease, background-color 120ms ease;
+      will-change: transform;
+    }
+    .btn-juicy:active:not(:disabled) {
+      transform: scale(0.95) translateY(1.5px);
+      transition-duration: 45ms;
+    }
+    /* 2. Trauma Error Shake */
+    @keyframes traumaShake {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-7px, 0, 0); }
+      35% { transform: translate3d(6px, 0, 0); }
+      55% { transform: translate3d(-4px, 0, 0); }
+      75% { transform: translate3d(2px, 0, 0); }
+      90% { transform: translate3d(-1px, 0, 0); }
+    }
+    .shake-active {
+      animation: traumaShake 320ms ease-out;
+    }
+    /* 3. Squash & Stretch Checkbox */
+    @keyframes squashPop {
+      0% { transform: scale(1, 1); }
+      30% { transform: scale(1.22, 0.82); }
+      65% { transform: scale(0.92, 1.08); }
+      100% { transform: scale(1, 1); }
+    }
+    .squash-pop {
+      animation: squashPop 280ms var(--ease-overshoot);
+    }
+    /* 4. Strikethrough sweep */
+    .strike-line {
+      position: relative;
+      transition: color 240ms ease, opacity 240ms ease;
+    }
+    .strike-line::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1.5px;
+      background: #10b981;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 220ms var(--ease-snappy);
+    }
+    .task-done .strike-line {
+      opacity: 0.5;
+    }
+    .task-done .strike-line::after {
+      transform: scaleX(1);
+    }
+    /* 5. Specular Sheen */
+    .sheen-sweep {
+      position: relative;
+      overflow: hidden;
+    }
+    .sheen-sweep::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%);
+      transform: translateX(-130%);
+      transition: transform 550ms var(--ease-snappy);
+      pointer-events: none;
+    }
+    .sheen-sweep:hover::before {
+      transform: translateX(130%);
+    }
+    /* 6. Icon Spring Swap */
+    @keyframes iconSpringIn {
+      from { opacity: 0; transform: scale(0.4) rotate(-30deg); }
+      to { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    .icon-spring-in {
+      animation: iconSpringIn 240ms var(--ease-overshoot) forwards;
+    }
+    /* 7. 3D Spotlight Card */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 200ms ease-out;
+      background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(16, 185, 129, 0.13), rgba(24, 24, 27, 0.9) 60%);
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
+
+  <!-- Sticky Navbar -->
+  <header class="sticky top-0 z-50 border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-3">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-lg">🎮</span>
+        <div>
+          <span class="font-bold tracking-tight text-white">game-feel-ui</span>
+          <span class="ml-2 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">Claude Code Skill</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="audioToggleBtn" onclick="toggleAudio()" class="btn-juicy flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20">
+          <span id="audioIcon">🔊</span>
+          <span id="audioLabel">Web Audio Synth: ON</span>
+        </button>
+        <a href="#playground" class="text-sm text-zinc-400 hover:text-white transition-colors">Playground</a>
+        <a href="#architecture" class="text-sm text-zinc-400 hover:text-white transition-colors">Arquitetura</a>
+        <a href="#install" class="btn-juicy rounded-lg bg-white px-4 py-1.5 text-sm font-semibold text-zinc-950 hover:bg-zinc-200">Instalar Skill</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden border-b border-zinc-800/60 py-20">
+    <div class="mx-auto max-w-5xl px-6 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-4 py-1.5 text-xs text-zinc-300 mb-6">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>De Steve Swink (Game Feel) & Vlambeer (Juiciness) para o DOM moderno</span>
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+        Traga a física, o <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Hitstop</span> e o <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Coyote Time</span> dos Games para sua UI.
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
+        Uma skill completa para o <strong>Claude Code</strong> com motor BM25 local, <strong>39 mecânicas de jogos traduzidas para web/mobile</strong>, sintetizador de áudio procedural zero-assets e um scanner estático (<code>--audit</code>) que avalia sua aplicação linha por linha.
+      </p>
+
+      <!-- Stats Bar -->
+      <div class="mt-12 grid grid-cols-2 sm:grid-cols-6 gap-3 max-w-4xl mx-auto">
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-emerald-400 tabular-nums">39</div>
+          <div class="text-xs text-zinc-400 mt-1">Mecânicas Game-Feel</div>
+        </div>
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-cyan-400 tabular-nums">18</div>
+          <div class="text-xs text-zinc-400 mt-1">Receitas de Componentes</div>
+        </div>
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-indigo-400 tabular-nums">11</div>
+          <div class="text-xs text-zinc-400 mt-1">Synths Web Audio</div>
+        </div>
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-purple-400 tabular-nums">11</div>
+          <div class="text-xs text-zinc-400 mt-1">Stacks Suportadas</div>
+        </div>
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-amber-400 tabular-nums">12</div>
+          <div class="text-xs text-zinc-400 mt-1">Regras de Contexto</div>
+        </div>
+        <div class="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4">
+          <div class="text-2xl font-bold text-rose-400 tabular-nums">0 KB</div>
+          <div class="text-xs text-zinc-400 mt-1">Deps Externas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Playground: Dry UI vs Game Feel UI -->
+  <section id="playground" class="mx-auto max-w-6xl px-6 py-16">
+    <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white">⚡ Playground Interativo: UI Comum (Seca) vs. Game-Feel UI</h2>
+        <p class="mt-2 text-zinc-400 text-sm">Interaja com os dois lados de cada card abaixo. Todos os sons são gerados em tempo real via <code>AudioContext</code> (zero arquivos MP3).</p>
+      </div>
+      <div class="text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2">
+        Dica: Experimente clicar rápido, segurar botões e passar o mouse na diagonal!
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- DEMO 1: Hitstop + Anticipation + Particles -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">01. hitstop-micro-pause + particle-micro-burst</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Low-Freq Hero</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Antecipação + Hitstop (Freeze Frame) + Explosão</h3>
+          <p class="mt-1 text-sm text-zinc-400">Em jogos de combate, congelar 85ms no instante do golpe dá peso físico. Em um botão de "Publicar", a compressão + pausa de 85ms antes da expansão cria uma recompensa tátil imediata.</p>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/70">
+          <div class="flex flex-col items-center justify-center rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/60">
+            <span class="text-[11px] uppercase tracking-wider text-zinc-500 mb-3">❌ UI Seca (0ms)</span>
+            <button onclick="this.textContent = this.textContent === 'Publicado' ? 'Publicar Deploy' : 'Publicado'" class="rounded-lg bg-zinc-700 px-4 py-2.5 text-sm font-medium text-white">
+              Publicar Deploy
+            </button>
+          </div>
+          <div class="flex flex-col items-center justify-center rounded-xl bg-emerald-950/20 p-4 border border-emerald-500/20">
+            <span class="text-[11px] uppercase tracking-wider text-emerald-400 mb-3">✅ Com Hitstop (85ms) + Juice</span>
+            <button id="hitstopBtn" onclick="runHitstopDemo(this)" class="btn-juicy sheen-sweep rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 shadow-lg shadow-emerald-500/20">
+              🚀 Publicar Deploy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 2: Hold-to-Confirm Charge Up -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-rose-400">02. charge-up-anticipation</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Destructive Hero</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Hold-to-Confirm (Tensão de Carregamento)</h3>
+          <p class="mt-1 text-sm text-zinc-400">Substitui modais irritantes de "Tem certeza?" por uma barra de tensão de 800ms com micro-vibração crescente e som ascendente. Soltar antes cancela com efeito mola.</p>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/70">
+          <div class="flex flex-col items-center justify-center rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/60">
+            <span class="text-[11px] uppercase tracking-wider text-zinc-500 mb-3">❌ Modal Bloqueante</span>
+            <button onclick="alert('Tem certeza que deseja excluir o servidor?')" class="rounded-lg bg-zinc-800 border border-zinc-700 px-4 py-2.5 text-sm font-medium text-rose-400">
+              Excluir Servidor
+            </button>
+          </div>
+          <div class="flex flex-col items-center justify-center rounded-xl bg-rose-950/20 p-4 border border-rose-500/20">
+            <span class="text-[11px] uppercase tracking-wider text-rose-400 mb-3">✅ Segure por 0.8s</span>
+            <button id="holdBtn"
+              onpointerdown="startHoldDemo(this)"
+              onpointerup="cancelHoldDemo(this)"
+              onpointerleave="cancelHoldDemo(this)"
+              class="relative overflow-hidden rounded-lg border border-rose-500/50 bg-rose-950/60 px-4 py-2.5 text-sm font-semibold text-rose-200 select-none">
+              <span id="holdFill" class="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-rose-500/40"></span>
+              <span id="holdText" class="relative z-10">🔥 Segure p/ Excluir</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 3: Combo Pitch Escalation Checklist -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-cyan-400">03. pitch-escalation-combo + squash-and-stretch</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Med-Freq Kinetic</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Escalada Musical de Tom em Sequência (Combo)</h3>
+          <p class="mt-1 text-sm text-zinc-400">Assim como coletar moedas em <em>Super Mario</em> ou <em>Peggle</em>, marcar tarefas seguidas sobe a nota musical em +1 semitom a cada clique, somado ao Squash & Stretch e riscado progressivo.</p>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/70">
+          <div class="rounded-xl bg-zinc-950/70 p-3.5 border border-zinc-800/60 space-y-2">
+            <div class="text-[11px] uppercase tracking-wider text-zinc-500 mb-2">❌ Checkbox Comum</div>
+            <label class="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer"><input type="checkbox" /> Configurar banco</label>
+            <label class="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer"><input type="checkbox" /> Criar rotas de API</label>
+            <label class="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer"><input type="checkbox" /> Rodar testes E2E</label>
+            <label class="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer"><input type="checkbox" /> Publicar produção</label>
+          </div>
+          <div class="rounded-xl bg-cyan-950/15 p-3.5 border border-cyan-500/20 space-y-2">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] uppercase tracking-wider text-cyan-400">✅ Combo Pitch + Squash</span>
+              <span id="comboBadge" class="text-[10px] font-mono text-emerald-400 opacity-0 transition-opacity">COMBO x1</span>
+            </div>
+            <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-zinc-200 cursor-pointer select-none py-0.5">
+              <span class="check-box flex h-4 w-4 items-center justify-center rounded border border-zinc-600 bg-zinc-900 text-[10px] text-transparent transition-colors">✓</span>
+              <span class="strike-line">Configurar banco</span>
+            </div>
+            <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-zinc-200 cursor-pointer select-none py-0.5">
+              <span class="check-box flex h-4 w-4 items-center justify-center rounded border border-zinc-600 bg-zinc-900 text-[10px] text-transparent transition-colors">✓</span>
+              <span class="strike-line">Criar rotas de API</span>
+            </div>
+            <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-zinc-200 cursor-pointer select-none py-0.5">
+              <span class="check-box flex h-4 w-4 items-center justify-center rounded border border-zinc-600 bg-zinc-900 text-[10px] text-transparent transition-colors">✓</span>
+              <span class="strike-line">Rodar testes E2E</span>
+            </div>
+            <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-zinc-200 cursor-pointer select-none py-0.5">
+              <span class="check-box flex h-4 w-4 items-center justify-center rounded border border-zinc-600 bg-zinc-900 text-[10px] text-transparent transition-colors">✓</span>
+              <span class="strike-line">Publicar produção</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 4: Trauma Shake + Reward Early Validation -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-amber-400">04. trauma-error-shake + icon-elastic-morph</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Med-Freq Kinetic</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Trauma Shake com Decaimento & Copy Morph</h3>
+          <p class="mt-1 text-sm text-zinc-400">Teste enviar o input vazio para sentir a rejeição física (<em>Trauma Shake</em> ±6px com decaimento exponencial + duplo thud grave) ou clique em Copiar para ver o morph elástico.</p>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/70">
+          <div class="flex flex-col items-center justify-center rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/60 gap-2">
+            <span class="text-[11px] uppercase tracking-wider text-zinc-500">✅ Teste o Error Shake</span>
+            <div id="shakeBox" class="flex w-full gap-1.5">
+              <input id="shakeInput" type="text" placeholder="Digite 'ok'..." class="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500" />
+              <button onclick="triggerShakeDemo()" class="btn-juicy rounded-lg bg-amber-500/20 border border-amber-500/40 px-3 py-1.5 text-xs font-semibold text-amber-300">Validar</button>
+            </div>
+          </div>
+          <div class="flex flex-col items-center justify-center rounded-xl bg-indigo-950/20 p-4 border border-indigo-500/20 gap-2">
+            <span class="text-[11px] uppercase tracking-wider text-indigo-400">✅ Copy Morph Localizado</span>
+            <button id="copyMorphBtn" onclick="triggerCopyMorph(this)" class="btn-juicy flex items-center gap-2 rounded-lg border border-indigo-500/30 bg-indigo-950/50 px-4 py-2 text-xs font-medium text-indigo-200">
+              <span id="copyIconSpan" class="inline-block">📋</span>
+              <span id="copyLabelSpan">npx skills add game-feel-ui</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 5: Coyote Time Hover Menu -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-purple-400">05. coyote-time-hover-grace</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Invisible Forgiveness</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Coyote Time em Menus Dropdown (160ms Grace)</h3>
+          <p class="mt-1 text-zinc-400 text-sm">Em jogos de plataforma, o <em>Coyote Time</em> permite pular 150ms após sair da borda. Na UI, ele impede que o menu feche quando o cursor passa por um vão ou sai rapidamente da borda.</p>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/70">
+          <div class="relative flex flex-col items-center justify-center rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/60"
+               onmouseenter="document.getElementById('dryMenu').classList.remove('hidden')"
+               onmouseleave="document.getElementById('dryMenu').classList.add('hidden')">
+            <span class="text-[11px] uppercase tracking-wider text-zinc-500 mb-2">❌ Sem Coyote Time (0ms)</span>
+            <span class="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs cursor-pointer">Passe o mouse (fecha no vão)</span>
+            <!-- Gap of 10px that traps the mouse if leaving container -->
+            <div id="dryMenu" class="hidden absolute top-full mt-3 w-44 rounded-lg border border-zinc-700 bg-zinc-900 p-2 text-xs shadow-xl z-20">
+              <div class="px-2 py-1 hover:bg-zinc-800 rounded">Item 1 (Difícil alcançar!)</div>
+              <div class="px-2 py-1 hover:bg-zinc-800 rounded">Item 2</div>
+            </div>
+          </div>
+          <div class="relative flex flex-col items-center justify-center rounded-xl bg-purple-950/20 p-4 border border-purple-500/20"
+               onmouseenter="enterCoyoteMenu()"
+               onmouseleave="leaveCoyoteMenu()">
+            <span class="text-[11px] uppercase tracking-wider text-purple-400 mb-2">✅ Com Coyote Time (180ms)</span>
+            <span class="rounded-lg border border-purple-500/40 bg-purple-900/30 px-3 py-1.5 text-xs text-purple-200 cursor-pointer">Passe o mouse (perdoa desvios)</span>
+            <div id="coyoteMenu"
+                 onmouseenter="enterCoyoteMenu()"
+                 onmouseleave="leaveCoyoteMenu()"
+                 class="hidden absolute top-full mt-3 w-44 rounded-lg border border-purple-500/40 bg-zinc-900 p-2 text-xs shadow-xl z-20">
+              <div onclick="playSwitchClick()" class="px-2 py-1.5 hover:bg-purple-500/20 rounded cursor-pointer text-purple-200">✨ Ação Alcançada!</div>
+              <div onclick="playSwitchClick()" class="px-2 py-1.5 hover:bg-purple-500/20 rounded cursor-pointer text-purple-200">⚡ Perdão Invisível</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 6: 3D Perspective Tilt + Odometer Roll -->
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">06. 3d-perspective-tilt + odometer-number-roll</span>
+            <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Spatial & Surface</span>
+          </div>
+          <h3 class="mt-2 text-lg font-bold text-white">Inspeção 3D (Estilo Balatro) & Odômetro Tabular</h3>
+          <p class="mt-1 text-zinc-400 text-sm">Mova o mouse sobre o card à direita para sentir a inclinação 3D com foco de luz radial e clique para rolar o contador com <code>tabular-nums</code>.</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-zinc-800/70">
+          <div id="balatroCard"
+               onpointermove="handleCardTilt(event, this)"
+               onpointerleave="resetCardTilt(this)"
+               onclick="incrementOdometer()"
+               class="tilt-card cursor-pointer select-none rounded-xl border border-emerald-500/30 p-5 flex items-center justify-between shadow-xl">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Passe o mouse & Clique p/ somar</div>
+              <div class="text-sm text-zinc-300 mt-1">Receita Mensal Recorrente (MRR)</div>
+            </div>
+            <div class="text-right">
+              <div id="odometerValue" class="text-3xl font-extrabold text-white tabular-nums transition-transform duration-200">R$ 14.280</div>
+              <span id="odometerBadge" class="inline-block rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-300 mt-1">+12.4%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Architecture & CLI Section -->
+  <section id="architecture" class="border-t border-zinc-800/70 bg-zinc-900/20 py-16">
+    <div class="mx-auto max-w-6xl px-6">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white">🧠 Como a Skill Funciona no Claude Code</h2>
+      <p class="mt-2 text-zinc-400 max-w-3xl">Ao invés de despejar textos gigantes no prompt, a <code>game-feel-ui</code> usa busca indexada <strong>BM25</strong>, um contrato determinístico de regras de contexto (<code>reasoning_contract.py</code>) e um scanner estático de código (<code>audit.py</code>).</p>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+          <div class="text-emerald-400 font-mono text-xs mb-2">PASSO 1 — AUDITORIA AUTOMÁTICA</div>
+          <h3 class="font-bold text-white">Scanner de Codebase (<code>--audit</code>)</h3>
+          <p class="mt-2 text-xs text-zinc-400 leading-relaxed">Inspeciona seus arquivos <code>.tsx</code>, <code>.vue</code>, <code>.svelte</code> e <code>.css</code>, calcula o <strong>Juice Score (0–100)</strong>, detecta anti-padrões (como <code>transition-all</code> ou falta de <em>Coyote Time</em>) e aponta <code>arquivo:linha</code> exatos.</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+          <div class="text-cyan-400 font-mono text-xs mb-2">PASSO 2 — BLUEPRINT & DIALS</div>
+          <h3 class="font-bold text-white">Gerador de Blueprint (<code>--blueprint</code>)</h3>
+          <p class="mt-2 text-xs text-zinc-400 leading-relaxed">Cruza o tipo do seu produto (SaaS, Fintech, E-commerce, AI Chat, EdTech) com 3 Dials ajustáveis de 1 a 10 (<code>--juice</code>, <code>--forgiveness</code>, <code>--audio</code>) e gera os tokens CSS globais.</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+          <div class="text-purple-400 font-mono text-xs mb-2">PASSO 3 — RECEITAS EM 5 CAMADAS</div>
+          <h3 class="font-bold text-white">Domínios & 11 Stacks (<code>--domain / --stack</code>)</h3>
+          <p class="mt-2 text-xs text-zinc-400 leading-relaxed">Entrega código idiomático para React 19, Next.js, Framer Motion, Tailwind, GSAP, shadcn/ui, Vue, Svelte, React Native e Flutter com fallback obrigatório para <code>prefers-reduced-motion</code>.</p>
+        </div>
+      </div>
+
+      <!-- Install Box -->
+      <div id="install" class="mt-12 rounded-2xl border border-emerald-500/30 bg-zinc-950 p-6 sm:p-8">
+        <h3 class="text-xl font-bold text-white">🚀 Como Instalar e Usar</h3>
+        <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">1. Instalar no Claude Code (Global ou no Projeto)</div>
+            <pre class="rounded-lg bg-zinc-900 border border-zinc-800 p-4 text-xs text-emerald-300 overflow-x-auto"><code># Clonar direto nas skills globais do Claude Code
+git clone https://github.com/SEU-USUARIO/game-feel-ui.git ~/.claude/skills/game-feel-ui
+
+# Ou via CLI de plugins do Claude Code
+/plugin marketplace add SEU-USUARIO/game-feel-ui</code></pre>
+          </div>
+          <div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">2. Comandos Principais do Motor</div>
+            <pre class="rounded-lg bg-zinc-900 border border-zinc-800 p-4 text-xs text-cyan-300 overflow-x-auto"><code># Auditar uma aplicação existente
+python scripts/search.py --audit "./src"
+
+# Gerar Blueprint com Dials
+python scripts/search.py "saas kanban" --blueprint --juice 6 --forgiveness 8
+
+# Buscar mecânica ou componente específico
+python scripts/search.py "hitstop freeze frame" --domain mechanics</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-zinc-800/60 py-8 text-center text-xs text-zinc-500">
+    Construído para o ecossistema Claude Code • Zero dependências externas • Respeita <code>prefers-reduced-motion</code>
+  </footer>
+
+  <!-- Procedural Web Audio & Interactive Demo Scripts -->
+  <script>
+    let audioEnabled = true;
+    let audioCtx = null;
+    let comboStep = 0;
+    let lastComboTime = 0;
+
+    function getCtx() {
+      if (!audioEnabled) return null;
+      if (!audioCtx) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (Ctx) audioCtx = new Ctx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audioIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      document.getElementById('audioLabel').textContent = audioEnabled ? 'Web Audio Synth: ON' : 'Web Audio Synth: MUTED';
+      if (audioEnabled) playSwitchClick();
+    }
+
+    function playSwitchClick() {
+      const ctx = getCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(1200, t);
+      o.frequency.exponentialRampToValueAtTime(180, t + 0.009);
+      g.gain.setValueAtTime(0.05, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.01);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + 0.011);
+    }
+
+    function playHeroChime() {
+      const ctx = getCtx();
+      if (!ctx) return;
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const t = ctx.currentTime + i * 0.065, o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, t);
+        g.gain.setValueAtTime(0.06, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+        o.connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + 0.4);
+      });
+    }
+
+    function playComboTick(checked) {
+      const ctx = getCtx();
+      if (!ctx) return;
+      const now = performance.now();
+      if (checked) {
+        comboStep = (now - lastComboTime < 2200) ? Math.min(comboStep + 1, 12) : 1;
+        lastComboTime = now;
+      } else {
+        comboStep = Math.max(0, comboStep - 1);
+      }
+      const freq = checked ? 320 * Math.pow(2, comboStep / 12) : 260;
+      const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, t);
+      o.frequency.exponentialRampToValueAtTime(checked ? freq * 1.35 : freq * 0.7, t + 0.028);
+      g.gain.setValueAtTime(0.06, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.032);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + 0.035);
+      return comboStep;
+    }
+
+    function playErrorBuzz() {
+      const ctx = getCtx();
+      if (!ctx) return;
+      [0, 0.07].forEach(offset => {
+        const t = ctx.currentTime + offset, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(150, t);
+        o.frequency.linearRampToValueAtTime(125, t + 0.05);
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(420, t);
+        g.gain.setValueAtTime(0.06, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+        o.connect(f).connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + 0.06);
+      });
+    }
+
+    function spawnSparks(el, colors = ['#10b981', '#34d399', '#38bdf8', '#facc15']) {
+      const rect = el.getBoundingClientRect();
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 * i) / 12 + (Math.random() - 0.5) * 0.35;
+        const dist = 28 + Math.random() * 34;
+        const dot = document.createElement('span');
+        dot.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;width:6px;height:6px;border-radius:999px;background:${colors[i % colors.length]};pointer-events:none;z-index:9999;`;
+        document.body.appendChild(dot);
+        dot.animate([
+          { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist + 12}px)) scale(0)`, opacity: 0 }
+        ], { duration: 480 + Math.random() * 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }).onfinish = () => dot.remove();
+      }
+    }
+
+    // DEMO 1: Hitstop
+    async function runHitstopDemo(btn) {
+      playSwitchClick();
+      btn.style.transition = 'transform 40ms ease-out';
+      btn.style.transform = 'scale(0.92)';
+      btn.textContent = '⚡ Concentrando...';
+      await new Promise(r => setTimeout(r, 95)); // 95ms Hitstop freeze!
+      playHeroChime();
+      spawnSparks(btn);
+      btn.style.transition = 'transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+      btn.style.transform = 'scale(1.06)';
+      btn.textContent = '✅ Deploy no Ar!';
+      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 180);
+      setTimeout(() => { btn.textContent = '🚀 Publicar Deploy'; }, 2200);
+    }
+
+    // DEMO 2: Hold to Confirm
+    let holdTimer = null;
+    let holdOsc = null;
+    let holdGain = null;
+    function startHoldDemo(btn) {
+      const fill = document.getElementById('holdFill');
+      const txt = document.getElementById('holdText');
+      fill.style.transition = 'transform 800ms linear';
+      fill.style.transform = 'scaleX(1)';
+      txt.textContent = '⏳ Carregando...';
+
+      const ctx = getCtx();
+      if (ctx) {
+        const t = ctx.currentTime;
+        holdOsc = ctx.createOscillator();
+        holdGain = ctx.createGain();
+        holdOsc.type = 'sine';
+        holdOsc.frequency.setValueAtTime(200, t);
+        holdOsc.frequency.exponentialRampToValueAtTime(640, t + 0.8);
+        holdGain.gain.setValueAtTime(0.01, t);
+        holdGain.gain.linearRampToValueAtTime(0.05, t + 0.8);
+        holdOsc.connect(holdGain).connect(ctx.destination);
+        holdOsc.start(t);
+      }
+
+      holdTimer = setTimeout(() => {
+        holdTimer = null;
+        stopHoldSound();
+        playHeroChime();
+        spawnSparks(btn, ['#f43f5e', '#fb7185', '#fda4af']);
+        txt.textContent = '💥 Excluído!';
+        fill.style.transform = 'scaleX(0)';
+        setTimeout(() => { txt.textContent = '🔥 Segure p/ Excluir'; }, 1800);
+      }, 800);
+    }
+
+    function stopHoldSound() {
+      if (holdOsc && audioCtx) {
+        try {
+          holdGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+          holdOsc.stop(audioCtx.currentTime + 0.045);
+        } catch (e) {}
+        holdOsc = null;
+      }
+    }
+
+    function cancelHoldDemo(btn) {
+      if (!holdTimer) return;
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      stopHoldSound();
+      const fill = document.getElementById('holdFill');
+      const txt = document.getElementById('holdText');
+      fill.style.transition = 'transform 160ms cubic-bezier(0.22, 1, 0.36, 1)';
+      fill.style.transform = 'scaleX(0)';
+      txt.textContent = '🔥 Segure p/ Excluir';
+    }
+
+    // DEMO 3: Combo Checklist
+    function toggleJuicyTask(row) {
+      const isDone = row.classList.toggle('task-done');
+      const box = row.querySelector('.check-box');
+      box.classList.remove('squash-pop');
+      void box.offsetWidth;
+      box.classList.add('squash-pop');
+      if (isDone) {
+        box.classList.add('bg-emerald-500', 'border-emerald-400', 'text-zinc-950');
+        box.classList.remove('bg-zinc-900', 'border-zinc-600', 'text-transparent');
+      } else {
+        box.classList.remove('bg-emerald-500', 'border-emerald-400', 'text-zinc-950');
+        box.classList.add('bg-zinc-900', 'border-zinc-600', 'text-transparent');
+      }
+      const step = playComboTick(isDone);
+      const badge = document.getElementById('comboBadge');
+      if (isDone && step > 0) {
+        badge.textContent = `🎵 +${step} SEMITOM`;
+        badge.style.opacity = '1';
+      }
+    }
+
+    // DEMO 4: Shake + Copy Morph
+    function triggerShakeDemo() {
+      const input = document.getElementById('shakeInput');
+      const box = document.getElementById('shakeBox');
+      if (input.value.trim().toLowerCase() === 'ok') {
+        playHeroChime();
+        input.classList.remove('border-rose-500');
+        input.classList.add('border-emerald-500');
+        return;
+      }
+      playErrorBuzz();
+      input.classList.add('border-rose-500');
+      box.classList.remove('shake-active');
+      void box.offsetWidth;
+      box.classList.add('shake-active');
+    }
+
+    function triggerCopyMorph(btn) {
+      playSwitchClick();
+      const icon = document.getElementById('copyIconSpan');
+      const label = document.getElementById('copyLabelSpan');
+      icon.textContent = '✅';
+      icon.classList.remove('icon-spring-in');
+      void icon.offsetWidth;
+      icon.classList.add('icon-spring-in');
+      label.textContent = 'Copiado com Elastic Morph!';
+      setTimeout(() => {
+        icon.textContent = '📋';
+        label.textContent = 'npx skills add game-feel-ui';
+      }, 1800);
+    }
+
+    // DEMO 5: Coyote Time Menu
+    let coyoteTimer = null;
+    function enterCoyoteMenu() {
+      if (coyoteTimer) {
+        clearTimeout(coyoteTimer);
+        coyoteTimer = null;
+      }
+      document.getElementById('coyoteMenu').classList.remove('hidden');
+    }
+    function leaveCoyoteMenu() {
+      coyoteTimer = setTimeout(() => {
+        document.getElementById('coyoteMenu').classList.add('hidden');
+      }, 180);
+    }
+
+    // DEMO 6: 3D Tilt + Odometer
+    let currentMrr = 14280;
+    function handleCardTilt(e, card) {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      const nx = x / r.width - 0.5;
+      const ny = y / r.height - 0.5;
+      card.style.setProperty('--mx', `${x}px`);
+      card.style.setProperty('--my', `${y}px`);
+      card.style.transform = `perspective(900px) rotateX(${(-ny * 9).toFixed(2)}deg) rotateY(${(nx * 9).toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+    }
+    function resetCardTilt(card) {
+      card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    }
+    function incrementOdometer() {
+      playComboTick(true);
+      const el = document.getElementById('odometerValue');
+      const badge = document.getElementById('odometerBadge');
+      currentMrr += 450;
+      el.style.transform = 'translateY(-4px) scale(1.04)';
+      el.textContent = 'R$ ' + currentMrr.toLocaleString('pt-BR');
+      badge.classList.remove('squash-pop');
+      void badge.offsetWidth;
+      badge.classList.add('squash-pop');
+      setTimeout(() => { el.style.transform = 'translateY(0) scale(1)'; }, 180);
+    }
+  </script>
+</body>
+</html>

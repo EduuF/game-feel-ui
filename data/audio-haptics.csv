@@ -1,0 +1,89 @@
+No,Sound ID,Sound Name,Category,Waveform / Synthesis,Frequency Envelope,Duration,Max Gain,Haptic Pattern (ms),Keywords,Best For,Web Audio JS Snippet,Guardrails
+1,tactile-switch-click,Crisp Tactile Switch Click,High-Frequency Click,Triangle oscillator with fast exponential pitch drop,1200Hz -> 180Hz exponential ramp,10ms,0.04,4,"button click, switch, tap, mechanical click, subtle tick, high frequency","Primary buttons, toolbar buttons, segmented control switches","function playSwitchClick(ctx) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(1200, t);
+  o.frequency.exponentialRampToValueAtTime(180, t + 0.009);
+  g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.01);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.011);
+}",Keep gain <= 0.04 so it feels like physical hardware feedback rather than an audible sound effect
+2,soft-bubble-pop,Soft Organic Bubble Pop,State Toggle,Sine oscillator with upward pitch scoop,340Hz -> 680Hz exponential ramp,28ms,0.05,6,"pop, bubble, checkbox, toggle on, like, reaction, friendly","Checkboxes, toggle ON state, like/reaction buttons, tag creation","function playBubblePop(ctx) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(340, t);
+  o.frequency.exponentialRampToValueAtTime(680, t + 0.025);
+  g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.03);
+}",Pair with a reverse downward pitch (580Hz -> 300Hz) for the OFF/uncheck state
+3,combo-semitone-ramp,Combo Semitone Escalation Pop,Sequence / Combo,Sine oscillator with stateful semitone counter (2^(n/12)),Base 320Hz * 2^(step/12) -> 1.35x upward scoop,30ms,0.06,5,"combo, pitch escalation, streak, todo list, batch select, onboarding step","Checking off multiple tasks in sequence, stepping through wizards, multi-select actions","let step = 0, last = 0;
+function playComboPop(ctx) {
+  const now = performance.now();
+  step = (now - last < 2000) ? Math.min(step + 1, 12) : 0; last = now;
+  const f = 320 * Math.pow(2, step / 12), t = ctx.currentTime;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(f, t);
+  o.frequency.exponentialRampToValueAtTime(f * 1.35, t + 0.025);
+  g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.032);
+}",Cap step at +12 semitones (1 octave) and reset after 2000ms of inactivity
+4,ratchet-detent-tick,Rotary Detent Micro-Tick,Continuous Scrubber,Short high-pitched triangle impulse,1600Hz -> 220Hz,7ms,0.03,3,"slider, scrubber, detent, snap, wheel picker, kanban slot, grid snap","Range sliders crossing discrete steps, timeline scrubbers, Kanban card slot changes","function playDetentTick(ctx) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(1600, t);
+  o.frequency.exponentialRampToValueAtTime(220, t + 0.006);
+  g.gain.setValueAtTime(0.03, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.007);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.008);
+}",Always throttle to max 1 tick per 25ms during fast pointer scrubbing
+5,heavy-drop-thud,Tactile Card Drop Sub-Thud,Spatial Physics,Low sine/triangle sub-bass impulse,220Hz -> 65Hz exponential drop,45ms,0.07,10,"drop, kanban drop, file drop, heavy, thud, settle, weight, mass","Dropping a Kanban card into a column, dropping files into a dropzone, docking a panel","function playDropThud(ctx) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(220, t);
+  o.frequency.exponentialRampToValueAtTime(65, t + 0.04);
+  g.gain.setValueAtTime(0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.048);
+}",Gives virtual cards a sense of physical mass; pair with a higher 150Hz->280Hz lift sound on dragstart
+6,error-reject-buzz,Muted Double-Thud Error Reject,Validation / Error,Two low sawtooth/triangle low-pass filtered pulses,155Hz -> 130Hz (two pulses 70ms apart),140ms,0.05,"[25, 40, 25]","error, invalid, reject, denied, shake, wrong password, limit","Form validation failure, invalid OTP, blocked action, rollback shake","function playErrorReject(ctx) {
+  [0, 0.07].forEach(offset => {
+    const t = ctx.currentTime + offset, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(150, t); o.frequency.linearRampToValueAtTime(125, t + 0.05);
+    f.type = 'lowpass'; f.frequency.setValueAtTime(420, t);
+    g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+    o.connect(f).connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.06);
+  });
+}","Always low-pass filter sawtooth waves (<500Hz) so the error sound feels like a dull physical thud, never a harsh game-show buzzer"
+7,hero-triad-chime,Warm Major Triad Resolution Chime,Hero Reward,Three staggered sine oscillators (C5 - E5 - G5),"523.25Hz (0ms), 659.25Hz (65ms), 783.99Hz (130ms)",450ms,0.05,"[10, 50, 20]","success, milestone, deploy complete, onboarding finish, celebration, chime, reward","Hero Moments: completing onboarding, deploying to production, finishing all tasks, payment confirmed","function playHeroChime(ctx) {
+  [523.25, 659.25, 783.99].forEach((freq, i) => {
+    const t = ctx.currentTime + i * 0.065, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.4);
+  });
+}",Reserve strictly for low-frequency Hero Moments; never play on routine saves
+8,charge-tension-riser,Hold-to-Confirm Tension Pitch Riser,Anticipation / Charge,"Continuous sine oscillator ramping upward during pointer hold, cancellable on early release",220Hz -> 660Hz linear/exponential ramp over 800ms,800ms (cancellable),0.04,15 on completion,"hold to confirm, charge up, riser, tension, delete hold, launch",Hold-to-Delete or Hold-to-Publish buttons during the 800ms press-and-hold window,"function startChargeRiser(ctx, durationSec = 0.8) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(220, t);
+  o.frequency.exponentialRampToValueAtTime(660, t + durationSec);
+  g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.04, t + durationSec);
+  o.connect(g).connect(ctx.destination); o.start(t);
+  return () => { g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04); o.stop(ctx.currentTime + 0.045); };
+}",Always return and call the stop/cleanup function immediately on pointerup or pointercancel
+9,glassy-completion-ping,Glassy Harmonic Completion Ping,Async Completion,Sine fundamental (660Hz) + quiet 2nd harmonic (1320Hz) with bell decay,660Hz + 1320Hz static with 320ms exponential gain decay,320ms,0.04,8,"ai complete, export ready, build finished, ping, glass, notification","AI response generation finished, background export ready, build succeeded","function playGlassyPing(ctx) {
+  const t = ctx.currentTime;
+  [[660, 0.04], [1320, 0.015]].forEach(([f, vol]) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.34);
+  });
+}",Ideal when a long (>3s) async task finishes
+10,wooden-keycap-thunk,Warm Mechanical Keycap Thunk,Keyboard / Command Palette,Low-pass filtered triangle impulse (380Hz -> 95Hz),380Hz -> 95Hz in 14ms,15ms,0.045,4,"keycap, cmdk, arrow navigation, command palette, mechanical keyboard, thunk","Command palette (Cmd+K) open/select, keyboard shortcut <kbd> depression","function playKeycapThunk(ctx) {
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(380, t);
+  o.frequency.exponentialRampToValueAtTime(95, t + 0.014);
+  g.gain.setValueAtTime(0.045, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.015);
+  o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.016);
+}",Warm lower-mid frequency prevents ear fatigue during rapid keyboard navigation
+11,camera-shutter-snip,Crisp Copy / Snip Micro-Click,Clipboard / Capture,Double high-frequency sine/triangle micro-impulse (12ms apart),1800Hz -> 600Hz (0ms) + 2200Hz -> 900Hz (+14ms),26ms,0.035,5,"copy, clipboard, screenshot, snip, duplicate, clone","Copy-to-clipboard button, duplicating a card/node, taking a canvas snapshot","function playCopySnip(ctx) {
+  [[0, 1800, 600], [0.014, 2200, 900]].forEach(([off, f1, f2]) => {
+    const t = ctx.currentTime + off, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + 0.008);
+    g.gain.setValueAtTime(0.035, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.01);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.011);
+  });
+}",Pair with elastic Copy -> Checkmark SVG morph
