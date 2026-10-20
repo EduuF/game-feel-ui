@@ -1,143 +1,135 @@
 <div align="center">
 
-# game-feel-ui
+<a href="https://eduuf.github.io/game-feel-ui/">
+  <img src="./docs/assets/hero-banner.svg" alt="game-feel-ui — The physics of the first 120 milliseconds" width="100%" />
+</a>
 
-**Tactile Game Physics, Micro-Interactions, and Procedural Audio for Web & Mobile UI**
+<br />
 
-[![Live Playground](https://img.shields.io/badge/▶_Live_Interactive_Playground-eduuf.github.io%2Fgame--feel--ui-ffffff?style=for-the-badge&logoColor=black)](https://eduuf.github.io/game-feel-ui/)
+<p align="center">
+  <a href="https://eduuf.github.io/game-feel-ui/"><strong>▶ Live Studio Sandbox</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#three-workflows"><strong>Three Workflows</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#from-game-engine-to-the-dom"><strong>39 Mechanics</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#install"><strong>Install</strong></a>
+  &nbsp;·&nbsp;
+  <a href="./README.pt-BR.md"><strong>Português (PT-BR)</strong></a>
+</p>
 
-[![CI Validation](https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Mechanics](https://img.shields.io/badge/Mechanics-39-22c55e.svg)](./data/mechanics.csv)
-[![Stacks](https://img.shields.io/badge/Stacks-11-38bdf8.svg)](./data/stacks/)
-[![External Audio Assets](https://img.shields.io/badge/Audio_Assets-0_KB_(Web_Audio_API)-f59e0b.svg)](./references/procedural-web-audio.md)
-
-**English** · [Português (PT-BR)](./README.pt-BR.md) · [**Live Interactive Demo ↗**](https://eduuf.github.io/game-feel-ui/)
+<p align="center">
+  <a href="https://eduuf.github.io/game-feel-ui/"><img src="https://img.shields.io/badge/Live_Sandbox-eduuf.github.io%2Fgame--feel--ui-ff5722?style=flat-square" alt="Live Interactive Sandbox" /></a>
+  <a href="https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml"><img src="https://github.com/EduuF/game-feel-ui/actions/workflows/ci.yml/badge.svg?style=flat-square" alt="CI Validation" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-18181b?style=flat-square" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/works_with-Claude_Code_%2B_Cursor_%2B_Codex_%2B_Windsurf-18181b?style=flat-square" alt="Works with Claude Code, Cursor, Codex, Windsurf" />
+  <img src="https://img.shields.io/badge/audio_assets-0_KB_(Web_Audio_API)-10b981?style=flat-square" alt="0 KB Audio Assets" />
+</p>
 
 </div>
 
 ---
 
-## ▶ Try the Interactive Specimens First
+**Most AI-generated interfaces feel lifeless because clicks swap state in `0ms` or apply a generic `transition: all 0.3s ease`.**
 
-Experience **Standard Linear UI vs. Game Feel UI** side-by-side in your browser (with live spring telemetry and zero-asset Web Audio synthesis):
+Game developers spend months tuning the first **50ms–120ms** of player input—using techniques coined by Steve Swink (*Game Feel*) and Martin Jonasson & Petri Purho (*Juice it or lose it*) so virtual objects carry mass, tension, and physical momentum.
 
-👉 **[https://eduuf.github.io/game-feel-ui/](https://eduuf.github.io/game-feel-ui/)**
+**`game-feel-ui`** is an open-source skill for **Claude Code**, **Cursor**, **Codex**, **Windsurf**, and **Gemini CLI** that brings **39 deterministic Game Feel mechanics**, **Coyote Time UX forgiveness**, and **zero-asset Web Audio synthesis** to modern web and mobile applications.
+
+> [!TIP]
+> **Want to feel the difference before reading?** Open the **[Live Studio Sandbox ↗](https://eduuf.github.io/game-feel-ui/)** to test the 60fps kinematic oscilloscope, toggle the physics engine ON/OFF inside a simulated app, and explore 12 side-by-side interactive mechanics.
 
 ---
 
-## Quick Install
-
-Install across **Claude Code**, **Cursor**, **Windsurf**, or any agent supporting the `skills` standard:
+## Install
 
 ```bash
 npx skills add EduuF/game-feel-ui
 ```
 
 <details>
-<summary><strong>Manual Installation (Claude Code Local / Global)</strong></summary>
+<summary><strong>Claude Code Plugin Marketplace</strong></summary>
+
+Run inside a Claude Code session:
+
+```text
+/plugin marketplace add EduuF/game-feel-ui
+/plugin install game-feel-ui
+```
+</details>
+
+<details>
+<summary><strong>Manual Clone (Project or Global Scope)</strong></summary>
 
 ```bash
 # Project-scoped skill
 git clone https://github.com/EduuF/game-feel-ui.git .claude/skills/game-feel-ui
 
-# Or global skill (available across all repositories)
+# Global skill across all repositories
 git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui
 ```
 </details>
 
 ---
 
-## Why `game-feel-ui`?
+## Three Workflows
 
-Game developers spend months tuning the first **50ms–150ms** of player input—using techniques coined by Steve Swink (*Game Feel*) and Martin Jonasson & Petri Purho (*Juice it or lose it*) so virtual objects feel like they have mass, tension, and physical momentum.
+Describe the outcome you want in natural language, or trigger a specific deterministic workflow:
 
-Most web applications feel "dead" because clicks trigger instant state swaps or linear CSS transitions (`ease-in-out`) with zero anticipation, zero kinetic recoil, and punishing hover/click boundaries.
-
-`game-feel-ui` gives coding agents a deterministic **BM25 search engine**, **static codebase auditor**, and **39 game-feel mechanics** translated into production UI patterns:
-
-| Game Dev Technique | What It Does in Games | Web & Mobile UI Translation |
+| Mode | You type, for example | You get |
 | :--- | :--- | :--- |
-| **Anticipation** | Character crouches or charges wand before firing. | **Tactile Compression (`scale(0.95)`)** on `pointerdown` before action release on `pointerup`. |
-| **Hitstop / Freeze Frames** | Screen freezes for 3–5 frames on sword impact to convey weight. | **Pre-Reward Micro-Pause (60–90ms)** at peak compression on hero actions before expanding into success state. |
-| **Squash & Stretch** | Projectile elongates at high velocity and flattens on impact. | **Spring Overshoot (`cubic-bezier(0.34, 1.56, 0.64, 1)`)**: modals, toggles, and badges overshoot 3–5% and settle. |
-| **Coyote Time & Input Buffering** | Player can still jump 120ms after walking off a ledge. | **Invisible Forgiveness**: 160ms hover grace period on dropdowns, expanded hit-slop, and optimistic UI with undo. |
-| **Hold-to-Commit Tension** | Charging a heavy attack with rising pitch and tremor. | **Modal-Free Destructive Actions**: holding a "Delete" button fills a tension bar with rising pitch and reversible decay on release. |
-| **Pitch Escalation** | Collecting coins in sequence raises the musical note each time. | **Combo Checklists & Kanban Drops**: consecutive completions ascend `+2 semitones` (`f0 * 2^(n/12)`) via Web Audio API. |
-| **Recoil & Knockback** | Attacker steps back; target shakes on hit. | **Damped Error Shake (`±6px → 0px`)** on invalid inputs and elastic neighbor push when list items insert/remove. |
+| **`01 · Component Polish`**<br />*Single interaction or screen* | `"Replace our Delete API Key confirmation modal with a Game Feel hold-to-commit button and add Coyote Time to the header dropdown."` | Queries 39 mechanics and 11 stack guides to deliver compositor-safe (`transform`/`opacity`) code, a reversible tension gauge, 160ms hover forgiveness, and `prefers-reduced-motion` fallbacks. |
+| **`02 · Codebase Audit`**<br />*Static repository scanner* | `"Audit our dashboard components with game-feel-ui and fix the top 3 dead interactions."` | Runs `scripts/search.py --audit`, calculates a **0–100 Juice Score**, pinpoints dead clicks, blocking `window.confirm()` dialogs, and layout-thrashing animations by `file:line`, and patches them. |
+| **`03 · System Blueprint`**<br />*Calibrated design tokens* | `"Generate a B2B SaaS Game Feel blueprint calibrated with juice 5, forgiveness 8, audio 3 and persist it."` | Runs `scripts/search.py --blueprint --persist`, calibrates CSS Custom Properties (`--gf-press-scale`, `--gf-hitstop-ms`, `--gf-coyote-grace-ms`), and writes the contract to `game-feel-system/MASTER.md`. |
 
 ---
 
-## Usage in Claude Code & Cursor
+## From Game Engine to the DOM
 
-Once installed, the agent automatically activates `game-feel-ui` when you ask to polish, audit, or design interactive components.
+Every classic game-feel technique maps to a concrete, high-craft UI engineering pattern:
 
-### Example Prompts
-
-```text
-"Audit our dashboard components with game-feel-ui and fix the top 3 dead interactions."
-```
-
-```text
-"Replace our confirmation modal on the Delete API Key button with a Game Feel hold-to-commit interaction."
-```
-
-```text
-"Add subtle tactile physics, Coyote Time hover forgiveness, and optional procedural Web Audio ticks to our Kanban board."
-```
-
-### CLI Tools (Deterministic Search, Audit & Blueprint)
-
-The skill ships with a zero-dependency Python 3 CLI (`scripts/search.py`) used by the agent:
-
-```bash
-# 1. Audit an existing codebase (returns a 0-100 Juice Score + file:line fixes)
-python scripts/search.py --audit ./src
-
-# 2. Generate a calibrated Game-Feel Blueprint with the 3 Dials
-python scripts/search.py "b2b saas kanban" --blueprint --juice 5 --forgiveness 8 --audio 3
-
-# 3. Persist the calibrated blueprint to game-feel-system/MASTER.md
-python scripts/search.py "fintech checkout" --blueprint --juice 4 --forgiveness 9 --audio 2 --persist -p "CheckoutApp"
-
-# 4. Query specific domains or framework stacks
-python scripts/search.py "destructive hold button" --domaincomponent
-python scripts/search.py "spring press" --stack framer-motion
-```
+| Game Dev Mechanic | What It Does in Games | Web & Mobile UI Translation |
+| :--- | :--- | :--- |
+| **Anticipation (`M01`)** | Character crouches or charges wand before firing. | **Tactile Preload (`scale(0.94)`)** on `pointerdown` storing elastic potential energy before `pointerup`. |
+| **Hitstop / Freeze Frames (`M04`)** | Screen freezes for 3–5 frames on sword impact to convey weight. | **Pre-Reward Micro-Pause (60–85ms)** at peak compression on primary CTAs before rebounding into success state. |
+| **Squash & Stretch (`M08/M09`)** | Projectile elongates at high speed and flattens on impact. | **Spring Overshoot & Thumb Morph**: switch thumbs elongate `scaleX(1.25)` mid-travel and settle with `cubic-bezier(0.34, 1.56, 0.64, 1)`. |
+| **Coyote Time (`M15–M19`)** | Player can still jump 120ms after leaving a ledge. | **Invisible UX Forgiveness**: 160ms hover grace on menus, expanded invisible hit-slop, and 4s optimistic undo windows. |
+| **Hold-to-Commit (`M21`)** | Charging a heavy attack with rising pitch and tremor. | **Modal-Free Destructive Actions**: holding "Revoke" fills a tension gauge with rising frequency and smooth decay on early release. |
+| **Pitch Escalation (`M20`)** | Collecting coins in sequence raises the musical note each time. | **Combo Checklists & Kanban Drops**: consecutive completions ascend `+2 semitones` (`440 * 2^(n/12)`) via Web Audio API. |
+| **Damped Recoil (`M11`)** | Attacker steps back; target shakes on hit. | **Harmonic Error Shake (`±6px → 0px`)** on invalid inputs paired with a 140Hz→52Hz sub-bass thud. |
 
 ---
 
-## The 3 Calibration Dials
+## The 3 Calibration Dials (Frequency vs. Intensity Guardrail)
 
-A high-frequency B2B SaaS table cannot animate like an arcade game. `game-feel-ui` enforces the **Frequency vs. Intensity Matrix** through three orthogonal dials:
+A high-frequency B2B SaaS table must never animate like a slot machine. `game-feel-ui` enforces restraint through three orthogonal dials:
 
-- **`--juice` (`1–10`)**: Controls visual kinematics (`--gf-press-scale`, `--gf-overshoot-scale`, `--gf-spring-stiffness`, `--gf-hitstop-ms`).
-- **`--forgiveness` (`1–10`)**: Controls invisible UX ergonomics (`--gf-coyote-grace-ms`, `--gf-hit-slop-px`, `--gf-undo-window-ms`). Recommended at **`7–9`** for all productivity apps.
-- **`--audio` (`0–10`)**: Controls procedural Web Audio synthesis gain (`--gf-audio-max-gain`) and haptic pulse intensity.
+- **`--juice` (`1–10`)**: Visual kinematics (`--gf-press-scale`, `--gf-overshoot-scale`, `--gf-spring-stiffness`, `--gf-hitstop-ms`).
+- **`--forgiveness` (`1–10`)**: Invisible ergonomics (`--gf-coyote-grace-ms`, `--gf-hit-slop-px`, `--gf-undo-window-ms`). Recommended at **`7–9`** for all productivity apps.
+- **`--audio` (`0–10`)**: Procedural Web Audio API synthesizer gain (`--gf-audio-max-gain`) and haptic pulse intensity.
 
 ---
 
-## Catalog Overview
+## Catalog & Stack Coverage
 
-| Dataset | Count | Description |
+| Dataset | Items | Scope |
 | :--- | :---: | :--- |
-| [`data/mechanics.csv`](./data/mechanics.csv) | **39** | Core Game Feel mechanics across 6 categories (*Anticipation*, *Impact*, *Spring*, *Forgiveness*, *Spatial*, *Progression*) |
-| [`data/components.csv`](./data/components.csv) | **23** | UI component recipes with **L1 Subtle**, **L2 Balanced**, and **L3 Juicy** tiers |
+| [`data/mechanics.csv`](./data/mechanics.csv) | **39** | *Anticipation*, *Impact & Hitstop*, *Spring & Morph*, *Coyote Forgiveness*, *Spatial 3D*, *Progression & Audio* |
+| [`data/components.csv`](./data/components.csv) | **23** | Component recipes across **L1 Subtle**, **L2 Balanced**, and **L3 Juicy** intensity tiers |
 | [`data/audio-haptics.csv`](./data/audio-haptics.csv) | **11** | Zero-asset Web Audio API synthesizer recipes + `navigator.vibrate` patterns |
 | [`data/physics-curves.csv`](./data/physics-curves.csv) | **7** | CSS `linear()`, `cubic-bezier`, and spring stiffness/damping/mass presets |
-| [`data/app-profiles.csv`](./data/app-profiles.csv) | **8** | Default dial calibrations by product vertical (B2B SaaS, Fintech, EdTech, DevTools, E-Commerce, AI Chat, Consumer, Creative) |
-| [`data/anti-patterns.csv`](./data/anti-patterns.csv) | **8** | Performance & UX guardrails (`prefers-reduced-motion`, 60fps compositor properties, audio fatigue) |
-| [`data/stacks/*.csv`](./data/stacks/) | **11** | Framework recipes: `react`, `nextjs`, `framer-motion`, `html-tailwind`, `css-waapi`, `gsap`, `shadcn`, `vue`, `svelte`, `react-native`, `flutter` |
+| [`data/app-profiles.csv`](./data/app-profiles.csv) | **8** | Vertical calibrations (*B2B SaaS, Fintech, EdTech, DevTools, E-Commerce, AI Workspace, Consumer, Creative*) |
+| [`data/anti-patterns.csv`](./data/anti-patterns.csv) | **8** | 60fps compositor guardrails, audio fatigue prevention, and `prefers-reduced-motion` |
+| [`data/stacks/*.csv`](./data/stacks/) | **11** | `react`, `nextjs`, `framer-motion`, `html-tailwind`, `css-waapi`, `gsap`, `shadcn`, `vue`, `svelte`, `react-native`, `flutter` |
 
 ---
 
 ## Validation & Tests
 
-```bash
-# Validate all CSV schemas, cross-references, and catalog counts
-python scripts/validate_data.py
+Zero external Python dependencies required (Python 3.8+ standard library):
 
-# Run the unit test suite
+```bash
+python scripts/validate_data.py
 python scripts/tests/test_game_feel.py
 ```
 
