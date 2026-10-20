@@ -1,21 +1,22 @@
 ---
 name: game-feel-ui
-description: "Game Feel, Juiciness & Sensory UI intelligence for web, mobile, and desktop applications. Use this skill when evaluating/auditing an existing application for subtle engagement opportunities, adding tactile micro-interactions, spring physics, hitstop tension, squash-and-stretch morphing, Coyote Time hover/undo forgiveness, input buffering, optimistic UI rollback choreography, procedural Web Audio SFX, or haptics. Searchable local database: 29 Game Dev-to-UI mechanics, 15 multi-layered component choreography recipes, 8 zero-asset procedural Web Audio synths, 7 spring/bezier physics curves, 8 product juice profiles, 8 anti-patterns, 11 stack guides, plus a static codebase auditor (--audit)."
+description: "Make interfaces feel dynamic, attractive, fluid, tactile, and alive using subtle Game Feel physics, micro-interactions, and UX forgiveness. Activate this skill whenever a user asks to make a page or app more dynamic, visually engaging, attractive, polished, responsive, or less 'flat/static'—as well as when auditing existing UIs for engagement opportunities, adding spring physics, hitstop tension, squash-and-stretch morphing, Coyote Time hover/undo forgiveness, hold-to-commit buttons, procedural Web Audio SFX, or haptics. Includes 39 mechanics, 23 component recipes, 11 zero-asset Web Audio synths, 11 stack guides, and a static codebase auditor (--audit)."
 ---
 
-# Game Feel UI — Tactile, Kinesthetic & Sensory Application Intelligence
+# Game Feel UI — Dynamic, Tactile & Engaging Interface Intelligence
 
-Translates **Game Feel** (Steve Swink), **Juiciness** (Vlambeer / Jonasson & Purho), **Invisible Forgiveness** (Coyote Time, Input Buffering, Aim Assist), and **Disney's 12 Principles of Animation** into subtle, high-craft engagement for modern Web, Mobile, and Desktop applications.
+Translates **Game Feel** (Steve Swink), **Juiciness** (Vlambeer / Jonasson & Purho), **Invisible Forgiveness** (Coyote Time, Input Buffering, Aim Assist), and **Disney's 12 Principles of Animation** into subtle, high-craft dynamism and engagement for modern Web, Mobile, and Desktop applications—without turning serious software into distracting gamification.
 
 ---
 
 ## When to Apply
 
-Activate this skill when the user wants to:
-1. **Audit / Evaluate an existing codebase** to discover where subtle Game Dev engagement techniques can make the interface feel more alive, tactile, forgiving, and responsive.
-2. **Design or upgrade UI components** (buttons, toggles, checkboxes, Kanban boards, modals, command palettes, forms, counters, AI streaming inputs) with multi-layered sensory feedback.
-3. **Fix "dead", "laggy", or "frustrating" interactions** using Invisible Game Feel (Coyote Time menu grace periods, Input Buffering, Invisible Hitbox expansion, Optimistic UI with trauma-shake rollback).
-4. **Add zero-dependency Procedural Web Audio SFX or Haptics** (tactile switch clicks, pitch-escalating combo ticks, harmonic completion chimes).
+Activate this skill whenever the user wants to:
+1. **Make a page, dashboard, or app feel more dynamic, attractive, fluid, or engaging** — upgrading flat, static, or generic AI-generated interfaces into responsive, high-craft products.
+2. **Audit / Evaluate an existing codebase** to discover where subtle micro-interactions and physics can make the UI feel more alive, tactile, forgiving, and pleasant to use.
+3. **Design or upgrade UI components** (buttons, toggles, checkboxes, Kanban boards, modals, dropdowns, command palettes, forms, counters, AI streaming inputs) with multi-layered sensory feedback.
+4. **Fix "dead", "laggy", or "frustrating" interactions** using Invisible UX Forgiveness (Coyote Time menu grace periods, Input Buffering, Invisible Hitbox expansion, Modal-free Hold-to-Commit, Optimistic UI with trauma-shake rollback).
+5. **Add zero-dependency Procedural Web Audio SFX or Haptics** (tactile switch clicks, pitch-escalating combo ticks, harmonic completion chimes).
 
 ---
 
@@ -110,9 +111,9 @@ This creates:
 
 | Domain (`--domain`) | Dataset | What It Returns |
 |---------------------|---------|-----------------|
-| `mechanics` | `data/mechanics.csv` (29 rows) | Game Dev origin, UI equivalent, frequency tier, timing/physics spec, CSS/JS snippet, reduced-motion fallback |
-| `components` | `data/components.csv` (15 rows) | 5-layer recipe per UI component: **Anticipation (Wind-up)**, **Impact**, **Follow-Through**, **Forgiveness**, **Audio/Haptic**, and **Code Recipe** |
-| `audio` | `data/audio-haptics.csv` (8 rows) | Zero-asset Web Audio API procedural synth snippets (`AudioContext` oscillators/filters) + mobile haptic patterns |
+| `mechanics` | `data/mechanics.csv` (39 rows) | Game Dev origin, UI equivalent, frequency tier, timing/physics spec, CSS/JS snippet, reduced-motion fallback |
+| `components` | `data/components.csv` (23 rows) | 5-layer recipe per UI component: **Anticipation (Wind-up)**, **Impact**, **Follow-Through**, **Forgiveness**, **Audio/Haptic**, and **Code Recipe** |
+| `audio` | `data/audio-haptics.csv` (11 rows) | Zero-asset Web Audio API procedural synth snippets (`AudioContext` oscillators/filters) + mobile haptic patterns |
 | `physics` | `data/physics-curves.csv` (7 rows) | Exact `cubic-bezier()`, CSS `linear()` springs, Framer Motion spring configs, and GSAP eases |
 | `profiles` | `data/app-profiles.csv` (8 rows) | Product-type Juice Budgets (SaaS, Fintech, E-commerce, AI Chat, EdTech, Analytics, Creative Tool, Marketing) |
 | `anti-patterns` | `data/anti-patterns.csv` (8 rows) | Common Game-Feel UI mistakes (Slot-Machine Fatigue, Laggy Hitstop Misuse, Zero-Coyote Hover Trap, etc.) and fixes |
