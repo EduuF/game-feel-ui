@@ -1,0 +1,25 @@
+name: Validate Catalog & Unit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate CSV schemas and cross-references
+        run: python scripts/validate_data.py
+
+      - name: Run unit tests
+        run: python scripts/tests/test_game_feel.py

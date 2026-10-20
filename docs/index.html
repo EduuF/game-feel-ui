@@ -1,1238 +1,1638 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>game-feel-ui — Claude Code Skill & Laboratório Interativo de Game Feel</title>
-  <meta name="description" content="Skill para Claude Code que traduz técnicas de Game Dev (Hitstop, Coyote Time, Squash & Stretch, Input Buffering, Web Audio Synth) para interfaces web e mobile." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            oled: '#090D16',
-            surface: '#0F172A',
-            card: '#151F32',
-            border: '#263554',
-            accent: '#22C55E',
-          }
-        }
-      }
-    }
-  </script>
+  <title>game-feel-ui — Tactile Physics &amp; Game Feel for Web Interfaces</title>
+  <meta name="description" content="An agent skill for Claude Code and Cursor that brings Steve Swink's Game Feel principles—Hitstop, Squash & Stretch, Coyote Time, and Web Audio synthesis—to modern web apps." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ease-snappy: cubic-bezier(0.22, 1, 0.36, 1);
-      --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-      --gf-press-scale: 0.96;
-      --gf-coyote-ms: 180ms;
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface-2: #161619;
+      --surface-3: #1c1c21;
+      --stage-bg: #0d0d0f;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --text: #ededef;
+      --text-secondary: #94979e;
+      --text-muted: #5e6168;
+      --accent: #f2f2f3;
+      --warm: #e5a93c;
+      --danger: #e5484d;
+      --success: #30a46c;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      --spring-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --spring-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
     }
 
     body {
-      background-color: #090D16;
-      color: #F8FAFC;
-      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      selection-background-color: rgba(255, 255, 255, 0.15);
     }
 
-    /* Blueprint Dot-Grid Stage Background (makes it unmistakably a Simulator Stage) */
-    .sandbox-stage-dry {
-      background-color: #0B101B;
-      background-image: radial-gradient(#1E293B 1px, transparent 1px);
-      background-size: 16px 16px;
-    }
-    .sandbox-stage-juicy {
-      background-color: #071712;
-      background-image: radial-gradient(rgba(34, 197, 94, 0.18) 1px, transparent 1px);
-      background-size: 16px 16px;
+    ::selection {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
     }
 
-    /* Tactile Button Physics */
-    .btn-tactile {
-      transition: transform 160ms var(--ease-snappy), box-shadow 160ms ease, background-color 120ms ease;
-      will-change: transform;
-    }
-    .btn-tactile:active:not(:disabled) {
-      transform: scale(var(--gf-press-scale)) translateY(1.5px);
-      transition-duration: 45ms;
+    /* Layout */
+    .container-narrow {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
 
-    /* 3D Keycap Button */
-    .btn-keycap {
-      border-bottom-width: 3px;
-      transition: transform 60ms ease, border-bottom-width 60ms ease, background-color 120ms ease;
-    }
-    .btn-keycap:active {
-      transform: translateY(2px) scale(0.98);
-      border-bottom-width: 1px;
+    .container-wide {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
 
-    /* Trauma Error Shake */
-    @keyframes traumaShake {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      15% { transform: translate3d(-7px, 0, 0); }
-      35% { transform: translate3d(6px, 0, 0); }
-      55% { transform: translate3d(-4px, 0, 0); }
-      75% { transform: translate3d(2px, 0, 0); }
-      90% { transform: translate3d(-1px, 0, 0); }
-    }
-    .shake-active {
-      animation: traumaShake 320ms ease-out;
-    }
-
-    /* Elastic Squash & Stretch */
-    @keyframes squashPop {
-      0% { transform: scale(1, 1); }
-      30% { transform: scale(1.24, 0.80); }
-      65% { transform: scale(0.92, 1.08); }
-      100% { transform: scale(1, 1); }
-    }
-    .squash-pop {
-      animation: squashPop 280ms var(--ease-overshoot);
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 11, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
-    /* Strikethrough Sweep */
-    .strike-line {
+    .topbar-inner {
+      max-width: 940px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+    }
+
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: border-color 140ms ease, color 140ms ease, transform 120ms var(--spring-snappy);
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .pill-control:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .pill-control:active {
+      transform: scale(0.96);
+    }
+
+    .pill-control[data-active="true"] {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      padding: 2px;
+      height: 30px;
+      align-items: center;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .lang-btn.active {
+      background: var(--surface-3);
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 72px 0 44px;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4.5vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .lead {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 620px;
+      margin-bottom: 28px;
+    }
+
+    /* Install bar */
+    .install-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .install-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      height: 42px;
+      padding: 0 6px 0 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: border-color 150ms ease, transform 120ms var(--spring-snappy);
+    }
+
+    .install-box:hover {
+      border-color: var(--border-strong);
+    }
+
+    .install-box:active {
+      transform: scale(0.985);
+    }
+
+    .install-prefix {
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .copy-badge {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 140ms ease;
+    }
+
+    .install-box:hover .copy-badge {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-top: 8px;
+    }
+
+    .meta-strip span strong {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Section Header */
+    .section-divider {
+      border-top: 1px solid var(--border);
+      margin: 48px 0 36px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .section-subtitle {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    /* Specimen Grid */
+    .specimens-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .specimens-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .specimen {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .specimen-head {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .specimen-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .specimen-title {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .specimen-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      padding: 10px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      min-height: 54px;
+    }
+
+    .code-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 120ms ease;
+      flex-shrink: 0;
+    }
+
+    .code-toggle:hover,
+    .code-toggle[aria-expanded="true"] {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--surface-2);
+    }
+
+    /* Interactive Stage Canvas */
+    .stage-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: var(--stage-bg);
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 14px 14px;
+      min-height: 148px;
       position: relative;
-      transition: color 240ms ease, opacity 240ms ease;
-    }
-    .strike-line::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 100%;
-      height: 1.5px;
-      background: #22C55E;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 220ms var(--ease-snappy);
-    }
-    .task-done .strike-line {
-      opacity: 0.45;
-    }
-    .task-done .strike-line::after {
-      transform: scaleX(1);
     }
 
-    /* Specular Sheen Sweep */
-    .sheen-sweep {
+    .stage-cell {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-top: 32px;
+    }
+
+    .stage-cell:first-child {
+      border-right: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+
+    .stage-tag {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stage-tag-active {
+      color: var(--text-secondary);
+    }
+
+    .stage-tag-active::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--warm);
+    }
+
+    /* Specimen Footer Telemetry Bar */
+    .specimen-foot {
+      padding: 8px 14px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .specimen-foot-output {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .specimen-code {
+      display: none;
+      background: #080809;
+      border-top: 1px solid var(--border);
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #c9cdd4;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .specimen-code.open {
+      display: block;
+    }
+
+    /* Demo UI Controls inside Stages */
+    .ui-btn-flat {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      background: #232329;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .ui-btn-juice {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      background: var(--text);
+      border: 1px solid #fff;
+      color: #0a0a0b;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      transition: transform 180ms var(--spring-overshoot), background-color 150ms ease, color 150ms ease;
+      user-select: none;
+      position: relative;
+    }
+
+    /* Demo 2: Hold to delete */
+    .ui-btn-hold {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(229, 72, 77, 0.12);
+      border: 1px solid rgba(229, 72, 77, 0.35);
+      color: #ff8589;
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 120ms ease;
     }
-    .sheen-sweep::before {
-      content: '';
+
+    .hold-fill {
       position: absolute;
       inset: 0;
-      background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%);
-      transform: translateX(-130%);
-      transition: transform 550ms var(--ease-snappy);
+      width: 0%;
+      background: rgba(229, 72, 77, 0.35);
       pointer-events: none;
     }
-    .sheen-sweep:hover::before {
-      transform: translateX(130%);
+
+    .hold-text {
+      position: relative;
+      z-index: 1;
     }
 
-    /* Icon Spring Morph */
-    @keyframes iconSpringIn {
-      from { opacity: 0; transform: scale(0.4) rotate(-30deg); }
-      to { opacity: 1; transform: scale(1) rotate(0deg); }
-    }
-    .icon-spring-in {
-      animation: iconSpringIn 240ms var(--ease-overshoot) forwards;
-    }
-
-    /* 3D Perspective Card */
-    .tilt-card {
-      transform-style: preserve-3d;
-      transition: transform 180ms ease-out;
-      background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(34, 197, 94, 0.16), rgba(15, 23, 42, 0.95) 65%);
+    /* Demo 3: Checklist */
+    .check-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      max-width: 155px;
     }
 
-    /* Subtle pulse for interactive prompt */
-    @keyframes nudgeBounce {
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 200ms var(--spring-overshoot), border-color 140ms ease;
+    }
+
+    .check-box {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: transparent;
+      transition: all 160ms var(--spring-overshoot);
+      flex-shrink: 0;
+    }
+
+    .check-row.done .check-box {
+      background: var(--text);
+      border-color: var(--text);
+      color: #0a0a0b;
+    }
+
+    .check-row.done span:last-child {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    /* Demo 4: Error Shake */
+    .input-mini {
+      width: 82px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 5px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+    }
+
+    @keyframes damped-shake {
       0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(3px); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(2px); }
     }
-    .nudge-x {
-      animation: nudgeBounce 1.6s ease-in-out infinite;
+
+    .shake-active {
+      animation: damped-shake 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+      border-color: var(--danger) !important;
+    }
+
+    /* Demo 5: Magnetic / Tilt */
+    .ui-btn-magnetic {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-3);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), border-color 160ms ease;
+      will-change: transform;
+    }
+
+    .ui-btn-magnetic:hover {
+      border-color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* Demo 6: Coyote Time Popover */
+    .popover-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .popover-card {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px) scale(0.96);
+      background: var(--surface-3);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease, transform 160ms var(--spring-snappy);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+    }
+
+    .popover-card.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Calibration Dials Workbench */
+    .workbench {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    @media (max-width: 760px) {
+      .workbench {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dial-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dial-row label {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .dial-row label span:last-child {
+      color: var(--text);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--text);
+      background: var(--surface-3);
+      height: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .token-output {
+      background: #080809;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .token-output strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Architecture / CLI Table */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .arch-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .arch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .arch-card h3 {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .arch-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+      padding: 32px 0 48px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--text);
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
+      *, *::before, *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
-<body class="min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200">
+<body>
 
   <!-- Top Navigation -->
-  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-oled/90 backdrop-blur-md">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-      <div class="flex items-center gap-3">
-        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-          <!-- Lucide Gamepad2 SVG -->
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/>
-            <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>
-          </svg>
-        </div>
-        <div>
-          <span class="font-mono font-bold tracking-tight text-white text-base">game-feel-ui</span>
-          <span class="ml-2 rounded-md bg-emerald-500/15 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-400 border border-emerald-500/30">v1.0 • Claude Code Skill</span>
-        </div>
-      </div>
-
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-        <a href="#laboratorio" class="hover:text-emerald-400 transition-colors cursor-pointer">Laboratório Ao Vivo</a>
-        <a href="#dials-simulator" class="hover:text-emerald-400 transition-colors cursor-pointer">Simulador de Dials</a>
-        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors cursor-pointer">Arquitetura</a>
-        <a href="#instalar" class="hover:text-emerald-400 transition-colors cursor-pointer">Instalação</a>
-      </nav>
-
-      <div class="flex items-center gap-3">
-        <button id="audioToggleBtn" onclick="toggleAudio()" class="btn-tactile cursor-pointer flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 font-mono text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400" aria-pressed="true">
-          <svg id="audioSvgOn" class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-          </svg>
-          <span id="audioLabel">Synth Audio: ON</span>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand">
+        <span class="brand-dot"></span>
+        <span>game-feel-ui</span>
+      </a>
+      <div class="topbar-controls">
+        <button id="soundToggle" class="pill-control" data-active="true" type="button" aria-label="Toggle Web Audio Synthesizer">
+          <span id="soundDot" style="width:6px;height:6px;border-radius:50%;background:#30a46c;"></span>
+          <span id="soundLabel">Audio: ON</span>
         </button>
-        <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener" class="btn-tactile cursor-pointer hidden sm:inline-flex items-center gap-2 rounded-lg bg-slate-800 border border-slate-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-700">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>GitHub</span>
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="pt">PT</button>
+        </div>
+        <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener" class="pill-control">
+          GitHub ↗
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden border-b border-slate-800/80 pt-16 pb-14">
-    <div class="mx-auto max-w-5xl px-6 text-center">
-      <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/30 px-4 py-1.5 font-mono text-xs text-emerald-300 mb-6">
-        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span>Game Engines → DOM: Steve Swink (Game Feel) • Vlambeer (Juice) • Celeste (Coyote Time)</span>
+  <main>
+    <!-- Hero -->
+    <section class="hero container-narrow">
+      <div class="eyebrow">
+        <span data-i18n="eyebrow">CLAUDE CODE &amp; CURSOR SKILL · ZERO EXTERNAL ASSETS</span>
       </div>
-
-      <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.12]">
-        Engajamento sutil de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Game Dev</span> para aplicações Web e Mobile.
-      </h1>
-
-      <p class="mx-auto mt-5 max-w-3xl text-base sm:text-lg text-slate-300 leading-relaxed">
-        Em bons jogos, um golpe congela 4 frames (<strong class="text-white">Hitstop</strong>), uma magia acumula energia antes de disparar (<strong class="text-white">Anticipation</strong>), deforma no voo (<strong class="text-white">Squash & Stretch</strong>) e perdoa cliques quase perdidos (<strong class="text-white">Coyote Time</strong>). A skill <code class="font-mono text-emerald-400 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-700">game-feel-ui</code> equipa o Claude Code para auditar sua aplicação e aplicar essas técnicas de forma invisível e profissional.
+      <h1 data-i18n="heroTitle">Tactile game physics for modern web interfaces.</h1>
+      <p class="lead" data-i18n="heroLead">
+        Game developers spend months tuning the first 120ms of an interaction—using Hitstop, Squash &amp; Stretch, Coyote Time, and procedural audio so actions feel physical. <strong>game-feel-ui</strong> brings those exact mechanics into React, Next.js, Tailwind, and mobile apps.
       </p>
 
-      <!-- Quick Install Pill -->
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <div class="flex items-center rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-2.5 font-mono text-xs sm:text-sm text-emerald-300 shadow-lg">
-          <span class="text-slate-500 mr-2 select-none">$</span>
-          <span id="heroInstallCmd">npx skills add EduuF/game-feel-ui</span>
-          <button onclick="copyHeroCmd(this)" class="btn-tactile cursor-pointer ml-4 inline-flex items-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2.5 py-1 text-xs font-sans font-medium text-slate-200">
-            <span id="heroCopyText">Copiar</span>
-          </button>
+      <div class="install-row">
+        <div id="installBtn" class="install-box" role="button" tabindex="0" aria-label="Copy npx install command">
+          <span><span class="install-prefix">$</span> npx skills add EduuF/game-feel-ui</span>
+          <span id="copyBadge" class="copy-badge" data-i18n="copyBtn">Copy</span>
         </div>
-        <a href="#laboratorio" class="btn-tactile sheen-sweep cursor-pointer inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 hover:bg-emerald-400">
-          <span>Testar Demonstrações Interativas</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-        </a>
       </div>
-    </div>
-  </section>
 
-  <!-- ========================================================================= -->
-  <!-- INTERACTIVE SANDBOX LAB (UNMISTAKABLY FRAMED AS TEST SIMULATORS!)         -->
-  <!-- ========================================================================= -->
-  <section id="laboratorio" class="mx-auto max-w-6xl px-6 py-14">
+      <div class="meta-strip">
+        <span><strong>39</strong> <span data-i18n="metaMechanics">mechanics</span></span>
+        <span><strong>23</strong> <span data-i18n="metaComponents">component recipes</span></span>
+        <span><strong>11</strong> <span data-i18n="metaStacks">framework stacks</span></span>
+        <span><strong>0 KB</strong> <span data-i18n="metaAudio">audio assets (Web Audio API)</span></span>
+      </div>
+    </section>
 
-    <!-- Prominent Instruction Banner + Live Telemetry Bar -->
-    <div class="rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 p-5 sm:p-6 mb-10 shadow-xl">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="flex items-start gap-4">
-          <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/>
-              <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
-              <span>SIMULADOR INTERATIVO AO VIVO — CLIQUE NOS COMPONENTES ABAIXO PARA TESTAR!</span>
+    <!-- Interactive Specimens -->
+    <section class="container-wide">
+      <div class="section-divider"></div>
+      <div class="section-header">
+        <div>
+          <h2 class="section-title" data-i18n="playgroundTitle">Interactive Specimens</h2>
+          <p class="section-subtitle" data-i18n="playgroundSub">Interact with both sides inside each canvas below to compare standard linear UI against Game Feel mechanics.</p>
+        </div>
+      </div>
+
+      <div class="specimens-grid">
+
+        <!-- Specimen 01: Hitstop & Spring -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">01 / ANTICIPATION + HITSTOP + SPRING</span>
+              <h3 class="specimen-title" data-i18n="s1Title">Primary Action Compression</h3>
             </div>
-            <h2 class="mt-1 text-xl sm:text-2xl font-bold text-white">
-              Compare na prática: <span class="text-slate-400 font-normal">Lado A (UI Comum Seca)</span> vs. <span class="text-emerald-400">Lado B (Com Game Feel)</span>
-            </h2>
-            <p class="mt-1 text-sm text-slate-300">
-              Os elementos dentro dos quadros pontilhados abaixo <strong>não são botões de navegação do site</strong> — são <strong>simuladores funcionais</strong> para você clicar, segurar, digitar e ouvir a diferença sensorial que a skill aplica no código.
-            </p>
+            <button class="code-toggle" type="button" data-code="code1" aria-expanded="false">&lt;/&gt; Code</button>
           </div>
-        </div>
-
-        <!-- Live Telemetry Monitor Box -->
-        <div class="shrink-0 rounded-xl border border-slate-700 bg-oled/90 px-4 py-3 lg:w-80 font-mono text-xs">
-          <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800 pb-1.5 mb-2">
-            <span class="flex items-center gap-1.5"><span id="telemetryDot" class="h-2 w-2 rounded-full bg-emerald-400"></span> TELEMETRIA DE EVENTOS</span>
-            <span class="text-emerald-400">60/120 FPS</span>
-          </div>
-          <div id="telemetryLog" class="text-slate-200 truncate">
-            Aguardando seu clique em um experimento...
-          </div>
-          <div id="telemetrySub" class="text-[11px] text-slate-400 mt-1 truncate">
-            Áudio Web Synth pronto • Zero assets externos
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6 Interactive Comparison Labs -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #01: HITSTOP + ANTECIPAÇÃO + PARTÍCULAS                 -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <!-- Card Header -->
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-emerald-400">
-              EXPERIMENTO #01 • HERO ACTION
-            </span>
-            <button onclick="toggleCode('code1')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
-          </div>
-          <h3 class="mt-3 text-lg font-bold text-white">1. Hitstop (Freeze Frames) + Antecipação + Partículas</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> Congelar 4 frames quando um golpe acerta dá peso físico ao impacto.
-            <br/><strong>Na Web UI:</strong> Ao clicar no botão do <strong>Lado B</strong>, ele comprime (<code class="font-mono text-xs text-emerald-300">scale(0.92)</code>), <strong>congela por 85ms</strong> para criar tensão cinestésica e explode com mola + faíscas + acorde musical.
+          <p class="specimen-desc" data-i18n="s1Desc">
+            Compresses to <code>0.94</code> on pointerdown, holds a 75ms freeze-frame on release, then rebounds with spring overshoot and a harmonic triad.
           </p>
-          <pre id="code1" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-emerald-300 overflow-x-auto"><code>// Mecânica: hitstop-micro-pause + particle-micro-burst
-btn.style.transform = 'scale(0.92)'; // 1. Antecipação (Compressão)
-await new Promise(r => setTimeout(r, 85)); // 2. Hitstop (85ms Freeze Frame)
-spawnSparks(btn); playHeroChime(); // 3. Impacto + Recompensa
-btn.style.transform = 'scale(1)'; // 4. Spring Overshoot</code></pre>
-        </div>
-
-        <!-- Interactive Simulator Stage -->
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-4 flex flex-col items-center justify-between min-h-[148px]">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>LADO A: UI COMUM</span>
-                <span class="rounded bg-slate-800 px-1.5 py-0.5 text-[10px]">0ms</span>
-              </div>
-              <button onclick="runDryDeploy(this)" class="cursor-pointer my-auto rounded-lg bg-slate-700 px-4 py-2.5 text-xs sm:text-sm font-medium text-white">
-                Publicar Projeto
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">Standard UI</span>
+              <button id="s1Flat" type="button" class="ui-btn-flat" data-i18n="s1Btn">Deploy</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button id="s1Juice" type="button" class="ui-btn-juice">
+                <span id="s1Icon">↑</span>
+                <span id="s1Text" data-i18n="s1Btn">Deploy</span>
               </button>
-              <span class="text-[11px] text-slate-400 flex items-center gap-1">
-                <span>[Teste: Clique p/ comparar]</span>
-              </span>
             </div>
+          </div>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log1" class="specimen-foot-output" data-i18n="promptClick">Click either button above to inspect response</span>
+          </div>
+          <pre id="code1" class="specimen-code">/* Pointerdown anticipation + 75ms Hitstop + Spring overshoot */
+onPointerDown: () => el.style.transform = 'scale(0.94)',
+onPointerUp: async () => {
+  await sleep(75); // Hitstop freeze-frame
+  el.style.transform = 'scale(1.05)';
+  playHarmonicConfirm(523.25, 659.25, 783.99);
+}</pre>
+        </article>
 
-            <!-- Stage B: Juicy -->
-            <div class="sandbox-stage-juicy rounded-lg border border-emerald-500/40 p-4 flex flex-col items-center justify-between min-h-[148px] relative">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-emerald-400">
-                <span>LADO B: GAME FEEL</span>
-                <span class="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px]">85ms Hitstop</span>
-              </div>
-              <button id="hitstopBtn" onclick="runHitstopDemo(this)" class="btn-tactile sheen-sweep cursor-pointer my-auto rounded-lg bg-emerald-500 px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/25">
-                Publicar Projeto
+        <!-- Specimen 02: Hold to Confirm -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">02 / TENSION RAMP + COYOTE DECAY</span>
+              <h3 class="specimen-title" data-i18n="s2Title">Hold-to-Commit Destructive Action</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code2" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s2Desc">
+            Replaces annoying confirmation modals with a physical hold gauge, rising pitch tension, and micro-tremor before committing.
+          </p>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">Standard UI</span>
+              <button id="s2Flat" type="button" class="ui-btn-flat" data-i18n="s2BtnFlat">Delete Key</button>
+            </div>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button id="s2Juice" type="button" class="ui-btn-hold">
+                <div id="s2Fill" class="hold-fill"></div>
+                <span id="s2Text" class="hold-text" data-i18n="s2BtnHold">Hold to Delete</span>
               </button>
-              <span class="text-[11px] font-medium text-emerald-300 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 nudge-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                <span>Clique aqui e sinta o impacto!</span>
-              </span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #02: HOLD-TO-CONFIRM CHARGE-UP (TENSÃO)                 -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-rose-500/10 border border-rose-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-rose-400">
-              EXPERIMENTO #02 • DESTRUCTIVE TENSION
-            </span>
-            <button onclick="toggleCode('code2')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log2" class="specimen-foot-output" data-i18n="promptHold">Press and hold the right button for 900ms</span>
           </div>
-          <h3 class="mt-3 text-lg font-bold text-white">2. Carregamento de Magia / Arco (Hold-to-Confirm)</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> Carregar um feitiço na varinha acumula energia, vibra levemente e sobe o som antes do disparo.
-            <br/><strong>Na Web UI:</strong> No <strong>Lado B</strong>, <strong>clique e segure por 0.8s</strong>. Se você soltar antes, a barra volta como uma mola sem excluir nada — eliminando popups de confirmação!
+          <pre id="code2" class="specimen-code">/* Tension charge with reversible decay on early release */
+progress = Math.min(100, progress + dt * 0.11);
+oscillator.frequency.value = 130 + progress * 2.8;
+button.style.transform = `translate(${jitter}px, 0) scale(0.97)`;</pre>
+        </article>
+
+        <!-- Specimen 03: Pitch Escalation -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">03 / SEQUENTIAL PITCH ESCALATION</span>
+              <h3 class="specimen-title" data-i18n="s3Title">Combo Checklist Progression</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code3" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s3Desc">
+            Inspired by coin streaks in platformers: each completed item ascends +2 semitones (`2^(n/12)`) and triggers an elastic row nudge.
           </p>
-          <pre id="code2" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-rose-300 overflow-x-auto"><code>// Mecânica: charge-up-anticipation (800ms hold + vibração + pitch riser)
-onPointerDown: fill.style.transform = 'scaleX(1)'; startPitchRiser(200, 640);
-onPointerUp (early): fill.style.transform = 'scaleX(0)'; // Snapback!</code></pre>
-        </div>
-
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-4 flex flex-col items-center justify-between min-h-[148px]">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>LADO A: UI COMUM</span>
-                <span class="rounded bg-slate-800 px-1.5 py-0.5 text-[10px]">Popup Chato</span>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">Standard UI</span>
+              <div class="check-group">
+                <div class="check-row flat-check"><span class="check-box">✓</span><span>Schema</span></div>
+                <div class="check-row flat-check"><span class="check-box">✓</span><span>Auth flow</span></div>
+                <div class="check-row flat-check"><span class="check-box">✓</span><span>Webhooks</span></div>
               </div>
-              <button onclick="runDryDelete(this)" class="cursor-pointer my-auto rounded-lg bg-slate-800 border border-slate-600 px-3.5 py-2.5 text-xs sm:text-sm font-medium text-rose-300">
-                Apagar Banco
-              </button>
-              <span id="dryDeleteStatus" class="text-[11px] text-slate-400">[Teste: Clique p/ ver o alerta]</span>
             </div>
-
-            <!-- Stage B: Juicy -->
-            <div class="sandbox-stage-juicy rounded-lg border border-rose-500/40 p-4 flex flex-col items-center justify-between min-h-[148px]" style="background-color:#190A10;background-image:radial-gradient(rgba(244,63,94,0.18) 1px,transparent 1px);">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-rose-400">
-                <span>LADO B: GAME FEEL</span>
-                <span id="holdPercentBadge" class="rounded bg-rose-500/20 px-1.5 py-0.5 text-[10px] tabular-nums">0% Carregado</span>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <div class="check-group" id="juiceCheckGroup">
+                <div class="check-row juice-check"><span class="check-box">✓</span><span>Schema</span></div>
+                <div class="check-row juice-check"><span class="check-box">✓</span><span>Auth flow</span></div>
+                <div class="check-row juice-check"><span class="check-box">✓</span><span>Webhooks</span></div>
               </div>
-              <button id="holdBtn"
-                onpointerdown="startHoldDemo(this)"
-                onpointerup="cancelHoldDemo(this)"
-                onpointerleave="cancelHoldDemo(this)"
-                class="cursor-pointer my-auto relative overflow-hidden rounded-lg border border-rose-500 bg-rose-950/80 px-4 py-2.5 text-xs sm:text-sm font-bold text-rose-100 select-none shadow-lg shadow-rose-500/15">
-                <span id="holdFill" class="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-rose-500/50"></span>
-                <span id="holdText" class="relative z-10">Segure p/ Apagar</span>
-              </button>
-              <span class="text-[11px] font-medium text-rose-300 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 nudge-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                <span>Pressione e SEGURE por 0.8s!</span>
-              </span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #03: PITCH ESCALATION + SQUASH & STRETCH                -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-cyan-500/10 border border-cyan-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-cyan-400">
-              EXPERIMENTO #03 • COMBO & SQUASH
-            </span>
-            <button onclick="toggleCode('code3')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log3" class="specimen-foot-output" data-i18n="promptCheck">Check all 3 items on the right in sequence</span>
           </div>
-          <h3 class="mt-3 text-lg font-bold text-white">3. Escalada Musical de Combo + Squash & Stretch</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> Coletar moedas em sequência sobe a nota musical (+1 semitom por moeda) e achata/estica o objeto.
-            <br/><strong>Na Web UI:</strong> Marque as 4 tarefas seguidas no <strong>Lado B</strong> para ouvir o pitch subindo e ver o checkbox deformar elasticamente com riscado progressivo!
+          <pre id="code3" class="specimen-code">/* Semitone escalation formula per streak step */
+const freq = 440 * Math.pow(2, (streakIndex * 2) / 12);
+playSynthTick(freq, { durationMs: 45, waveform: 'triangle' });</pre>
+        </article>
+
+        <!-- Specimen 04: Recoil & Error Shake -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">04 / DAMPED RECOIL + SUB-BASS THUD</span>
+              <h3 class="specimen-title" data-i18n="s4Title">Physical Validation Resistance</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code4" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s4Desc">
+            Instead of a static red string, invalid input triggers a horizontal damped harmonic shake (`±6px → 0px`) paired with a 130Hz muted thud.
           </p>
-          <pre id="code3" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-cyan-300 overflow-x-auto"><code>// Mecânica: pitch-escalation-combo + squash-and-stretch-morph
-const freq = 320 * Math.pow(2, comboStep / 12); // +1 semitom por clique!
-// CSS @keyframes squashPop: scale(1.24, 0.80) -> scale(0.92, 1.08) -> scale(1, 1)</code></pre>
-        </div>
-
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-3.5 flex flex-col justify-between">
-              <div class="text-[11px] font-mono text-slate-400 mb-2">LADO A: CHECKBOX SECO</div>
-              <div class="space-y-2 my-auto">
-                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer"><input type="checkbox" class="cursor-pointer" /> 1. Mapear componentes</label>
-                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer"><input type="checkbox" class="cursor-pointer" /> 2. Configurar tokens</label>
-                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer"><input type="checkbox" class="cursor-pointer" /> 3. Injetar molas CSS</label>
-                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer"><input type="checkbox" class="cursor-pointer" /> 4. Validar 60fps</label>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">Standard UI</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <input type="text" value="abc" readonly class="input-mini" id="s4FlatInput" />
+                <button type="button" id="s4FlatBtn" class="ui-btn-flat" style="height:32px;padding:0 10px;font-size:12px;" data-i18n="s4Btn">Verify</button>
               </div>
-              <div class="text-[10px] text-slate-500 mt-2">[Teste: Marque p/ comparar]</div>
             </div>
-
-            <!-- Stage B: Juicy -->
-            <div class="sandbox-stage-juicy rounded-lg border border-cyan-500/40 p-3.5 flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] font-mono text-cyan-400">LADO B: COMBO + SQUASH</span>
-                <span id="comboBadge" class="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300">TOM BASE</span>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <div id="s4JuiceWrap" style="display:flex;gap:6px;align-items:center;">
+                <input type="text" value="abc" readonly class="input-mini" id="s4JuiceInput" />
+                <button type="button" id="s4JuiceBtn" class="ui-btn-juice" style="height:32px;padding:0 10px;font-size:12px;" data-i18n="s4Btn">Verify</button>
               </div>
-              <div class="space-y-1.5 my-auto">
-                <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-slate-100 cursor-pointer select-none py-0.5 hover:text-emerald-300 transition-colors">
-                  <span class="check-box flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-500 bg-slate-900 text-[10px] font-bold text-transparent transition-colors">✓</span>
-                  <span class="strike-line">1. Mapear componentes</span>
-                </div>
-                <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-slate-100 cursor-pointer select-none py-0.5 hover:text-emerald-300 transition-colors">
-                  <span class="check-box flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-500 bg-slate-900 text-[10px] font-bold text-transparent transition-colors">✓</span>
-                  <span class="strike-line">2. Configurar tokens</span>
-                </div>
-                <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-slate-100 cursor-pointer select-none py-0.5 hover:text-emerald-300 transition-colors">
-                  <span class="check-box flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-500 bg-slate-900 text-[10px] font-bold text-transparent transition-colors">✓</span>
-                  <span class="strike-line">3. Injetar molas CSS</span>
-                </div>
-                <div onclick="toggleJuicyTask(this)" class="flex items-center gap-2.5 text-xs text-slate-100 cursor-pointer select-none py-0.5 hover:text-emerald-300 transition-colors">
-                  <span class="check-box flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-500 bg-slate-900 text-[10px] font-bold text-transparent transition-colors">✓</span>
-                  <span class="strike-line">4. Validar 60fps</span>
-                </div>
-              </div>
-              <div class="text-[10px] font-medium text-cyan-300 mt-2">[Teste: Marque os 4 em sequência!]</div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #04: TRAUMA ERROR SHAKE + REWARD EARLY                  -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-amber-400">
-              EXPERIMENTO #04 • RECOIL & TRAUMA SHAKE
-            </span>
-            <button onclick="toggleCode('code4')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log4" class="specimen-foot-output" data-i18n="promptShake">Click Verify to feel physical rejection</span>
           </div>
-          <h3 class="mt-3 text-lg font-bold text-white">4. Resistência Física (Damped Trauma Shake)</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> Tentar abrir uma porta trancada gera um recuo curto com decaimento exponencial (±7px → ∓5px → ±2px → 0) e um som grave abafado.
-            <br/><strong>Na Web UI:</strong> Clique em <strong>Testar Erro</strong> no Lado B para ver a diferença para uma mensagem estática!
+          <pre id="code4" class="specimen-code">@keyframes damped-shake {
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}</pre>
+        </article>
+
+        <!-- Specimen 05: Magnetic Cursor Pull -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">05 / PROXIMITY MAGNETISM</span>
+              <h3 class="specimen-title" data-i18n="s5Title">Cursor Gravity &amp; Specular Tracking</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code5" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s5Desc">
+            Translates the button up to <code>4px</code> toward the pointer vector on hover and snaps back elastically on pointerleave.
           </p>
-          <pre id="code4" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-amber-300 overflow-x-auto"><code>// Mecânica: trauma-error-shake + reward-early-validate-late
-@keyframes traumaShake {
-  15% { transform: translate3d(-7px, 0, 0); }
-  35% { transform: translate3d(6px, 0, 0); }
-  55% { transform: translate3d(-4px, 0, 0); }
-}</code></pre>
-        </div>
-
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-4 flex flex-col items-center justify-between min-h-[148px]">
-              <div class="w-full text-[11px] font-mono text-slate-400">LADO A: ERRO ESTÁTICO</div>
-              <div class="w-full my-auto space-y-1.5">
-                <input type="text" value=" Cupom inválido" readonly class="w-full rounded bg-slate-900 border border-slate-700 px-2.5 py-1.5 text-xs text-slate-400" />
-                <button onclick="document.getElementById('dryErrMsg').classList.remove('hidden')" class="cursor-pointer w-full rounded bg-slate-700 py-1.5 text-xs font-medium text-white">
-                  Testar Erro Seco
-                </button>
-                <div id="dryErrMsg" class="hidden text-[11px] text-rose-400">Erro: código inválido.</div>
-              </div>
-              <span class="text-[10px] text-slate-500">[Teste: Sem resposta física]</span>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">Standard UI</span>
+              <button type="button" class="ui-btn-flat" data-i18n="s5Btn">Hover Cursor</button>
             </div>
-
-            <!-- Stage B: Juicy -->
-            <div class="sandbox-stage-juicy rounded-lg border border-amber-500/40 p-4 flex flex-col items-center justify-between min-h-[148px]">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-amber-400">
-                <span>LADO B: TRAUMA SHAKE</span>
-                <span class="text-[10px]">±7px Decay</span>
-              </div>
-              <div id="shakeContainer" class="w-full my-auto space-y-1.5">
-                <input id="shakeInput" type="text" placeholder="Vazio = Erro | 'VIP' = OK" oninput="checkRewardEarly(this)" class="w-full rounded bg-slate-900 border border-slate-600 px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition-colors" />
-                <button onclick="triggerShakeDemo()" class="btn-tactile cursor-pointer w-full rounded bg-amber-500 hover:bg-amber-400 py-1.5 text-xs font-bold text-slate-950">
-                  Testar Validação Física
-                </button>
-              </div>
-              <span id="shakeStatus" class="text-[10px] font-medium text-amber-300">[Teste: Clique vazio p/ tremer ou digite VIP]</span>
+            <div class="stage-cell" id="s5Stage">
+              <span class="stage-tag stage-tag-active">Game Feel</span>
+              <button type="button" id="s5JuiceBtn" class="ui-btn-magnetic" data-i18n="s5Btn">Hover Cursor</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #05: COYOTE TIME EM MENUS DROPDOWN                      -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-purple-400">
-              EXPERIMENTO #05 • INVISIBLE FORGIVENESS
-            </span>
-            <button onclick="toggleCode('code5')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log5" class="specimen-foot-output" data-i18n="promptHover">Move cursor across the right button</span>
           </div>
-          <h3 class="mt-3 text-lg font-bold text-white">5. Coyote Time (Perdão Invisível de 180ms em Menus)</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> <em>Celeste</em> e <em>Mario</em> deixam você pular até 150ms depois de já ter saído do penhasco.
-            <br/><strong>Na Web UI:</strong> Passe o mouse no botão do <strong>Lado A</strong> e tente clicar no menu abaixo do vão de 14px (ele fecha na sua cara!). Depois faça o mesmo no <strong>Lado B</strong> com 180ms de Coyote Time.
+          <pre id="code5" class="specimen-code">const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.22;
+const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.22;
+btn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;</pre>
+        </article>
+
+        <!-- Specimen 06: Coyote Time Hover -->
+        <article class="specimen">
+          <div class="specimen-head">
+            <div>
+              <span class="specimen-num">06 / COYOTE TIME FORGIVENESS</span>
+              <h3 class="specimen-title" data-i18n="s6Title">160ms Grace Window on Menus</h3>
+            </div>
+            <button class="code-toggle" type="button" data-code="code6" aria-expanded="false">&lt;/&gt; Code</button>
+          </div>
+          <p class="specimen-desc" data-i18n="s6Desc">
+            In platformers, Coyote Time lets you jump briefly after leaving a ledge. In UI, it prevents menus from snapping shut on diagonal mouse paths.
           </p>
-          <pre id="code5" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-purple-300 overflow-x-auto"><code>// Mecânica: coyote-time-hover-grace (180ms Grace Period)
-onPointerLeave: closeTimer = setTimeout(() => setOpen(false), 180);
-onPointerEnter: clearTimeout(closeTimer); setOpen(true);</code></pre>
-        </div>
-
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry Trap -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-4 flex flex-col items-center justify-between min-h-[160px] relative">
-              <div class="w-full text-[11px] font-mono text-slate-400">LADO A: SEM COYOTE (0ms)</div>
-              <div class="relative my-auto"
-                   onmouseenter="document.getElementById('dryDropdown').classList.remove('hidden')"
-                   onmouseleave="document.getElementById('dryDropdown').classList.add('hidden')">
-                <button class="cursor-pointer rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-xs font-medium text-slate-200">
-                  Passe o Mouse Aqui ▾
-                </button>
-                <!-- Intentional 14px gap that causes 0ms menu to close when crossing! -->
-                <div id="dryDropdown" class="hidden absolute left-0 top-full mt-3.5 w-44 rounded-lg border border-slate-700 bg-slate-900 p-2 text-xs shadow-2xl z-30">
-                  <div class="px-2 py-1.5 rounded bg-slate-800 text-slate-300">Impossível clicar!</div>
-                </div>
+          <div class="stage-split">
+            <div class="stage-cell">
+              <span class="stage-tag" data-i18n="tagFlat">0ms Grace</span>
+              <div class="popover-wrap" id="s6FlatWrap">
+                <div id="s6FlatMenu" class="popover-card">Action Menu</div>
+                <button type="button" class="ui-btn-flat" data-i18n="s6Btn">Hover Menu</button>
               </div>
-              <span class="text-[10px] text-slate-500">[Teste: Tente descer até o menu]</span>
             </div>
-
-            <!-- Stage B: Coyote Time -->
-            <div class="sandbox-stage-juicy rounded-lg border border-purple-500/40 p-4 flex flex-col items-center justify-between min-h-[160px] relative">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-purple-400">
-                <span>LADO B: COYOTE TIME</span>
-                <span class="text-[10px]">180ms Grace</span>
+            <div class="stage-cell">
+              <span class="stage-tag stage-tag-active">160ms Coyote Grace</span>
+              <div class="popover-wrap" id="s6JuiceWrap">
+                <div id="s6JuiceMenu" class="popover-card">Action Menu · Safe</div>
+                <button type="button" class="ui-btn-juice" data-i18n="s6Btn">Hover Menu</button>
               </div>
-              <div class="relative my-auto"
-                   onmouseenter="enterCoyoteMenu()"
-                   onmouseleave="leaveCoyoteMenu()">
-                <button class="cursor-pointer rounded-lg border border-purple-500/50 bg-purple-950/60 px-3 py-2 text-xs font-bold text-purple-200">
-                  Passe o Mouse Aqui ▾
-                </button>
-                <!-- Same 14px gap, bridged effortlessly by 180ms Coyote Time! -->
-                <div id="coyoteDropdown"
-                     onmouseenter="enterCoyoteMenu()"
-                     onmouseleave="leaveCoyoteMenu()"
-                     class="hidden absolute left-0 top-full mt-3.5 w-48 rounded-lg border border-purple-500/50 bg-slate-900 p-2 text-xs shadow-2xl z-30">
-                  <button onclick="selectCoyoteItem(this)" class="cursor-pointer w-full text-left px-2.5 py-1.5 rounded hover:bg-purple-500/20 text-purple-200 font-medium">
-                    Clique aqui: Ação Alcançada!
-                  </button>
-                </div>
-              </div>
-              <span class="text-[10px] font-medium text-purple-300">[Teste: Atravesse o vão tranquilo!]</span>
             </div>
           </div>
+          <div class="specimen-foot">
+            <span data-i18n="telemetryLabel">telemetry</span>
+            <span id="log6" class="specimen-foot-output" data-i18n="promptCoyote">Hover and briefly slip cursor off both buttons</span>
+          </div>
+          <pre id="code6" class="specimen-code">/* 160ms Coyote Time grace buffer before closing popover */
+onMouseLeave: () => {
+  closeTimer = setTimeout(() => setOpen(false), 160);
+},
+onMouseEnter: () => clearTimeout(closeTimer)</pre>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 3-Dial Calibration Blueprint -->
+    <section class="container-wide">
+      <div class="section-divider"></div>
+      <div class="section-header">
+        <div>
+          <h2 class="section-title" data-i18n="dialsTitle">Calibration Dials (--blueprint)</h2>
+          <p class="section-subtitle" data-i18n="dialsSub">A SaaS dashboard needs subtle kinematics; a gamified EdTech app needs celebratory feedback. Tune the 3 dials to generate CSS tokens.</p>
         </div>
       </div>
 
-      <!-- =================================================================== -->
-      <!-- EXPERIMENTO #06: 3D CARD TILT + ODOMETER TABULAR ROLL               -->
-      <!-- =================================================================== -->
-      <div class="rounded-2xl border border-slate-800 bg-card overflow-hidden flex flex-col justify-between shadow-lg">
-        <div class="p-6 pb-4">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 font-mono text-xs font-semibold text-emerald-400">
-              EXPERIMENTO #06 • 3D TILT & ODOMETER
-            </span>
-            <button onclick="toggleCode('code6')" class="cursor-pointer font-mono text-xs text-slate-400 hover:text-white border border-slate-700 rounded px-2 py-0.5 bg-slate-900">
-              &lt;/&gt; Ver Código
-            </button>
+      <div class="workbench">
+        <div class="dial-group">
+          <div class="dial-row">
+            <label>
+              <span>--juice <span style="color:var(--text-muted)" data-i18n="dialJuiceHint">(visual spring &amp; hitstop)</span></span>
+              <span id="valJuice">5 / 10</span>
+            </label>
+            <input id="rangeJuice" type="range" min="1" max="10" value="5" />
           </div>
-          <h3 class="mt-3 text-lg font-bold text-white">6. Inspeção 3D (Balatro Tilt) + Odômetro Sem Jitter</h3>
-          <p class="mt-1 text-sm text-slate-300 leading-relaxed">
-            <strong>Nos jogos:</strong> Passar o mouse sobre uma carta em <em>Balatro</em> ou <em>Hearthstone</em> inclina a superfície em 3D com reflexo de luz na coordenada do cursor.
-            <br/><strong>Na Web UI:</strong> Passe o mouse e clique no card do <strong>Lado B</strong> para ver a inclinação 3D + rolagem numérica com <code class="font-mono text-xs text-emerald-300">tabular-nums</code>.
-          </p>
-          <pre id="code6" class="hidden mt-3 rounded-lg bg-oled border border-slate-800 p-3 font-mono text-[11px] text-emerald-300 overflow-x-auto"><code>// Mecânica: 3d-perspective-tilt + odometer-number-roll
-card.style.transform = `perspective(900px) rotateX(${-ny*8}deg) rotateY(${nx*8}deg)`;
-// + font-variant-numeric: tabular-nums (evita tremedeira horizontal!)</code></pre>
-        </div>
-
-        <div class="p-4 pt-0">
-          <div class="grid grid-cols-2 gap-3 rounded-xl border border-slate-700/80 bg-oled p-3">
-            <!-- Stage A: Dry -->
-            <div class="sandbox-stage-dry rounded-lg border border-slate-800 p-4 flex flex-col items-center justify-between min-h-[160px]">
-              <div class="w-full text-[11px] font-mono text-slate-400">LADO A: CARD ESTÁTICO</div>
-              <div onclick="incrementDryCounter()" class="cursor-pointer my-auto w-full rounded-lg border border-slate-700 bg-slate-900 p-3 text-center">
-                <div class="text-[11px] text-slate-400">Receita (Clique p/ somar)</div>
-                <div id="dryOdometer" class="text-xl font-bold text-white mt-1">R$ 11.110</div>
-              </div>
-              <span class="text-[10px] text-slate-500">[Teste: Sem inclinação 3D]</span>
-            </div>
-
-            <!-- Stage B: Juicy 3D -->
-            <div class="sandbox-stage-juicy rounded-lg border border-emerald-500/40 p-4 flex flex-col items-center justify-between min-h-[160px]">
-              <div class="w-full flex items-center justify-between text-[11px] font-mono text-emerald-400">
-                <span>LADO B: 3D + ODOMETER</span>
-                <span class="text-[10px]">Perspective 900px</span>
-              </div>
-              <div id="balatroCard"
-                   onpointermove="handleCardTilt(event, this)"
-                   onpointerleave="resetCardTilt(this)"
-                   onclick="incrementOdometer()"
-                   class="tilt-card cursor-pointer select-none my-auto w-full rounded-lg border border-emerald-500/40 p-3 text-center shadow-xl">
-                <div class="text-[11px] text-emerald-300 font-medium">Mova o mouse & Clique!</div>
-                <div id="odometerValue" class="text-xl font-extrabold text-white tabular-nums transition-transform duration-200 mt-1">R$ 14.280</div>
-                <span id="odometerBadge" class="inline-block rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300 mt-1">+R$ 450</span>
-              </div>
-              <span class="text-[10px] font-medium text-emerald-300">[Teste: Mova o cursor e clique!]</span>
-            </div>
+          <div class="dial-row">
+            <label>
+              <span>--forgiveness <span style="color:var(--text-muted)" data-i18n="dialForgiveHint">(coyote time &amp; undo window)</span></span>
+              <span id="valForgive">8 / 10</span>
+            </label>
+            <input id="rangeForgive" type="range" min="1" max="10" value="8" />
           </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ========================================================================= -->
-  <!-- INTERACTIVE BLUEPRINT & DIALS SIMULATOR                                   -->
-  <!-- ========================================================================= -->
-  <section id="dials-simulator" class="border-t border-slate-800/80 bg-surface/50 py-16">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="max-w-3xl">
-        <span class="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400">GERADOR DE BLUEPRINT INTERATIVO</span>
-        <h2 class="mt-2 text-2xl sm:text-3xl font-bold text-white">Calibre os 3 Dials Sensoriais da sua Aplicação</h2>
-        <p class="mt-2 text-sm sm:text-base text-slate-300">
-          Um SaaS corporativo não deve ter a mesma intensidade de animações que um app gamificado estilo Duolingo. Ajuste os sliders abaixo para ver como a skill calibra os tokens CSS e o comando do Claude Code automaticamente:
-        </p>
-      </div>
-
-      <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Sliders Control Panel -->
-        <div class="lg:col-span-5 rounded-2xl border border-slate-800 bg-card p-6 space-y-6">
-          <div>
-            <div class="flex justify-between text-xs font-mono mb-2">
-              <label for="juiceSlider" class="text-white font-semibold">1. --juice (Intensidade Cinestésica)</label>
-              <span id="juiceValLabel" class="text-emerald-400 font-bold">6/10 • Kinetic Spring</span>
-            </div>
-            <input id="juiceSlider" type="range" min="1" max="10" value="6" oninput="updateDials()" class="w-full accent-emerald-500 cursor-pointer" />
-            <div class="flex justify-between text-[11px] text-slate-400 mt-1">
-              <span>1 (Subliminar/Linear)</span>
-              <span>5 (Mola Suave)</span>
-              <span>10 (Gamificado)</span>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-xs font-mono mb-2">
-              <label for="forgiveSlider" class="text-white font-semibold">2. --forgiveness (Coyote Time & Hitbox)</label>
-              <span id="forgiveValLabel" class="text-cyan-400 font-bold">8/10 • Maximum Assist</span>
-            </div>
-            <input id="forgiveSlider" type="range" min="1" max="10" value="8" oninput="updateDials()" class="w-full accent-cyan-400 cursor-pointer" />
-            <div class="flex justify-between text-[11px] text-slate-400 mt-1">
-              <span>1 (Padrão 100ms)</span>
-              <span>6 (150ms + 8px)</span>
-              <span>10 (180ms + 12px)</span>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-xs font-mono mb-2">
-              <label for="audioSlider" class="text-white font-semibold">3. --audio (Web Audio Synth & Haptics)</label>
-              <span id="audioValLabel" class="text-purple-400 font-bold">5/10 • Hardware Ticks</span>
-            </div>
-            <input id="audioSlider" type="range" min="1" max="10" value="5" oninput="updateDials()" class="w-full accent-purple-400 cursor-pointer" />
-            <div class="flex justify-between text-[11px] text-slate-400 mt-1">
-              <span>1 (Silencioso)</span>
-              <span>5 (Cliques 10ms)</span>
-              <span>10 (Full Synth Suite)</span>
-            </div>
+          <div class="dial-row">
+            <label>
+              <span>--audio <span style="color:var(--text-muted)" data-i18n="dialAudioHint">(procedural synth gain)</span></span>
+              <span id="valAudio">3 / 10</span>
+            </label>
+            <input id="rangeAudio" type="range" min="0" max="10" value="3" />
           </div>
         </div>
 
-        <!-- Live Generated Output -->
-        <div class="lg:col-span-7 rounded-2xl border border-slate-800 bg-oled p-6 font-mono text-xs space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <span class="text-slate-400">TOKENS CSS & COMANDO GERADO EM TEMPO REAL</span>
-            <span class="rounded bg-emerald-500/15 px-2 py-0.5 text-[11px] text-emerald-400">Pronto para copiar</span>
-          </div>
-          <pre id="dialOutputCode" class="text-emerald-300 overflow-x-auto leading-relaxed"><code># Comando CLI da Skill:
-python scripts/search.py "saas web app" --blueprint --juice 6 --forgiveness 8 --audio 5
-
-/* Tokens CSS Globais Calibrados: */
+        <div class="token-output" id="tokenPreview">
 :root {
-  --gf-press-scale: 0.965;
-  --gf-release-duration: 150ms;
-  --gf-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --gf-ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --gf-coyote-grace: 180ms;
-  --gf-hitbox-expand: -12px;
-}</code></pre>
-        </div>
+  --gf-press-scale: <strong>0.960</strong>;
+  --gf-overshoot-scale: <strong>1.035</strong>;
+  --gf-spring-stiffness: <strong>380</strong>;
+  --gf-hitstop-ms: <strong>45ms</strong>;
+  --gf-coyote-grace-ms: <strong>158ms</strong>;
+  --gf-undo-window-ms: <strong>4900ms</strong>;
+  --gf-audio-max-gain: <strong>0.036</strong>;
+}
+<span style="color:var(--text-muted)">$ python scripts/search.py "saas" --blueprint --juice 5 --forgiveness 8 --audio 3</span></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========================================================================= -->
-  <!-- ARCHITECTURE & INSTALLATION                                               -->
-  <!-- ========================================================================= -->
-  <section id="como-funciona" class="mx-auto max-w-6xl px-6 py-16">
-    <h2 class="text-2xl sm:text-3xl font-bold text-white">Arquitetura da Skill <code class="font-mono text-emerald-400">game-feel-ui</code></h2>
-    <p class="mt-2 text-slate-300 max-w-3xl text-sm sm:text-base">
-      Projetada nos moldes da <code class="font-mono text-slate-200">ui-ux-pro-max</code>, ela combina busca local indexada por BM25, contrato determinístico de regras de contexto e auditoria estática de código:
-    </p>
-
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="rounded-2xl border border-slate-800 bg-card p-6">
-        <div class="font-mono text-xs font-bold text-emerald-400 mb-2">01 • AUDITOR DE CODEBASE (--audit)</div>
-        <h3 class="text-lg font-bold text-white">Detecta onde falta Game Feel</h3>
-        <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-          O script <code class="font-mono text-xs text-emerald-300">scripts/audit.py</code> varre seus arquivos <code class="font-mono text-xs">.tsx</code>, <code class="font-mono text-xs">.vue</code>, <code class="font-mono text-xs">.svelte</code> e <code class="font-mono text-xs">.css</code>, calcula um <strong>Juice Score (0–100)</strong> e aponta exatamente o <code class="font-mono text-xs">arquivo:linha</code> de botões secos, menus sem Coyote Time, contadores sem <code class="font-mono text-xs">tabular-nums</code> e animações que travam a thread.
-        </p>
-      </div>
-
-      <div class="rounded-2xl border border-slate-800 bg-card p-6">
-        <div class="font-mono text-xs font-bold text-cyan-400 mb-2">02 • RACIOCÍNIO DETERMINÍSTICO</div>
-        <h3 class="text-lg font-bold text-white">12 Regras de Contexto</h3>
-        <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-          O módulo <code class="font-mono text-xs text-cyan-300">reasoning_contract.py</code> detecta se sua tela possui Kanban, Checkout, Streaming de IA, Ações Destrutivas ou Formulários OTP, selecionando automaticamente as mecânicas certas sem risco de "efeito caça-níquel".
-        </p>
-      </div>
-
-      <div class="rounded-2xl border border-slate-800 bg-card p-6">
-        <div class="font-mono text-xs font-bold text-purple-400 mb-2">03 • 11 STACKS & ACESSIBILIDADE</div>
-        <h3 class="text-lg font-bold text-white">60/120fps + Reduced Motion</h3>
-        <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-          Guias dedicados para React 19 (<code class="font-mono text-xs">useOptimistic</code>), Next.js, Framer Motion (<code class="font-mono text-xs">whileTap</code>, <code class="font-mono text-xs">layoutId</code>), Tailwind, CSS WAAPI, GSAP, shadcn/ui, Vue, Svelte, React Native e Flutter — sempre respeitando <code class="font-mono text-xs">prefers-reduced-motion</code>.
-        </p>
-      </div>
-    </div>
-
-    <!-- Installation Box -->
-    <div id="instalar" class="mt-12 rounded-2xl border border-emerald-500/30 bg-surface p-6 sm:p-8">
-      <h3 class="text-xl font-bold text-white">Como Instalar no Claude Code</h3>
-      <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- How it works in Claude Code -->
+    <section class="container-wide">
+      <div class="section-divider"></div>
+      <div class="section-header">
         <div>
-          <div class="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">Opção A — Via npx skills ou Git Clone</div>
-          <pre class="rounded-xl bg-oled border border-slate-800 p-4 font-mono text-xs text-emerald-300 overflow-x-auto"><code># Instalar via npx skills CLI
-npx skills add EduuF/game-feel-ui
-
-# Ou clonar direto nas skills do Claude Code
-git clone https://github.com/EduuF/game-feel-ui.git ~/.claude/skills/game-feel-ui</code></pre>
-        </div>
-        <div>
-          <div class="font-mono text-xs font-semibold uppercase tracking-wider text-cyan-400 mb-2">Opção B — Como usar no chat do Claude Code</div>
-          <pre class="rounded-xl bg-oled border border-slate-800 p-4 font-mono text-xs text-cyan-300 overflow-x-auto"><code>"Use a skill game-feel-ui para auditar minha aplicação
-em ./src, calcular o Juice Score e aplicar melhorias
-sutis de Game Feel nos botões, modais e formulários."</code></pre>
+          <h2 class="section-title" data-i18n="howTitle">Built for Agentic Workflows</h2>
+          <p class="section-subtitle" data-i18n="howSub">Deterministic BM25 retrieval + codebase static auditing for Claude Code, Cursor, and Windsurf.</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <footer class="border-t border-slate-800/80 py-8 text-center font-mono text-xs text-slate-400">
-    game-feel-ui • Open-Source Claude Code Skill • MIT License • <a href="https://github.com/EduuF/game-feel-ui" class="text-emerald-400 hover:underline">github.com/EduuF/game-feel-ui</a>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h3>01 · Static Juice Audit</h3>
+          <p data-i18n="arch1">Scans your React/Vue/CSS codebase for dead clicks, blocking confirm modals, and layout-thrashing animations, returning a 0–100 Juice Score.</p>
+        </div>
+        <div class="arch-card">
+          <h3>02 · 12 Context Rules</h3>
+          <p data-i18n="arch2">Deterministic reasoning maps destructive actions to Hold-to-Commit, Kanban drags to 3D Tilt + Escalation, and AI streams to cadence ticks.</p>
+        </div>
+        <div class="arch-card">
+          <h3>03 · 11 Framework Stacks</h3>
+          <p data-i18n="arch3">Ready-to-drop implementations for React, Next.js, Framer Motion, Tailwind, CSS/WAAPI, GSAP, shadcn/ui, Vue, Svelte, React Native, and Flutter.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container-wide">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span>game-feel-ui · MIT License</span>
+      <span>
+        <a href="https://github.com/EduuF/game-feel-ui" target="_blank" rel="noopener">GitHub Repository</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/EduuF/game-feel-ui/blob/main/SKILL.md" target="_blank" rel="noopener">SKILL.md</a>
+      </span>
+    </div>
   </footer>
 
-  <!-- ========================================================================= -->
-  <!-- PROCEDURAL WEB AUDIO & INTERACTIVE SANDBOX ENGINE                         -->
-  <!-- ========================================================================= -->
   <script>
-    let audioEnabled = true;
+    // --- Minimal Procedural Web Audio Engine (Zero Assets) ---
     let audioCtx = null;
-    let comboStep = 0;
-    let lastComboTime = 0;
+    let soundEnabled = true;
 
-    function logTelemetry(title, detail) {
-      const log = document.getElementById('telemetryLog');
-      const sub = document.getElementById('telemetrySub');
-      const dot = document.getElementById('telemetryDot');
-      log.textContent = title;
-      sub.textContent = detail;
-      dot.classList.remove('bg-emerald-400');
-      dot.classList.add('bg-cyan-400', 'scale-125');
-      setTimeout(() => {
-        dot.classList.remove('bg-cyan-400', 'scale-125');
-        dot.classList.add('bg-emerald-400');
-      }, 220);
-    }
-
-    function toggleCode(id) {
-      const el = document.getElementById(id);
-      el.classList.toggle('hidden');
-      playSwitchClick();
-    }
-
-    function getCtx() {
-      if (!audioEnabled) return null;
+    function ctx() {
+      if (!soundEnabled) return null;
       if (!audioCtx) {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (Ctx) audioCtx = new Ctx();
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
       }
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       return audioCtx;
     }
 
-    function toggleAudio() {
-      audioEnabled = !audioEnabled;
-      const btn = document.getElementById('audioToggleBtn');
-      btn.setAttribute('aria-pressed', String(audioEnabled));
-      document.getElementById('audioLabel').textContent = audioEnabled ? 'Synth Audio: ON' : 'Synth Audio: OFF';
-      if (audioEnabled) {
-        playSwitchClick();
-        logTelemetry('Web Audio Synth Ativado', 'Osciladores procedurais prontos (0 KB externos)');
-      } else {
-        logTelemetry('Web Audio Synth Silenciado', 'Apenas feedback visual ativo');
-      }
+    function playTick(freq = 900, duration = 0.015, gainVal = 0.035) {
+      const c = ctx();
+      if (!c) return;
+      const now = c.currentTime;
+      const osc = c.createOscillator();
+      const g = c.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.45, now + duration);
+      g.gain.setValueAtTime(gainVal, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      osc.connect(g).connect(c.destination);
+      osc.start(now);
+      osc.stop(now + duration);
     }
 
-    function playSwitchClick() {
-      const ctx = getCtx();
-      if (!ctx) return;
-      const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'triangle';
-      o.frequency.setValueAtTime(1200, t);
-      o.frequency.exponentialRampToValueAtTime(180, t + 0.009);
-      g.gain.setValueAtTime(0.05, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.01);
-      o.connect(g).connect(ctx.destination);
-      o.start(t); o.stop(t + 0.011);
-    }
-
-    function playHeroChime() {
-      const ctx = getCtx();
-      if (!ctx) return;
-      [523.25, 659.25, 783.99].forEach((freq, i) => {
-        const t = ctx.currentTime + i * 0.065, o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(freq, t);
-        g.gain.setValueAtTime(0.06, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
-        o.connect(g).connect(ctx.destination);
-        o.start(t); o.stop(t + 0.4);
+    function playTriad() {
+      const c = ctx();
+      if (!c) return;
+      [523.25, 659.25, 783.99].forEach((f, idx) => {
+        const now = c.currentTime + idx * 0.032;
+        const osc = c.createOscillator();
+        const g = c.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now);
+        g.gain.setValueAtTime(0.04, now);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+        osc.connect(g).connect(c.destination);
+        osc.start(now);
+        osc.stop(now + 0.14);
       });
     }
 
-    function playComboTick(checked) {
-      const ctx = getCtx();
-      const now = performance.now();
-      if (checked) {
-        comboStep = (now - lastComboTime < 2500) ? Math.min(comboStep + 1, 12) : 1;
-        lastComboTime = now;
-      } else {
-        comboStep = Math.max(0, comboStep - 1);
-      }
-      const freq = checked ? Math.round(320 * Math.pow(2, comboStep / 12)) : 240;
-      if (ctx) {
-        const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(freq, t);
-        o.frequency.exponentialRampToValueAtTime(checked ? freq * 1.35 : freq * 0.75, t + 0.028);
-        g.gain.setValueAtTime(0.06, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.032);
-        o.connect(g).connect(ctx.destination);
-        o.start(t); o.stop(t + 0.035);
-      }
-      return { step: comboStep, freq };
+    function playErrorThud() {
+      const c = ctx();
+      if (!c) return;
+      const now = c.currentTime;
+      const osc = c.createOscillator();
+      const g = c.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(52, now + 0.12);
+      g.gain.setValueAtTime(0.05, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      osc.connect(g).connect(c.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
     }
 
-    function playErrorBuzz() {
-      const ctx = getCtx();
-      if (!ctx) return;
-      [0, 0.07].forEach(offset => {
-        const t = ctx.currentTime + offset, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-        o.type = 'sawtooth';
-        o.frequency.setValueAtTime(150, t);
-        o.frequency.linearRampToValueAtTime(125, t + 0.05);
-        f.type = 'lowpass';
-        f.frequency.setValueAtTime(420, t);
-        g.gain.setValueAtTime(0.06, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
-        o.connect(f).connect(g).connect(ctx.destination);
-        o.start(t); o.stop(t + 0.06);
-      });
-    }
+    // Sound Toggle
+    const soundToggle = document.getElementById('soundToggle');
+    const soundDot = document.getElementById('soundDot');
+    const soundLabel = document.getElementById('soundLabel');
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggle.setAttribute('data-active', String(soundEnabled));
+      soundDot.style.background = soundEnabled ? '#30a46c' : '#5e6168';
+      soundLabel.textContent = soundEnabled ? 'Audio: ON' : 'Audio: OFF';
+      if (soundEnabled) playTick(1000, 0.012);
+    });
 
-    function spawnSparks(el, colors = ['#22C55E', '#34D399', '#38BDF8', '#FACC15']) {
-      const rect = el.getBoundingClientRect();
-      for (let i = 0; i < 12; i++) {
-        const angle = (Math.PI * 2 * i) / 12 + (Math.random() - 0.5) * 0.35;
-        const dist = 28 + Math.random() * 34;
-        const dot = document.createElement('span');
-        dot.style.cssText = `position:fixed;left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;width:6px;height:6px;border-radius:999px;background:${colors[i % colors.length]};pointer-events:none;z-index:9999;`;
-        document.body.appendChild(dot);
-        dot.animate([
-          { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
-          { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist + 12}px)) scale(0)`, opacity: 0 }
-        ], { duration: 480 + Math.random() * 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }).onfinish = () => dot.remove();
-      }
-    }
-
-    // Copy Hero Command
-    function copyHeroCmd(btn) {
-      navigator.clipboard?.writeText('npx skills add EduuF/game-feel-ui');
-      playSwitchClick();
-      const txt = document.getElementById('heroCopyText');
-      txt.textContent = '✓ Copiado!';
-      logTelemetry('icon-elastic-morph', 'Comando copiado para a área de transferência');
-      setTimeout(() => { txt.textContent = 'Copiar'; }, 1800);
-    }
-
-    // EXP 01: Dry vs Hitstop
-    function runDryDeploy(btn) {
-      btn.textContent = 'Publicado';
-      logTelemetry('Lado A (UI Seca): 0ms', 'Sem compressão, sem hitstop, sem recompensa sensorial');
-      setTimeout(() => { btn.textContent = 'Publicar Projeto'; }, 1500);
-    }
-
-    async function runHitstopDemo(btn) {
-      playSwitchClick();
-      btn.style.transition = 'transform 40ms ease-out';
-      btn.style.transform = 'scale(0.91)';
-      btn.textContent = 'Concentrando...';
-      logTelemetry('Hitstop Ativo (85ms Freeze)', 'Congelando frame em scale(0.91) antes do disparo...');
-      await new Promise(r => setTimeout(r, 85));
-      playHeroChime();
-      spawnSparks(btn);
-      btn.style.transition = 'transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1)';
-      btn.style.transform = 'scale(1.07)';
-      btn.textContent = '✓ Publicado!';
-      logTelemetry('Impacto + Overshoot + Partículas', 'Hitstop: 85ms | Spring: 1.07->1.0 | Acorde: C5-E5-G5');
-      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 180);
-      setTimeout(() => { btn.textContent = 'Publicar Projeto'; }, 2000);
-    }
-
-    // EXP 02: Hold to Confirm
-    function runDryDelete() {
-      const st = document.getElementById('dryDeleteStatus');
-      st.textContent = '⚠️ Abriu modal bloqueante!';
-      st.classList.add('text-rose-400');
-      logTelemetry('Lado A: Modal de Confirmação', 'Interrompe o fluxo do usuário com diálogo bloqueante');
+    // Copy Install Command
+    const installBtn = document.getElementById('installBtn');
+    const copyBadge = document.getElementById('copyBadge');
+    installBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('npx skills add EduuF/game-feel-ui');
+      playTriad();
+      copyBadge.textContent = currentLang === 'pt' ? 'Copiado ✓' : 'Copied ✓';
+      copyBadge.style.color = '#30a46c';
       setTimeout(() => {
-        st.textContent = '👆 Clique para ver o problema';
-        st.classList.remove('text-rose-400');
-      }, 2000);
-    }
+        copyBadge.textContent = currentLang === 'pt' ? 'Copiar' : 'Copy';
+        copyBadge.style.color = '';
+      }, 1600);
+    });
 
-    let holdTimer = null;
-    let holdInterval = null;
-    let holdOsc = null;
-    let holdGain = null;
-    let holdStart = 0;
+    // Code toggles
+    document.querySelectorAll('.code-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pre = document.getElementById(btn.dataset.code);
+        const open = pre.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        playTick(800, 0.01);
+      });
+    });
 
-    function startHoldDemo(btn) {
-      const fill = document.getElementById('holdFill');
-      const txt = document.getElementById('holdText');
-      const badge = document.getElementById('holdPercentBadge');
-      fill.style.transition = 'transform 800ms linear';
-      fill.style.transform = 'scaleX(1)';
-      txt.textContent = 'Segure firme...';
-      holdStart = performance.now();
+    // Specimen 01: Hitstop + Spring
+    const s1Flat = document.getElementById('s1Flat');
+    const s1Juice = document.getElementById('s1Juice');
+    const s1Text = document.getElementById('s1Text');
+    const s1Icon = document.getElementById('s1Icon');
+    const log1 = document.getElementById('log1');
 
-      const ctx = getCtx();
-      if (ctx) {
-        const t = ctx.currentTime;
-        holdOsc = ctx.createOscillator();
-        holdGain = ctx.createGain();
-        holdOsc.type = 'sine';
-        holdOsc.frequency.setValueAtTime(200, t);
-        holdOsc.frequency.exponentialRampToValueAtTime(640, t + 0.8);
-        holdGain.gain.setValueAtTime(0.01, t);
-        holdGain.gain.linearRampToValueAtTime(0.05, t + 0.8);
-        holdOsc.connect(holdGain).connect(ctx.destination);
-        holdOsc.start(t);
-      }
+    s1Flat.addEventListener('click', () => {
+      log1.textContent = 'Standard: scale(1.0) · 0ms hitstop · silent';
+    });
 
-      holdInterval = setInterval(() => {
-        const pct = Math.min(100, Math.round(((performance.now() - holdStart) / 800) * 100));
-        badge.textContent = `${pct}% Carregado`;
-        if (pct > 45) {
-          const jx = (Math.random() - 0.5) * 3;
-          btn.style.transform = `scale(0.96) translateX(${jx.toFixed(1)}px)`;
-        }
-      }, 40);
+    s1Juice.addEventListener('pointerdown', () => {
+      s1Juice.style.transform = 'scale(0.93)';
+      playTick(620, 0.012, 0.025);
+      log1.textContent = 'Anticipation: scale(0.93) · storing spring energy...';
+    });
 
-      logTelemetry('charge-up-anticipation (Carregando)', 'Rampa sonora 200Hz->640Hz + micro-vibração de tensão');
-
-      holdTimer = setTimeout(() => {
-        clearInterval(holdInterval);
-        holdTimer = null;
-        stopHoldSound();
-        btn.style.transform = 'scale(1)';
-        playHeroChime();
-        spawnSparks(btn, ['#F43F5E', '#FB7185', '#FDA4AF']);
-        txt.textContent = '💥 Banco Apagado!';
-        badge.textContent = '100% CONFIRMADO';
-        fill.style.transform = 'scaleX(0)';
-        logTelemetry('Hold-to-Confirm 100% Concluído!', 'Ação destrutiva confirmada sem modal bloqueante');
+    s1Juice.addEventListener('pointerup', () => {
+      log1.textContent = 'Hitstop: 75ms frame-freeze → Spring overshoot 1.06 + Triad';
+      setTimeout(() => {
+        s1Juice.style.transform = 'scale(1.06)';
+        s1Juice.style.background = '#30a46c';
+        s1Juice.style.borderColor = '#30a46c';
+        s1Juice.style.color = '#fff';
+        s1Icon.textContent = '✓';
+        s1Text.textContent = currentLang === 'pt' ? 'Publicado' : 'Deployed';
+        playTriad();
         setTimeout(() => {
-          txt.textContent = 'Segure p/ Apagar';
-          badge.textContent = '0% Carregado';
-        }, 1800);
-      }, 800);
-    }
+          s1Juice.style.transform = 'scale(1)';
+          setTimeout(() => {
+            s1Juice.style.background = '';
+            s1Juice.style.borderColor = '';
+            s1Juice.style.color = '';
+            s1Icon.textContent = '↑';
+            s1Text.textContent = currentLang === 'pt' ? 'Publicar' : 'Deploy';
+          }, 1100);
+        }, 180);
+      }, 75);
+    });
 
-    function stopHoldSound() {
-      if (holdOsc && audioCtx) {
-        try {
-          holdGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
-          holdOsc.stop(audioCtx.currentTime + 0.045);
-        } catch (e) {}
-        holdOsc = null;
+    // Specimen 02: Hold to Delete
+    const s2Flat = document.getElementById('s2Flat');
+    const s2Juice = document.getElementById('s2Juice');
+    const s2Fill = document.getElementById('s2Fill');
+    const s2Text = document.getElementById('s2Text');
+    const log2 = document.getElementById('log2');
+    let holdProgress = 0;
+    let holdRAF = null;
+
+    s2Flat.addEventListener('click', () => {
+      log2.textContent = 'Standard: instant delete or blocking window.confirm()';
+    });
+
+    function startHold() {
+      cancelAnimationFrame(holdRAF);
+      function step() {
+        holdProgress = Math.min(100, holdProgress + 2.2);
+        s2Fill.style.width = holdProgress + '%';
+        const jitter = (Math.random() - 0.5) * (holdProgress * 0.04);
+        s2Juice.style.transform = `translate(${jitter.toFixed(1)}px, 0) scale(0.97)`;
+        if (Math.round(holdProgress) % 14 === 0) {
+          playTick(220 + holdProgress * 3.5, 0.015, 0.02);
+        }
+        log2.textContent = `Charging: ${Math.round(holdProgress)}% · pitch ${(220 + holdProgress * 3.5).toFixed(0)}Hz`;
+        if (holdProgress >= 100) {
+          playTriad();
+          s2Juice.style.transform = 'scale(1.04)';
+          s2Text.textContent = currentLang === 'pt' ? 'Removido ✓' : 'Deleted ✓';
+          log2.textContent = 'Committed at 100% · zero modal interruption';
+          setTimeout(() => {
+            holdProgress = 0;
+            s2Fill.style.width = '0%';
+            s2Juice.style.transform = 'scale(1)';
+            s2Text.textContent = currentLang === 'pt' ? 'Segure p/ Excluir' : 'Hold to Delete';
+          }, 1200);
+          return;
+        }
+        holdRAF = requestAnimationFrame(step);
       }
+      holdRAF = requestAnimationFrame(step);
     }
 
-    function cancelHoldDemo(btn) {
-      if (!holdTimer) return;
-      clearTimeout(holdTimer);
-      clearInterval(holdInterval);
-      holdTimer = null;
-      stopHoldSound();
-      btn.style.transform = 'scale(1)';
-      const fill = document.getElementById('holdFill');
-      const txt = document.getElementById('holdText');
-      const badge = document.getElementById('holdPercentBadge');
-      fill.style.transition = 'transform 160ms cubic-bezier(0.22, 1, 0.36, 1)';
-      fill.style.transform = 'scaleX(0)';
-      txt.textContent = 'Segure p/ Apagar';
-      badge.textContent = 'Cancelado (Snapback)';
-      logTelemetry('Hold Solto Antes de 800ms -> Cancelado!', 'Retorno elástico em 160ms (Perdão contra clique acidental)');
-    }
-
-    // EXP 03: Combo Checklist
-    function toggleJuicyTask(row) {
-      const isDone = row.classList.toggle('task-done');
-      const box = row.querySelector('.check-box');
-      box.classList.remove('squash-pop');
-      void box.offsetWidth;
-      box.classList.add('squash-pop');
-      if (isDone) {
-        box.classList.add('bg-emerald-500', 'border-emerald-400', 'text-slate-950');
-        box.classList.remove('bg-slate-900', 'border-slate-500', 'text-transparent');
-      } else {
-        box.classList.remove('bg-emerald-500', 'border-emerald-400', 'text-slate-950');
-        box.classList.add('bg-slate-900', 'border-slate-500', 'text-transparent');
+    function stopHold() {
+      cancelAnimationFrame(holdRAF);
+      if (holdProgress > 0 && holdProgress < 100) {
+        log2.textContent = `Aborted at ${Math.round(holdProgress)}% · smooth Coyote decay`;
       }
-      const info = playComboTick(isDone);
-      const badge = document.getElementById('comboBadge');
-      if (isDone) {
-        badge.textContent = `COMBO +${info.step} (${info.freq}Hz)`;
-        logTelemetry(`Combo Pitch Escalation (+${info.step} Semitom)`, `Frequência: ${info.freq}Hz | Squash & Stretch: 280ms`);
-      } else {
-        badge.textContent = 'DESMARCADO';
-        logTelemetry('Tarefa Desmarcada', 'Tom descendente suave (240Hz)');
+      function decay() {
+        holdProgress = Math.max(0, holdProgress - 6);
+        s2Fill.style.width = holdProgress + '%';
+        s2Juice.style.transform = 'scale(1)';
+        if (holdProgress > 0) holdRAF = requestAnimationFrame(decay);
       }
+      holdRAF = requestAnimationFrame(decay);
     }
 
-    // EXP 04: Trauma Shake & Reward Early
-    function checkRewardEarly(input) {
-      const st = document.getElementById('shakeStatus');
-      if (input.value.trim().toUpperCase() === 'VIP') {
-        playHeroChime();
-        input.classList.remove('border-rose-500');
-        input.classList.add('border-emerald-400');
-        st.textContent = '✓ Reward Early: Validado no exato keystroke!';
-        st.className = 'text-[10px] font-bold text-emerald-400';
-        logTelemetry('reward-early-validate-late', 'Erro limpo em 0ms assim que o valor ficou válido!');
-      }
-    }
+    s2Juice.addEventListener('pointerdown', startHold);
+    s2Juice.addEventListener('pointerup', stopHold);
+    s2Juice.addEventListener('pointerleave', stopHold);
 
-    function triggerShakeDemo() {
-      const input = document.getElementById('shakeInput');
-      const box = document.getElementById('shakeContainer');
-      const st = document.getElementById('shakeStatus');
-      if (input.value.trim().toUpperCase() === 'VIP') {
-        playHeroChime();
-        spawnSparks(input);
-        st.textContent = '✓ Código VIP Aceito!';
-        st.className = 'text-[10px] font-bold text-emerald-400';
-        return;
-      }
-      playErrorBuzz();
-      input.classList.remove('border-emerald-400');
-      input.classList.add('border-rose-500');
-      box.classList.remove('shake-active');
-      void box.offsetWidth;
-      box.classList.add('shake-active');
-      st.textContent = '⚡ Trauma Shake (±7px -> 0) + Duplo Thud Grave!';
-      st.className = 'text-[10px] font-bold text-rose-400';
-      logTelemetry('trauma-error-shake Disparado', 'Oscilação amortecida 320ms + Sawtooth Lowpass 150Hz');
-    }
+    // Specimen 03: Pitch Escalation
+    const log3 = document.getElementById('log3');
+    document.querySelectorAll('.flat-check').forEach(row => {
+      row.addEventListener('click', () => {
+        row.classList.toggle('done');
+        log3.textContent = 'Standard: state toggled · 0 pitch feedback';
+      });
+    });
 
-    // EXP 05: Coyote Time Menu
+    const juiceChecks = document.querySelectorAll('.juice-check');
+    juiceChecks.forEach(row => {
+      row.addEventListener('click', () => {
+        row.classList.toggle('done');
+        const doneCount = document.querySelectorAll('.juice-check.done').length;
+        row.style.transform = 'scale(1.04)';
+        setTimeout(() => (row.style.transform = ''), 160);
+        if (row.classList.contains('done')) {
+          const freq = 440 * Math.pow(2, ((doneCount - 1) * 2) / 12);
+          playTick(freq, 0.04, 0.04);
+          if (doneCount === 3) setTimeout(playTriad, 70);
+          log3.textContent = `Streak ${doneCount}/3 · pitch ${freq.toFixed(1)}Hz (+${(doneCount - 1) * 2} semitones)`;
+        } else {
+          playTick(300, 0.02, 0.02);
+          log3.textContent = `Unchecked · streak reset (${doneCount}/3)`;
+        }
+      });
+    });
+
+    // Specimen 04: Error Shake
+    const s4FlatBtn = document.getElementById('s4FlatBtn');
+    const s4FlatInput = document.getElementById('s4FlatInput');
+    const s4JuiceBtn = document.getElementById('s4JuiceBtn');
+    const s4JuiceWrap = document.getElementById('s4JuiceWrap');
+    const s4JuiceInput = document.getElementById('s4JuiceInput');
+    const log4 = document.getElementById('log4');
+
+    s4FlatBtn.addEventListener('click', () => {
+      s4FlatInput.style.borderColor = '#e5484d';
+      log4.textContent = 'Standard: border color #e5484d · 0 kinetic recoil';
+    });
+
+    s4JuiceBtn.addEventListener('click', () => {
+      s4JuiceWrap.classList.remove('shake-active');
+      void s4JuiceWrap.offsetWidth;
+      s4JuiceWrap.classList.add('shake-active');
+      s4JuiceInput.style.borderColor = '#e5484d';
+      playErrorThud();
+      log4.textContent = 'Recoil: ±6px damped harmonic shake + 140Hz→52Hz thud';
+    });
+
+    // Specimen 05: Magnetic Pull
+    const s5JuiceBtn = document.getElementById('s5JuiceBtn');
+    const log5 = document.getElementById('log5');
+    s5JuiceBtn.addEventListener('pointermove', e => {
+      const r = s5JuiceBtn.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) * 0.24;
+      const dy = (e.clientY - (r.top + r.height / 2)) * 0.24;
+      s5JuiceBtn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+      log5.textContent = `Magnetic vector: dx=${dx.toFixed(1)}px, dy=${dy.toFixed(1)}px`;
+    });
+    s5JuiceBtn.addEventListener('pointerenter', () => playTick(880, 0.008, 0.015));
+    s5JuiceBtn.addEventListener('pointerleave', () => {
+      s5JuiceBtn.style.transform = 'translate(0, 0)';
+      log5.textContent = 'Elastic snapback → translate(0px, 0px)';
+    });
+
+    // Specimen 06: Coyote Time Popover
+    const s6FlatWrap = document.getElementById('s6FlatWrap');
+    const s6FlatMenu = document.getElementById('s6FlatMenu');
+    const s6JuiceWrap = document.getElementById('s6JuiceWrap');
+    const s6JuiceMenu = document.getElementById('s6JuiceMenu');
+    const log6 = document.getElementById('log6');
     let coyoteTimer = null;
-    function enterCoyoteMenu() {
+
+    s6FlatWrap.addEventListener('pointerenter', () => {
+      s6FlatMenu.classList.add('visible');
+      log6.textContent = 'Standard menu open (0ms grace on leave)';
+    });
+    s6FlatWrap.addEventListener('pointerleave', () => {
+      s6FlatMenu.classList.remove('visible');
+      log6.textContent = 'Standard menu closed immediately (0ms)';
+    });
+
+    s6JuiceWrap.addEventListener('pointerenter', () => {
       if (coyoteTimer) {
         clearTimeout(coyoteTimer);
         coyoteTimer = null;
+        log6.textContent = 'Coyote Time saved hover! Menu stayed open (<160ms)';
+      } else {
+        playTick(760, 0.01, 0.018);
+        log6.textContent = 'Menu open · 160ms Coyote grace buffer armed';
       }
-      document.getElementById('coyoteDropdown').classList.remove('hidden');
-    }
-    function leaveCoyoteMenu() {
-      logTelemetry('Coyote Time Iniciado (180ms Grace)', 'Menu aguarda 180ms antes de fechar para perdoar o cursor');
+      s6JuiceMenu.classList.add('visible');
+    });
+    s6JuiceWrap.addEventListener('pointerleave', () => {
+      log6.textContent = 'Pointer left · holding open for 160ms Coyote window...';
       coyoteTimer = setTimeout(() => {
-        document.getElementById('coyoteDropdown').classList.add('hidden');
-      }, 180);
-    }
-    function selectCoyoteItem(btn) {
-      playHeroChime();
-      spawnSparks(btn);
-      btn.textContent = '✓ Clicado com Sucesso!';
-      logTelemetry('Coyote Time Salvou o Clique!', 'O cursor atravessou o vão de 14px sem fechar o menu');
-      setTimeout(() => { btn.textContent = '⚡ Clique aqui: Ação Alcançada!'; }, 1800);
-    }
+        s6JuiceMenu.classList.remove('visible');
+        coyoteTimer = null;
+        log6.textContent = '160ms grace elapsed → menu closed cleanly';
+      }, 160);
+    });
 
-    // EXP 06: 3D Tilt & Odometer
-    let dryVal = 11110;
-    function incrementDryCounter() {
-      dryVal += 371;
-      document.getElementById('dryOdometer').textContent = 'R$ ' + dryVal.toLocaleString('pt-BR');
-      logTelemetry('Lado A: Contador Estático', 'Troca seca de texto sem tabular-nums ou impulso');
-    }
+    // 3-Dial Calibration Blueprint
+    const rangeJuice = document.getElementById('rangeJuice');
+    const rangeForgive = document.getElementById('rangeForgive');
+    const rangeAudio = document.getElementById('rangeAudio');
+    const valJuice = document.getElementById('valJuice');
+    const valForgive = document.getElementById('valForgive');
+    const valAudio = document.getElementById('valAudio');
+    const tokenPreview = document.getElementById('tokenPreview');
 
-    let currentMrr = 14280;
-    function handleCardTilt(e, card) {
-      const r = card.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-      const nx = x / r.width - 0.5;
-      const ny = y / r.height - 0.5;
-      card.style.setProperty('--mx', `${x}px`);
-      card.style.setProperty('--my', `${y}px`);
-      card.style.transform = `perspective(900px) rotateX(${(-ny * 10).toFixed(2)}deg) rotateY(${(nx * 10).toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
-    }
-    function resetCardTilt(card) {
-      card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-    }
-    function incrementOdometer() {
-      const info = playComboTick(true);
-      const el = document.getElementById('odometerValue');
-      const badge = document.getElementById('odometerBadge');
-      currentMrr += 450;
-      el.style.transform = 'translateY(-5px) scale(1.06)';
-      el.textContent = 'R$ ' + currentMrr.toLocaleString('pt-BR');
-      badge.classList.remove('squash-pop');
-      void badge.offsetWidth;
-      badge.classList.add('squash-pop');
-      logTelemetry('odometer-number-roll + 3d-tilt', `Valor: R$ ${currentMrr.toLocaleString('pt-BR')} (tabular-nums sem jitter)`);
-      setTimeout(() => { el.style.transform = 'translateY(0) scale(1)'; }, 180);
-    }
-
-    // DIALS SIMULATOR
     function updateDials() {
-      playSwitchClick();
-      const j = parseInt(document.getElementById('juiceSlider').value, 10);
-      const f = parseInt(document.getElementById('forgiveSlider').value, 10);
-      const a = parseInt(document.getElementById('audioSlider').value, 10);
+      const j = Number(rangeJuice.value);
+      const f = Number(rangeForgive.value);
+      const a = Number(rangeAudio.value);
+      valJuice.textContent = `${j} / 10`;
+      valForgive.textContent = `${f} / 10`;
+      valAudio.textContent = `${a} / 10`;
 
-      const jTier = j <= 3 ? 'Subliminal Crisp' : (j <= 7 ? 'Kinetic Spring' : 'Expressive Gamified');
-      const fTier = f <= 3 ? 'Standard (100ms)' : (f <= 7 ? 'Generous (150ms)' : 'Maximum Assist (180ms)');
-      const aTier = a <= 3 ? 'Silent / Haptic Only' : (a <= 7 ? 'Hardware Ticks' : 'Full Synth Suite');
+      const pressScale = (1 - j * 0.008).toFixed(3);
+      const overshoot = (1 + j * 0.007).toFixed(3);
+      const stiffness = 260 + j * 24;
+      const hitstop = j >= 4 ? j * 9 : 0;
+      const coyote = 60 + f * 12;
+      const undo = 2500 + f * 300;
+      const gain = (a * 0.012).toFixed(3);
 
-      document.getElementById('juiceValLabel').textContent = `${j}/10 • ${jTier}`;
-      document.getElementById('forgiveValLabel').textContent = `${f}/10 • ${fTier}`;
-      document.getElementById('audioValLabel').textContent = `${a}/10 • ${aTier}`;
-
-      const pressScale = j <= 3 ? '0.975' : (j <= 7 ? '0.965' : '0.945');
-      const relDur = j <= 3 ? '120ms' : (j <= 7 ? '150ms' : '220ms');
-      const curve = j <= 3 ? 'cubic-bezier(0.22, 1, 0.36, 1)' : (j <= 7 ? 'cubic-bezier(0.34, 1.56, 0.64, 1)' : 'linear(0, 0.55 12%, 1.09 36%, 1)');
-      const coyote = f <= 3 ? '100ms' : (f <= 7 ? '150ms' : '180ms');
-      const hitbox = f <= 3 ? '-4px' : (f <= 7 ? '-8px' : '-12px');
-
-      document.getElementById('dialOutputCode').innerHTML = `<code># Comando CLI da Skill:
-python scripts/search.py "saas web app" --blueprint --juice ${j} --forgiveness ${f} --audio ${a}
-
-/* Tokens CSS Globais Calibrados: */
-:root {
-  --gf-press-scale: ${pressScale};
-  --gf-release-duration: ${relDur};
-  --gf-ease-spring: ${curve};
-  --gf-ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --gf-coyote-grace: ${coyote};
-  --gf-hitbox-expand: ${hitbox};
-}</code>`;
-      logTelemetry(`Dials Calibrados: Juice ${j} | Forgiveness ${f} | Audio ${a}`, `Tokens atualizados: scale(${pressScale}), Coyote ${coyote}`);
+      tokenPreview.innerHTML = `:root {
+  --gf-press-scale: <strong>${pressScale}</strong>;
+  --gf-overshoot-scale: <strong>${overshoot}</strong>;
+  --gf-spring-stiffness: <strong>${stiffness}</strong>;
+  --gf-hitstop-ms: <strong>${hitstop}ms</strong>;
+  --gf-coyote-grace-ms: <strong>${coyote}ms</strong>;
+  --gf-undo-window-ms: <strong>${undo}ms</strong>;
+  --gf-audio-max-gain: <strong>${gain}</strong>;
+}
+<span style="color:var(--text-muted)">$ python scripts/search.py "saas" --blueprint --juice ${j} --forgiveness ${f} --audio ${a}</span>`;
+      playTick(500 + j * 35, 0.01, Math.min(0.05, a * 0.005));
     }
+
+    [rangeJuice, rangeForgive, rangeAudio].forEach(el => el.addEventListener('input', updateDials));
+
+    // Bilingual Dictionary (EN default + PT switch)
+    const dict = {
+      en: {
+        eyebrow: 'CLAUDE CODE & CURSOR SKILL · ZERO EXTERNAL ASSETS',
+        heroTitle: 'Tactile game physics for modern web interfaces.',
+        heroLead: 'Game developers spend months tuning the first 120ms of an interaction—using Hitstop, Squash & Stretch, Coyote Time, and procedural audio so actions feel physical. <strong>game-feel-ui</strong> brings those exact mechanics into React, Next.js, Tailwind, and mobile apps.',
+        copyBtn: 'Copy',
+        metaMechanics: 'mechanics',
+        metaComponents: 'component recipes',
+        metaStacks: 'framework stacks',
+        metaAudio: 'audio assets (Web Audio API)',
+        playgroundTitle: 'Interactive Specimens',
+        playgroundSub: 'Interact with both sides inside each canvas below to compare standard linear UI against Game Feel mechanics.',
+        tagFlat: 'Standard UI',
+        telemetryLabel: 'telemetry',
+        s1Title: 'Primary Action Compression',
+        s1Desc: 'Compresses to <code>0.94</code> on pointerdown, holds a 75ms freeze-frame on release, then rebounds with spring overshoot and a harmonic triad.',
+        s1Btn: 'Deploy',
+        promptClick: 'Click either button above to inspect response',
+        s2Title: 'Hold-to-Commit Destructive Action',
+        s2Desc: 'Replaces annoying confirmation modals with a physical hold gauge, rising pitch tension, and micro-tremor before committing.',
+        s2BtnFlat: 'Delete Key',
+        s2BtnHold: 'Hold to Delete',
+        promptHold: 'Press and hold the right button for 900ms',
+        s3Title: 'Combo Checklist Progression',
+        s3Desc: 'Inspired by coin streaks in platformers: each completed item ascends +2 semitones (<code>2^(n/12)</code>) and triggers an elastic row nudge.',
+        promptCheck: 'Check all 3 items on the right in sequence',
+        s4Title: 'Physical Validation Resistance',
+        s4Desc: 'Instead of a static red string, invalid input triggers a horizontal damped harmonic shake (<code>±6px → 0px</code>) paired with a 140Hz muted thud.',
+        s4Btn: 'Verify',
+        promptShake: 'Click Verify to feel physical rejection',
+        s5Title: 'Cursor Gravity & Specular Tracking',
+        s5Desc: 'Translates the button up to <code>4px</code> toward the pointer vector on hover and snaps back elastically on pointerleave.',
+        s5Btn: 'Hover Cursor',
+        promptHover: 'Move cursor across the right button',
+        s6Title: '160ms Grace Window on Menus',
+        s6Desc: 'In platformers, Coyote Time lets you jump briefly after leaving a ledge. In UI, it prevents menus from snapping shut on diagonal mouse paths.',
+        s6Btn: 'Hover Menu',
+        promptCoyote: 'Hover and briefly slip cursor off both buttons',
+        dialsTitle: 'Calibration Dials (--blueprint)',
+        dialsSub: 'A SaaS dashboard needs subtle kinematics; a gamified EdTech app needs celebratory feedback. Tune the 3 dials to generate CSS tokens.',
+        dialJuiceHint: '(visual spring & hitstop)',
+        dialForgiveHint: '(coyote time & undo window)',
+        dialAudioHint: '(procedural synth gain)',
+        howTitle: 'Built for Agentic Workflows',
+        howSub: 'Deterministic BM25 retrieval + codebase static auditing for Claude Code, Cursor, and Windsurf.',
+        arch1: 'Scans your React/Vue/CSS codebase for dead clicks, blocking confirm modals, and layout-thrashing animations, returning a 0–100 Juice Score.',
+        arch2: 'Deterministic reasoning maps destructive actions to Hold-to-Commit, Kanban drags to 3D Tilt + Escalation, and AI streams to cadence ticks.',
+        arch3: 'Ready-to-drop implementations for React, Next.js, Framer Motion, Tailwind, CSS/WAAPI, GSAP, shadcn/ui, Vue, Svelte, React Native, and Flutter.'
+      },
+      pt: {
+        eyebrow: 'SKILL PARA CLAUDE CODE & CURSOR · ZERO ARQUIVOS EXTERNOS',
+        heroTitle: 'Física tátil de jogos para interfaces web modernas.',
+        heroLead: 'Desenvolvedores de jogos refinam os primeiros 120ms de cada interação usando Hitstop, Squash & Stretch, Coyote Time e áudio procedural para criar peso físico. A <strong>game-feel-ui</strong> traz essas mesmas mecânicas para apps React, Next.js, Tailwind e mobile.',
+        copyBtn: 'Copiar',
+        metaMechanics: 'mecânicas',
+        metaComponents: 'receitas de componentes',
+        metaStacks: 'stacks suportadas',
+        metaAudio: 'arquivos de áudio (Web Audio API)',
+        playgroundTitle: 'Espécimes Interativos (Lado a Lado)',
+        playgroundSub: 'Interaja com os controles dentro de cada quadro abaixo para comparar uma UI linear comum com as mecânicas de Game Feel.',
+        tagFlat: 'UI Comum',
+        telemetryLabel: 'telemetria',
+        s1Title: 'Compressão Tátil + Hitstop',
+        s1Desc: 'Comprime para <code>0.94</code> ao pressionar, segura 75ms de freeze-frame ao soltar e expande com mola elástica e tríade harmônica.',
+        s1Btn: 'Publicar',
+        promptClick: 'Clique nos dois botões acima para comparar a resposta',
+        s2Title: 'Segurar para Excluir (Hold-to-Commit)',
+        s2Desc: 'Substitui modais de confirmação irritantes por uma barra de tensão física, subida de tom e micro-vibração antes de confirmar.',
+        s2BtnFlat: 'Excluir Chave',
+        s2BtnHold: 'Segure p/ Excluir',
+        promptHold: 'Pressione e segure o botão da direita por 900ms',
+        s3Title: 'Checklist com Escalada de Tom',
+        s3Desc: 'Inspirado na coleta de moedas em jogos: cada item concluído sobe +2 semitons (<code>2^(n/12)</code>) com impulso elástico.',
+        promptCheck: 'Marque os 3 itens da direita em sequência',
+        s4Title: 'Resistência Física na Validação',
+        s4Desc: 'Em vez de apenas texto vermelho, o erro dispara uma oscilação horizontal amortecida (<code>±6px → 0px</code>) com grave abafado de 140Hz.',
+        s4Btn: 'Validar',
+        promptShake: 'Clique em Validar para sentir a rejeição física',
+        s5Title: 'Gravidade Magnética do Cursor',
+        s5Desc: 'Atrai o botão em até <code>4px</code> na direção do ponteiro ao aproximar o mouse e retorna com elástico ao sair.',
+        s5Btn: 'Passe o Mouse',
+        promptHover: 'Mova o cursor sobre o botão da direita',
+        s6Title: 'Janela Coyote Time (160ms)',
+        s6Desc: 'Em jogos de plataforma, o Coyote Time evita quedas injustas. Na UI, impede que menus fechem sozinhos quando o mouse escapa por 160ms.',
+        s6Btn: 'Abrir Menu',
+        promptCoyote: 'Passe o mouse e tire rapidamente dos dois botões',
+        dialsTitle: 'Dials de Calibração (--blueprint)',
+        dialsSub: 'Um SaaS financeiro pede cinemática sutil; um app EdTech pede celebração. Ajuste os 3 dials para gerar os CSS tokens.',
+        dialJuiceHint: '(mola visual e hitstop)',
+        dialForgiveHint: '(coyote time e janela de undo)',
+        dialAudioHint: '(ganho do sintetizador)',
+        howTitle: 'Projetada para Fluxos Agênticos',
+        howSub: 'Busca determinística BM25 + auditoria estática de código para Claude Code, Cursor e Windsurf.',
+        arch1: 'Escaneia seu código React/Vue/CSS buscando cliques secos, modais bloqueantes e animações lentas, gerando um Juice Score de 0 a 100.',
+        arch2: 'Regras determinísticas mapeiam exclusões para Hold-to-Commit, Kanban para Tilt 3D + Escalada de Tom e streaming de IA para ticks de cadência.',
+        arch3: 'Implementações prontas para React, Next.js, Framer Motion, Tailwind, CSS/WAAPI, GSAP, shadcn/ui, Vue, Svelte, React Native e Flutter.'
+      }
+    };
+
+    let currentLang = 'en';
+    const langBtns = document.querySelectorAll('.lang-btn');
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[lang][key]) el.innerHTML = dict[lang][key];
+      });
+    }
+
+    langBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setLanguage(btn.dataset.lang);
+        playTick(840, 0.01);
+      });
+    });
   </script>
 </body>
 </html>
